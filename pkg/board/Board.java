@@ -1,13 +1,23 @@
 package pkg.board;
 import pkg.messaging.Response;
+import pkg.utils.Utils;
+import pkg.board.Ship;
+import java.util.Arrays;
+
 
 public class Board {
     private int[][] grid;
-    static final String[] letters = {"A","B","C","D","E","F","G","H","I","J"};
+    private Ship[] shipArr = new Ship[5];
+    public static int[][] defensePlaceholder = {};
+    public static final String[] letters = {"A","B","C","D","E","F","G","H","I","J"};
     /*
      Grid class.
-     On board, 0 represents empty, 1 represents ship, 2 represents miss, and 3 represents hit
+     On board, 0 represents empty, 1 represents attacked already
      */
+
+
+
+
     public Board(){
         makeGrid();
     }
@@ -27,13 +37,13 @@ public class Board {
         
     }
 
-    static boolean verifyAttackStructure(int[] target){
+    static boolean verifyAttackStructure(int[] query){
         // Add verification logic to make sure it is in bounds
-        if (target.length != 2){
+        if (query.length != 2){
             return false;
         } 
 
-        if (10 <= target[0] || target[0] < 0 || 10 <= target[1] || target[1] < 0){
+        if (10 <= query[0] || query[0] < 0 || 10 <= query[1] || query[1] < 0){
             return false;
         }
 
@@ -41,34 +51,106 @@ public class Board {
         return true;
     }
 
+    public boolean isShipMatch(int[] query) {
+        for (Ship ship : shipArr) {
+            if (ship == null){
+                return false; 
+            }
+            if (ship.hasMatch(query)){
+                return true;
+            }
+        }
+        return false;
+    }
 
+    public boolean isHitMatch(int[] query) {
+        for (Ship ship : shipArr) {
+            if (ship == null){
+                return false; // since i'm adding the ships in linear fashion, if I meet one that doesn't exist yet, it should end the function.
+            }
+            if (ship.hasHit(query)){
+                return true;
+            }
+        }
+        return false;
+    }
 
-    public Response attackBoard(int[] target){
-         
+    public int getTileStatus(int[] query) {
+        if (isHitMatch(query)){
+            return 3;
+        } else if (isShipMatch(query)){
+            return 1;
+        } else if (grid[query[0]][query[1]] == 1){
+            // logic here is that if the grid has been attacked here but there is no hit it has to be a miss.
+            return 2;
+        }
+        return 0;
+    }  
+
+    public Response attack(int[] query){
+
         // Check for valid input
-        if (!verifyAttackStructure(target)) {
+        if (!verifyAttackStructure(query)) {
             return new Response("Invalid Attack Structure",50);
         }
 
         // Send input through grid to check
-        int tile = grid[target[0]][target[1]];
-        switch (tile) {
-            case 0:
-                grid[target[0]][target[1]] = 2;
-                return new Response("Fail",10);
-            case 1:
-                grid[target[0]][target[1]] = 3;
-                return new Response("Success",20);
-            default:
-                return new Response("Repeated Attack", 11);
+        int tile = grid[query[0]][query[1]];
+
+        if (tile == 1) {
+            return new Response("Repeated Attack", 11);
+        }
+
+        grid[query[0]][query[1]] = 1;
+
+        if (!isShipMatch(query)){
+            return new Response("Fail",10);
+        }
+
+        for (Ship ship : shipArr){
+                if (ship == null){break;}
+                ship.castHit(query);
+            }
+        return new Response("Success",10);
+    }
+
+    public void createShip(int[][] coords, int length, int index){
+        shipArr[index] = new Ship(length, coords);
+    }
+
+    public void displayDefense(int[][] temporaryDisplay){
+        String curRow;
+        int[][] temp = temporaryDisplay;
+
+        System.out.println("  0 1 2 3 4 5 6 7 8 9");
+        for (int row = 0;row < grid.length;row++){
+            curRow = Board.letters[row];
+
+            for (int col = 0; col < grid[row].length;col++){
+
+                
+                int[] query = {row,col};
+                int hex = getTileStatus(query);
+
+                if (Utils.containsArray(temp, query)){
+                    //exception case for temporary display 
+                    curRow += " " + "⊡";
+                } else if (hex == 0){
+                    curRow += " " + "·";
+                } else if (hex == 1) {
+                    curRow += " " + "▧";
+                } else if (hex == 2) {
+                    curRow += " " + "/";
+                } else if (hex == 3) {
+                    curRow += " " + "+";
+                }
+
+            }
+            System.out.println(curRow);
         }
     }
 
-    public void createShip(){
-
-    }
-
-    public void displayBoard(){
+    public void displayOffense(){
         String curRow;
 
         System.out.println("  0 1 2 3 4 5 6 7 8 9");
@@ -81,7 +163,7 @@ public class Board {
                 if (hex == 0){
                     curRow += " " + "·";
                 } else if (hex == 1) {
-                    curRow += " " + "▧";
+                    curRow += " " + ".";
                 } else if (hex == 2) {
                     curRow += " " + "/";
                 } else if (hex == 3) {
