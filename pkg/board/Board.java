@@ -47,7 +47,6 @@ public class Board {
             return false;
         }
 
-
         return true;
     }
 
@@ -103,20 +102,20 @@ public class Board {
 
         grid[query[0]][query[1]] = 1;
 
-        if (!isShipMatch(query)){
-            return new Response("Fail",10);
-        }
-
         for (Ship ship : shipArr){
                 if (ship == null){break;}
-                ship.castHit(query);
+                System.out.println(ship.castHit(query).message);
             }
         return new Response("Success",10);
     }
 
+
+
     public void createShip(int[][] coords, int length, int index){
         shipArr[index] = new Ship(length, coords);
     }
+
+
 
     public void displayDefense(int[][] temporaryDisplay){
         String curRow;
@@ -161,10 +160,8 @@ public class Board {
             for (int col = 0; col < grid[row].length;col++){
                 int[] query = {row,col};
                 int hex = getTileStatus(query);
-                if (hex == 0){
+                if (hex == 0 || hex == 1){
                     curRow += " ·";
-                } else if (hex == 1) {
-                    curRow += " .";
                 } else if (hex == 2) {
                     curRow += " /";
                 } else if (hex == 3) {
