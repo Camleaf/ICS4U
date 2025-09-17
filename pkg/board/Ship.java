@@ -1,5 +1,4 @@
 package pkg.board;
-import java.util.Arrays;
 import pkg.messaging.Response;
 import pkg.utils.Utils;
 

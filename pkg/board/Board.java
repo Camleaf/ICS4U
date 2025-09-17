@@ -1,8 +1,7 @@
 package pkg.board;
+
 import pkg.messaging.Response;
 import pkg.utils.Utils;
-import pkg.board.Ship;
-import java.util.Arrays;
 
 
 public class Board {
@@ -10,6 +9,7 @@ public class Board {
     private Ship[] shipArr = new Ship[5];
     public static int[][] defensePlaceholder = {};
     public static final String[] letters = {"A","B","C","D","E","F","G","H","I","J"};
+    public static final String[] outChars = {};
     /*
      Grid class.
      On board, 0 represents empty, 1 represents attacked already
@@ -134,19 +134,20 @@ public class Board {
 
                 if (Utils.containsArray(temp, query)){
                     //exception case for temporary display 
-                    curRow += " " + "⊡";
+                    curRow += " □";
                 } else if (hex == 0){
-                    curRow += " " + "·";
+                    curRow += " ·";
                 } else if (hex == 1) {
-                    curRow += " " + "▧";
+                    curRow += " ▧";
                 } else if (hex == 2) {
-                    curRow += " " + "/";
+                    curRow += " /";
                 } else if (hex == 3) {
-                    curRow += " " + "+";
+                    curRow += " +";
                 }
 
             }
             System.out.println(curRow);
+            
         }
     }
 
@@ -156,18 +157,18 @@ public class Board {
         System.out.println("  0 1 2 3 4 5 6 7 8 9");
         for (int row = 0;row < grid.length;row++){
             curRow = Board.letters[row];
-
+            
             for (int col = 0; col < grid[row].length;col++){
-
-                int hex = grid[row][col];
+                int[] query = {row,col};
+                int hex = getTileStatus(query);
                 if (hex == 0){
-                    curRow += " " + "·";
+                    curRow += " ·";
                 } else if (hex == 1) {
-                    curRow += " " + ".";
+                    curRow += " .";
                 } else if (hex == 2) {
-                    curRow += " " + "/";
+                    curRow += " /";
                 } else if (hex == 3) {
-                    curRow += " " + "+";
+                    curRow += " +";
                 }
             }
             System.out.println(curRow);
