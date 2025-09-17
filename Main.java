@@ -2,7 +2,10 @@ import pkg.board.Board;
 import pkg.board.Ship;
 import pkg.utils.Utils;
 import pkg.utils.Utils.*;
+
+import java.util.Arrays;
 import java.util.Scanner;
+import java.lang.Exception;
 
 public class Main {
     Board pBoard; // player board
@@ -41,18 +44,60 @@ public class Main {
 
     }
     public void initializeBoards(){
+
         for (int length : Ship.lengths){
             int[][] curShip = new int[length][2];
             for (int index = 0; index < length; index++){
                 curShip[index][1] = index;
             }
-            this.pBoard.displayDefense(curShip);
-            System.out.println("Press Enter to clear screen");
-            input.nextLine();
-            System.out.print("\033\143");
+            while (true){
+                this.pBoard.displayDefense(curShip);
+                System.out.println("wsad for movement, enter to submit each char. c to confirm, r to rotate");
+                char instruction;
+                try{
+                    instruction = input.nextLine().toLowerCase().charAt(0);
+                } catch (IndexOutOfBoundsException e){continue;}
+
+                // init new ship
+                int[][] newShip = new int[length][2];
+                for (int i=0;i<curShip.length;i++){
+                    newShip[i] = curShip[i].clone();
+                }
+
+                switch (instruction){
+                    case 'w':
+                        for (int i = 0; i < curShip.length;i++){
+                            newShip[i][0] -= 1;
+                        }
+                        break;
+                    case 's':
+                        for (int i = 0; i < curShip.length;i++){
+                            newShip[i][0] += 1;
+                        }
+                        break;
+                    case 'd':
+                        for (int i = 0; i < curShip.length;i++){
+                            newShip[i][1] += 1;
+                        }
+                        break;
+                    case 'a':
+                        for (int i = 0; i < curShip.length;i++){
+                            newShip[i][1] -= 1;
+                        }
+                        break;
+                }
+                boolean b = true;
+                for (int i = 0; i < curShip.length;i++){
+                    if (newShip[i][0] > 9 || newShip[i][0] < 0 || newShip[i][1] > 9 || newShip[i][1] < 0){
+                        b = false;
+                        break;
+                    }
+                }
+                if (b){curShip = newShip;}
+                System.out.print("\033\143");
+            }
 
         }
     }
-
     
 }
