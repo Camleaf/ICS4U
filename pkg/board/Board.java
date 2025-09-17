@@ -7,9 +7,8 @@ import pkg.utils.Utils;
 public class Board {
     private int[][] grid;
     private Ship[] shipArr = new Ship[5];
-    public static int[][] defensePlaceholder = {};
+    public static int[][] emptyIntInt = {};
     public static final String[] letters = {"A","B","C","D","E","F","G","H","I","J"};
-    public static final String[] outChars = {};
     /*
      Grid class.
      On board, 0 represents empty, 1 represents attacked already
@@ -19,22 +18,7 @@ public class Board {
 
 
     public Board(){
-        makeGrid();
-    }
-
-    public void makeGrid(){
-        /*
-        Creates a 10x10 2d integer array filled with zeros
-         */
-        grid = new int[10][10];
-
-        for (int row = 0;row<10;row++){
-            for (int col = 0; col<10;col++){
-                grid[row][col] = 0;
-            }
-        }
-
-        
+        this.grid = new int[10][10];
     }
 
     static boolean verifyAttackStructure(int[] query){
@@ -51,7 +35,7 @@ public class Board {
     }
 
     public boolean isShipMatch(int[] query) {
-        for (Ship ship : shipArr) {
+        for (Ship ship : this.shipArr) {
             if (ship == null){
                 return false; 
             }
@@ -63,7 +47,7 @@ public class Board {
     }
 
     public boolean isHitMatch(int[] query) {
-        for (Ship ship : shipArr) {
+        for (Ship ship : this.shipArr) {
             if (ship == null){
                 return false; // since i'm adding the ships in linear fashion, if I meet one that doesn't exist yet, it should end the function.
             }
@@ -79,7 +63,7 @@ public class Board {
             return 3;
         } else if (isShipMatch(query)){
             return 1;
-        } else if (grid[query[0]][query[1]] == 1){
+        } else if (this.grid[query[0]][query[1]] == 1){
             // logic here is that if the grid has been attacked here but there is no hit it has to be a miss.
             return 2;
         }
@@ -87,6 +71,7 @@ public class Board {
     }  
 
     public Response attack(int[] query){
+        this.shipArr[0].hasHit(query);
 
         // Check for valid input
         if (!verifyAttackStructure(query)) {
@@ -94,17 +79,18 @@ public class Board {
         }
 
         // Send input through grid to check
-        int tile = grid[query[0]][query[1]];
+        int tile = this.grid[query[0]][query[1]];
 
         if (tile == 1) {
             return new Response("Repeated Attack", 11);
         }
 
-        grid[query[0]][query[1]] = 1;
+        this.grid[query[0]][query[1]] = 1;
 
-        for (Ship ship : shipArr){
+        for (Ship ship : this.shipArr){
                 if (ship == null){break;}
-                System.out.println(ship.castHit(query).message);
+                ship.castHit(query);
+                // add sink, miss, and hit returns
             }
         return new Response("Success",10);
     }
@@ -112,7 +98,7 @@ public class Board {
 
 
     public void createShip(int[][] coords, int length, int index){
-        shipArr[index] = new Ship(length, coords);
+        this.shipArr[index] = new Ship(length, coords);
     }
 
 
@@ -122,10 +108,10 @@ public class Board {
         int[][] temp = temporaryDisplay;
 
         System.out.println("  0 1 2 3 4 5 6 7 8 9");
-        for (int row = 0;row < grid.length;row++){
+        for (int row = 0;row < this.grid.length;row++){
             curRow = Board.letters[row];
 
-            for (int col = 0; col < grid[row].length;col++){
+            for (int col = 0; col < this.grid[row].length;col++){
 
                 
                 int[] query = {row,col};
@@ -154,10 +140,10 @@ public class Board {
         String curRow;
 
         System.out.println("  0 1 2 3 4 5 6 7 8 9");
-        for (int row = 0;row < grid.length;row++){
+        for (int row = 0;row < this.grid.length;row++){
             curRow = Board.letters[row];
             
-            for (int col = 0; col < grid[row].length;col++){
+            for (int col = 0; col < this.grid[row].length;col++){
                 int[] query = {row,col};
                 int hex = getTileStatus(query);
                 if (hex == 0 || hex == 1){
