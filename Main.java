@@ -1,5 +1,6 @@
 import pkg.board.Board;
 import pkg.board.Ship;
+import pkg.bot.Core;
 import pkg.utils.Utils;
 import java.util.Scanner;
 import java.lang.Exception;
@@ -8,6 +9,7 @@ public class Main {
     Board pBoard; // player board
     Board aBoard; // bot board
     Scanner input;
+    Core AI;
     public static void Clear(){System.out.print("\033\143");}
 
     public static void main(String[] args) throws Exception{
@@ -18,6 +20,9 @@ public class Main {
         this.pBoard = new Board();
         this.aBoard = new Board();
         this.input = new Scanner(System.in);
+        this.AI = new Core();
+        this.initializeAI();
+
         // board.displayDefense(arr);
         // int[] cast = {6,5};
         // board.attack(cast);
@@ -32,12 +37,21 @@ public class Main {
         // board.attack(cast);
         // board.displayDefense(Board.emptyIntInt);
         // // System.out.print("\033\143"); screen clear
-        this.initializeBoards();
+        // this.initializeBoards();
+        
 
     }
     public boolean checkBoundaries(int x,int y){
         return x <= 9 && x >= 0 && y <= 9 && y >= 0;
     }
+
+    public void initializeAI(){
+        this.AI.createShips(aBoard);
+        aBoard.displayDefense(new int[][]{});
+    }
+
+
+
     public void initializeBoards(){
         int shipNumber = 0;
         for (int length : Ship.lengths){

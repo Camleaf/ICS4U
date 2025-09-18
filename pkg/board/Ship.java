@@ -39,4 +39,8 @@ public class Ship {
 
         return Utils.containsArray(hits, query);
     }
+
+    public int[][] getCoordinates(){
+        return Utils.deepCopy(coordinates);
+    }
 }

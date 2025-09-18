@@ -13,6 +13,15 @@ public class Utils {
         return false;
     }
 
+    public static int indexOf(int[] arr, int element){
+        for (int index = 0;index<arr.length;index++){
+            if (arr[index] == element){
+                return index;
+            }
+        }
+        return -1;
+    }
+
     public static int[][] deepCopy(int[][] arr) {
         int[][] newArr = new int[arr.length][];
         for (int index = 0; index < arr.length; index++){

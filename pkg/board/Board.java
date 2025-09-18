@@ -1,14 +1,19 @@
 package pkg.board;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import pkg.messaging.Response;
 import pkg.utils.Utils;
+import java.awt.Point;
 
 
 public class Board {
     private int[][] grid;
     private Ship[] shipArr = new Ship[5];
     public static int[][] emptyIntInt = {};
-    public static final String[] letters = {"A","B","C","D","E","F","G","H","I","J"};
+    public static final String[] LETTERS = {"A","B","C","D","E","F","G","H","I","J"};
+    public static final Point[] DIRECTIONS = {new Point(1,0),new Point(0,1),new Point(-1,0),new Point(0,-1)};
     /*
      Grid class.
      On board, 0 represents empty, 1 represents attacked already
@@ -70,6 +75,19 @@ public class Board {
         return 0;
     }  
 
+    public int[][] getAllShipSquares(){
+        ArrayList<int[]> shipSquares = new ArrayList<int[]>();
+        for (Ship ship : this.shipArr) {
+            if (ship == null){
+                break;
+            }
+            for (int[] pos : ship.getCoordinates()){
+                shipSquares.add(pos.clone());
+            }
+        }
+        return shipSquares.toArray(new int[shipSquares.size()][]);
+    }
+
     public Response attack(int[] query){
         this.shipArr[0].hasHit(query);
 
@@ -102,6 +120,23 @@ public class Board {
     }
 
 
+    public int[][] getLegalMoves(){
+        // figure out how to do this in an efficient way
+        ArrayList<int[]> legalMoves = new ArrayList<int[]>();
+        for (int row = 0;row<this.grid.length;row++ ){
+            for (int col = 0;col<this.grid[0].length;col++){
+                if (this.grid[row][col] == 0){
+                    int[] pos = {row,col};
+                    legalMoves.add(pos);
+                }
+            }
+            
+        }
+
+        return legalMoves.toArray(new int[legalMoves.size()][]);
+    }
+
+
 
     public void displayDefense(int[][] temporaryDisplay){
         String curRow;
@@ -109,7 +144,7 @@ public class Board {
 
         System.out.println("  0 1 2 3 4 5 6 7 8 9");
         for (int row = 0;row < this.grid.length;row++){
-            curRow = Board.letters[row];
+            curRow = Board.LETTERS[row];
 
             for (int col = 0; col < this.grid[row].length;col++){
 
@@ -141,7 +176,7 @@ public class Board {
 
         System.out.println("  0 1 2 3 4 5 6 7 8 9");
         for (int row = 0;row < this.grid.length;row++){
-            curRow = Board.letters[row];
+            curRow = Board.LETTERS[row];
             
             for (int col = 0; col < this.grid[row].length;col++){
                 int[] query = {row,col};
