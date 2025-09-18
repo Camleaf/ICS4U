@@ -44,12 +44,12 @@ public class AttackModule {
         int[][] legalMoves = board.getLegalMoves();
         int[][] hits = Utils.exclude(board.getAllShipHits(), board.getSunkenCoordinates());
 
-        Rating[] ratings = new Rating[legalMoves.length];
+        IdvRating[] ratings = new IdvRating[legalMoves.length];
         for (int index = 0;index<ratings.length;index++){
-            ratings[index] = new Rating(new Point(legalMoves[index][0], legalMoves[index][1]),0);
+            ratings[index] = new IdvRating(new Point(legalMoves[index][0], legalMoves[index][1]),0);
         }
 
-        for (Rating rating: ratings){
+        for (IdvRating rating: ratings){
             for (int length: board.getAliveShipLengths()){
                                 
             }
@@ -61,10 +61,10 @@ public class AttackModule {
     }
 }
 
-class Rating {
+class IdvRating {
     Point coordinate;
     int score;
-    public Rating(Point coordinate, int score){
+    public IdvRating(Point coordinate, int score){
         this.coordinate = coordinate;
         this.score = score;
     }

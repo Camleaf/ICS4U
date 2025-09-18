@@ -20,8 +20,11 @@ public class Main {
         this.aBoard = new Board();
         this.input = new Scanner(System.in);
         this.AI = new Core();
+        this.initializeBoards();
         this.initializeAI();
-        // // System.out.print("\033\143"); screen clear
+        
+
+
         
 
     }

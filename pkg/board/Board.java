@@ -137,7 +137,6 @@ public class Board {
 
 
     public Response attack(int[] query){
-        this.shipArr[0].hasHit(query);
 
         // Check for valid input
         if (!verifyAttackStructure(query)) {

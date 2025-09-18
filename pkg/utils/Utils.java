@@ -23,6 +23,15 @@ public class Utils {
         return -1;
     }
 
+    public static int indexOf(String[] arr, String element){
+        for (int index = 0;index<arr.length;index++){
+            if (arr[index].equals(element)){
+                return index;
+            }
+        }
+        return -1;
+    }
+
     public static int[][] deepCopy(int[][] arr) {
         int[][] newArr = new int[arr.length][];
         for (int index = 0; index < arr.length; index++){

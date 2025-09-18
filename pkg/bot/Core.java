@@ -1,5 +1,6 @@
 package pkg.bot;
 import pkg.bot.DefenseModule;
+import pkg.bot.AttackModule;
 import pkg.board.Board;
 import pkg.board.Ship;
 public class Core {
@@ -12,5 +13,9 @@ public class Core {
             DefenseModule.createShip(Ship.lengths[i],board,i);
         }
         
+        
+    }
+    public int[] attack(Board board){
+        return AttackModule.getAttackCoordinate(board, 2); //temporary
     }
 }
