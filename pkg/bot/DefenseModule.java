@@ -14,16 +14,16 @@ public class DefenseModule {
         // Add a random salt to the initial position ratings
         Random rand = new Random();
 
-        int vertSalt = rand.nextInt(3);
-        int horizSalt = rand.nextInt(3);
+        int vertSalt = rand.nextInt(5);
+        int horizSalt = rand.nextInt(5);
 
         int idx = 0;
         for (int row = 0;row<10;row++){
             for (int col = 0;col<10;col++){
-                int up = rand.nextInt(4) - vertSalt;
-                int down = rand.nextInt(4) - vertSalt;
-                int left = rand.nextInt(4) - horizSalt;
-                int right = rand.nextInt(4) - horizSalt;
+                int up = rand.nextInt(15) - vertSalt;
+                int down = rand.nextInt(15) - vertSalt;
+                int left = rand.nextInt(15) - horizSalt;
+                int right = rand.nextInt(15) - horizSalt;
                 int[] miniRatingArr = {up,down,left,right};
                 ratings[idx] = new Rating(row,col,miniRatingArr);
                 idx++;
@@ -41,8 +41,8 @@ public class DefenseModule {
         
         int[][] existingShips = board.getAllShipSquares();
         for (Rating rating : ratings){
+            idx = 0;
             for (Point direction : Board.DIRECTIONS){
-                idx = 0;
                 // Create the ship to test everything against
                 Point[] testShip = new Point[shipLength];
                 for (int index = 0;index<shipLength;index++){
@@ -52,12 +52,14 @@ public class DefenseModule {
                 for (int index = 0;index<shipLength;index++){
                     Point point = testShip[index];
                     if (point.x < 0 || point.y < 0 || point.x > 9 || point.y > 9){ // Hard limits
-                        rating.rating[idx] -= 100000;
+                        rating.rating[idx] -= 1000000;
                     } 
 
                     // If the ship is a two i want it to be closer to the edge. Not optimal but a personal preference
                     if (shipLength == 2 && !point.equals(new Point(9,9)) && !point.equals(new Point(0,0)) && !point.equals(new Point(0,9)) && !point.equals(new Point(9,0))){
                         rating.rating[idx] += 10;
+                    } else if (point.x == 0 || point.y == 0 || point.x == 9 || point.y == 9) {
+                        rating.rating[idx] -= 20;
                     }
                     
 
@@ -70,7 +72,7 @@ public class DefenseModule {
                     }
 
                     if (minDist < 2){
-                        rating.rating[idx] -= 100000;
+                        rating.rating[idx] -= 100;
                     } else {
                         rating.rating[idx] += minDist;
                     }
@@ -88,11 +90,14 @@ public class DefenseModule {
         int[] currentPos = new int[2];
         for (Rating rating : ratings){
         // I think theres a bug with direction so I will need to loop over each rt
-            int score = Arrays.stream(rating.rating).min().getAsInt(); // wow intellisense got me some cool things but this is so useful i may have to cite it
-            if (score > currentScore){
-                currentScore = score;
-                currentDir = Utils.indexOf(rating.rating, currentScore);
-                currentPos = new int[]{rating.row,rating.col};
+            int i = 0;
+            for (int score : rating.rating){
+                if (score > currentScore){
+                    currentScore = score;
+                    currentDir = i;
+                    currentPos = new int[]{rating.row,rating.col};
+                }
+                i++;
             }
         }
 
@@ -116,5 +121,9 @@ class Rating {
         this.row = row;
         this.col = col;
         this.rating = rating;
+    }
+    @Override
+    public String toString() {
+        return "Pos: { " + col + ", " + row + " }. Ratings: { " + rating[0] + ", " + rating[1] + ", " + rating[2] +  ", " + rating[3] + "}\n";
     }
 }

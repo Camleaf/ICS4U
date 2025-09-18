@@ -86,6 +86,56 @@ public class Board {
         return shipSquares.toArray(new int[shipSquares.size()][]);
     }
 
+    public int[][] getAllShipHits(){
+        // Gets all hits that have happened up to this point on the board
+        ArrayList<int[]> shipHits = new ArrayList<int[]>();
+        for (Ship ship : this.shipArr) {
+            if (ship == null){
+                break;
+            }
+            for (int[] pos : ship.getHitCoordinates()){
+                shipHits.add(pos.clone());
+            }
+        }
+        return shipHits.toArray(new int[shipHits.size()][]);
+    }
+
+    public int[] getAliveShipLengths(){
+        ArrayList<Integer> shipLengths = new ArrayList<Integer>();
+        for (Ship ship : this.shipArr) {
+            if (ship == null){
+                break;
+            }
+            if (ship.isSunken()){
+                continue;
+            }
+            shipLengths.add(ship.getLength());
+        }
+        int[] newArr = new int[shipLengths.size()];
+        int idx = 0;
+        for (int len : shipLengths){
+            newArr[idx] = len;
+            idx++;
+        }
+        return newArr;
+    }
+
+    public int[][] getSunkenCoordinates(){
+        ArrayList<int[]> shipHits = new ArrayList<int[]>();
+        for (Ship ship : this.shipArr) {
+            if (ship == null){
+                break;
+            }
+            if (!ship.isSunken()){continue;}
+
+            for (int[] pos : ship.getCoordinates()){
+                shipHits.add(pos.clone());
+            }
+        }
+        return shipHits.toArray(new int[shipHits.size()][]);
+    }
+
+
     public Response attack(int[] query){
         this.shipArr[0].hasHit(query);
 
@@ -150,7 +200,7 @@ public class Board {
                 int[] query = {row,col};
                 int hex = getTileStatus(query);
 
-                if (Utils.containsArray(temp, query)){
+                if (Utils.contains(temp, query)){
                     //exception case for temporary display 
                     curRow += " □";
                 } else if (hex == 0){

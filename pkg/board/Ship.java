@@ -19,7 +19,7 @@ public class Ship {
     public Response castHit(int[] query){
         
 
-        if ((!Utils.containsArray(coordinates, query)) || (Utils.containsArray(hits, query))){
+        if ((!Utils.contains(coordinates, query)) || (Utils.contains(hits, query))){
             return new Response("Fail",10);
         }
         else{
@@ -33,14 +33,24 @@ public class Ship {
     }
 
     public boolean hasMatch(int[] query){
-        return Utils.containsArray(coordinates, query);
+        return Utils.contains(coordinates, query);
     }
     public boolean hasHit(int[] query){
 
-        return Utils.containsArray(hits, query);
+        return Utils.contains(hits, query);
     }
 
     public int[][] getCoordinates(){
         return Utils.deepCopy(coordinates);
+    }
+    public int[][] getHitCoordinates(){
+        return Utils.deepCopy(hits);
+    }
+
+    public boolean isSunken(){
+        return hitCount == length;
+    }
+    public int getLength(){
+        return length;
     }
 }

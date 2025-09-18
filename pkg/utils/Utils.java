@@ -1,8 +1,9 @@
 package pkg.utils;
+import java.util.ArrayList;
 import java.util.Arrays;
 
 public class Utils {
-    public static boolean containsArray(int[][] arr, int[] query){
+    public static boolean contains(int[][] arr, int[] query){
         for (int[] element : arr){
 
             if (Arrays.equals(element,query)){
@@ -48,6 +49,20 @@ public class Utils {
             sortedArr[i] = element;
         }
         return sortedArr;
+    }
+
+    public static int[][] exclude(int[][] arr1, int[][] arr2){
+        /* Removes all elements of param arr1 that exist within arr2*/
+        ArrayList<int[]> arr3 = new ArrayList<int[]>();
+
+        for (int[] element : arr1){
+            if (contains(arr2, element)){
+                continue;
+            }
+            arr3.add(element.clone());
+        }
+
+        return arr3.toArray(new int[arr3.size()][]);
     }
 }
 

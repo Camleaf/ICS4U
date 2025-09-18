@@ -21,23 +21,7 @@ public class Main {
         this.input = new Scanner(System.in);
         this.AI = new Core();
         this.initializeAI();
-        // this.aBoard.displayDefense(Board.emptyIntInt);
-
-        // board.displayDefense(arr);
-        // int[] cast = {6,5};
-        // board.attack(cast);
-        // board.displayDefense(Board.emptyIntInt);
-        // cast[0] = 3;
-        // cast[1] = 3;
-        // board.attack(cast);
-        // board.displayDefense(Board.emptyIntInt);
-
-        // cast[0] = 9;
-        // cast[1] = 9;
-        // board.attack(cast);
-        // board.displayDefense(Board.emptyIntInt);
         // // System.out.print("\033\143"); screen clear
-        this.initializeBoards();
         
 
     }
