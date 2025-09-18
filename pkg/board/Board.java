@@ -1,8 +1,6 @@
 package pkg.board;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 import pkg.messaging.Response;
 import pkg.utils.Utils;
 import java.awt.Point;

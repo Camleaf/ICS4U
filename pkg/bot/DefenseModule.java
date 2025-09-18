@@ -5,7 +5,6 @@ import pkg.utils.Utils;
 import java.util.Random;
 import java.awt.Point;
 import java.util.Arrays;
-import java.util.Collections;
 
 public class DefenseModule {
     public static void createShip(int shipLength, Board board, int shipNumber ){
@@ -88,6 +87,7 @@ public class DefenseModule {
         int currentScore = -100000000;
         int[] currentPos = new int[2];
         for (Rating rating : ratings){
+        // I think theres a bug with direction so I will need to loop over each rt
             int score = Arrays.stream(rating.rating).min().getAsInt(); // wow intellisense got me some cool things but this is so useful i may have to cite it
             if (score > currentScore){
                 currentScore = score;
