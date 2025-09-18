@@ -3,7 +3,6 @@ import pkg.board.Ship;
 import pkg.bot.Core;
 import pkg.utils.Utils;
 import java.util.Scanner;
-import java.lang.Exception;
 
 public class Main {
     Board pBoard; // player board
@@ -12,11 +11,11 @@ public class Main {
     Core AI;
     public static void Clear(){System.out.print("\033\143");}
 
-    public static void main(String[] args) throws Exception{
+    public static void main(String[] args) {
         Main main = new Main();
     }
 
-    public Main() throws Exception{
+    public Main() {
         this.pBoard = new Board();
         this.aBoard = new Board();
         this.input = new Scanner(System.in);
@@ -37,7 +36,7 @@ public class Main {
         // board.attack(cast);
         // board.displayDefense(Board.emptyIntInt);
         // // System.out.print("\033\143"); screen clear
-        // this.initializeBoards();
+        this.initializeBoards();
         
 
     }
@@ -47,7 +46,7 @@ public class Main {
 
     public void initializeAI(){
         this.AI.createShips(aBoard);
-        aBoard.displayDefense(new int[][]{});
+        // initialize attack here as well
     }
 
 
