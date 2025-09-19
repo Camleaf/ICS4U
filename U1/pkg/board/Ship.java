@@ -1,6 +1,6 @@
-package pkg.board;
-import pkg.messaging.Response;
-import pkg.utils.Utils;
+package U1.pkg.board;
+import U1.pkg.messaging.Response;
+import U1.pkg.utils.Utils;
 
 public class Ship {
     public static int[] lengths = {5,4,3,3,2};

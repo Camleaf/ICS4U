@@ -1,6 +1,8 @@
-package pkg.bot;
-import pkg.board.Board;
+package U1.pkg.bot;
 import java.util.Random;
+
+import U1.pkg.board.Board;
+
 import java.awt.Point;
 
 public class DefenseModule {

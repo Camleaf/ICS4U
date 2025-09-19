@@ -1,8 +1,8 @@
-package pkg.bot;
-import pkg.bot.DefenseModule;
-import pkg.bot.AttackModule;
-import pkg.board.Board;
-import pkg.board.Ship;
+package U1.pkg.bot;
+import U1.pkg.board.Board;
+import U1.pkg.board.Ship;
+import U1.pkg.bot.AttackModule;
+import U1.pkg.bot.DefenseModule;
 public class Core {
     DefenseModule defenseModule;
     int difficulty;

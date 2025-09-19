@@ -1,8 +1,10 @@
-package pkg.board;
+package U1.pkg.board;
 
 import java.util.ArrayList;
-import pkg.messaging.Response;
-import pkg.utils.Utils;
+
+import U1.pkg.messaging.Response;
+import U1.pkg.utils.Utils;
+
 import java.awt.Point;
 
 

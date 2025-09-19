@@ -1,7 +1,9 @@
-package pkg.bot;
-import pkg.board.Board;
-import pkg.utils.Utils;
+package U1.pkg.bot;
 import java.util.Random;
+
+import U1.pkg.board.Board;
+import U1.pkg.utils.Utils;
+
 import java.awt.Point;
 
 public class AttackModule {
