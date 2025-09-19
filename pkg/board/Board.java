@@ -174,7 +174,7 @@ public class Board {
             for (int col = 0;col<this.grid[0].length;col++){
                 if (this.grid[row][col] == 0){
                     int[] pos = {row,col};
-                    legalMoves.add(pos);
+                    legalMoves.add(pos.clone());
                 }
             }
             

@@ -53,7 +53,7 @@ public class AttackModule {
 
         IdvRating[] ratings = new IdvRating[legalMoves.length];
         for (int index = 0;index<ratings.length;index++){
-            ratings[index] = new IdvRating(new Point(legalMoves[index][0], legalMoves[index][1]),0);
+            ratings[index] = new IdvRating(new Point(legalMoves[index][1], legalMoves[index][0]),0);
         }
 
         // Get ratings for each point
