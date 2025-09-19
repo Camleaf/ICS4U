@@ -108,15 +108,14 @@ public class AttackModule {
                 currentScore = rating.score;
                 currentCoord = coordinate.clone();
             }
-
-            if (Utils.contains(board.getLegalMoves(),coordinate)){
-                System.out.println("In legal moves");
-                System.out.println(board.grid[coordinate[0]][coordinate[1]]);
-            }
             // System.out.println(currentScore);
             // System.out.println("Hi");
         }
-
+        // The coordinate it is ending up with is not in the legalmoves list. That is interesting
+        if (Utils.contains(board.getLegalMoves(),currentCoord)){
+                System.out.println("In legal moves");
+                System.out.println(board.grid[currentCoord[0]][currentCoord[1]]);
+            }
 
 
         return currentCoord;
