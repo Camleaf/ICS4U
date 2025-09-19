@@ -22,6 +22,18 @@ public class Main {
         this.AI = new Core();
         this.initializeBoards();
         this.initializeAI();
+
+        while (true){
+            this.pBoard.displayDefense(new int[][]{});
+            this.aBoard.displayOffense();
+            System.out.println("Enter stuf;");
+            int[] cast = this.AI.attack(pBoard);
+            System.out.printf("{%d, %d}", cast[0], cast[1]);
+            String[] target = input.nextLine().strip().split("");
+            this.aBoard.attack(new int[]{Utils.indexOf(Board.LETTERS,target[0].toUpperCase()),Integer.parseInt(target[1])});
+            this.pBoard.attack(this.AI.attack(pBoard));
+            Clear();
+        }
         
 
 
