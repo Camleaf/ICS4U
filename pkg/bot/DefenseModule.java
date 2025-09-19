@@ -114,8 +114,4 @@ class Rating {
         this.col = col;
         this.rating = rating;
     }
-    @Override
-    public String toString() {
-        return "Pos: { " + col + ", " + row + " }. Ratings: { " + rating[0] + ", " + rating[1] + ", " + rating[2] +  ", " + rating[3] + "}\n";
-    }
 }

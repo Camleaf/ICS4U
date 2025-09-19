@@ -48,6 +48,7 @@ public class AttackModule {
         int[][] legalMoves = board.getLegalMoves();
         int[][] hitsArr = Utils.exclude(board.getAllShipHits(), board.getSunkenCoordinates());
 
+        
         IdvRating[] ratings = new IdvRating[legalMoves.length];
         for (int index = 0;index<ratings.length;index++){
             ratings[index] = new IdvRating(new Point(legalMoves[index][1], legalMoves[index][0]),0);

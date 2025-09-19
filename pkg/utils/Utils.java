@@ -13,6 +13,16 @@ public class Utils {
 
         return false;
     }
+    public static boolean contains(String[] arr, String query){
+        for (String element : arr){
+
+            if (element.equals(query)){
+                return true;
+            }
+        }
+
+        return false;
+    }
 
     public static int indexOf(int[] arr, int element){
         for (int index = 0;index<arr.length;index++){

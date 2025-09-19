@@ -7,7 +7,7 @@ import java.awt.Point;
 
 
 public class Board {
-    public int[][] grid;
+    private int[][] grid;
     private Ship[] shipArr = new Ship[5];
     public static int[][] emptyIntInt = {};
     public static final String[] LETTERS = {"A","B","C","D","E","F","G","H","I","J"};
@@ -24,7 +24,7 @@ public class Board {
         this.grid = new int[10][10];
     }
 
-    static boolean verifyAttackStructure(int[] query){
+    public static boolean verifyAttackStructure(int[] query){
         // Add verification logic to make sure it is in bounds
         if (query.length != 2){
             return false;
@@ -134,6 +134,18 @@ public class Board {
         }
         return shipHits.toArray(new int[shipHits.size()][]);
     }
+    
+    public int getAliveNumber(){
+        int living = 0;
+        for (Ship ship : this.shipArr) {
+            if (ship == null){
+                break;
+            }
+            if (ship.isSunken()){continue;}
+            living++;
+        }
+        return living;
+    }
 
 
     public Response attack(int[] query){
@@ -154,10 +166,15 @@ public class Board {
 
         for (Ship ship : this.shipArr){
                 if (ship == null){break;}
-                ship.castHit(query);
-                // add sink, miss, and hit returns
+                Response response = ship.castHit(query);
+
+                if (response.message.equals("Success")){
+                    return new Response("Success",10);
+                } else if (response.message.equals("Sink")){
+                    return new Response("Sink",12);
+                }
             }
-        return new Response("Success",10);
+        return new Response("Miss",13);
     }
 
 

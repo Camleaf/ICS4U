@@ -3,6 +3,7 @@ import pkg.board.Ship;
 import pkg.bot.Core;
 import pkg.utils.Utils;
 import java.util.Scanner;
+import pkg.messaging.Response;
 
 public class Main {
     Board pBoard; // player board
@@ -24,16 +25,58 @@ public class Main {
         this.initializeAI();
 
         while (true){
+            System.out.printf("Ships Remaining: You %d | Bot %d\n", pBoard.getAliveNumber(),aBoard.getAliveNumber());
+            System.out.println("Your board");
             this.pBoard.displayDefense(new int[][]{});
+            System.out.println("Enemy board");
             this.aBoard.displayOffense();
-            System.out.println("Enter stuf;");
+            System.out.println("Enter Coordinate: ");
 
             String[] target = input.nextLine().strip().split("");
-            this.aBoard.attack(new int[]{Utils.indexOf(Board.LETTERS,target[0].toUpperCase()),Integer.parseInt(target[1])});
-            this.pBoard.attack(this.AI.attack(pBoard));
+            if (target.length != 2){
+                Clear();
+                System.out.println("Target must have length of 2");
+                continue;
+            }
+            if (!Utils.contains(Board.LETTERS,target[0].toUpperCase())){
+                Clear();
+                System.out.println("First character of coordinate has to be a letter from A-J");
+                continue;
+            } else if (!Character.isDigit(target[1].toCharArray()[0])){
+                //If char is not a digit
+                Clear();
+                System.out.println("Second character of coordinate has to be an Integer from 0-9");
+                continue;
+            };
+            int[] playerCast = new int[]{Utils.indexOf(Board.LETTERS,target[0].toUpperCase()),Integer.parseInt(target[1])};
+            Response response = this.aBoard.attack(playerCast);
+            if (response.status == 11){ //Repeated attack
+                Clear();
+                System.out.println("you have already attacked that square");
+                continue;
+            }
+            // check win
+            if (aBoard.getAliveNumber() == 0){
+                Clear();
+                System.out.println("You Win!");
+                break;
+            }
+            // AI attack
+            int[] cast = this.AI.attack(pBoard);
+            this.pBoard.attack(cast);
             Clear();
-        }
-        
+            System.out.printf("The bot attacked {%d, %d}\n", cast[0], cast[1]);
+            //chcek AI win
+            if (pBoard.getAliveNumber() == 0){
+                Clear();
+                System.out.println("You Lose...");
+                break;
+            }
+        } 
+        System.out.println("Your board");
+        pBoard.displayDefense(new int[][]{});
+        System.out.println("Enemy board");
+        aBoard.displayDefense(new int[][]{});
 
 
         
