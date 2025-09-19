@@ -1,10 +1,7 @@
 package pkg.bot;
 import pkg.board.Board;
-import pkg.utils.Utils;
-
 import java.util.Random;
 import java.awt.Point;
-import java.util.Arrays;
 
 public class DefenseModule {
     public static void createShip(int shipLength, Board board, int shipNumber ){

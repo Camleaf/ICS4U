@@ -24,6 +24,16 @@ public class Utils {
         return false;
     }
 
+    public static boolean contains(int[] arr, int query){
+        for (int element : arr){
+
+            if (element == query){
+                return true;
+            }
+        }
+        return false;
+    }
+
     public static int indexOf(int[] arr, int element){
         for (int index = 0;index<arr.length;index++){
             if (arr[index] == element){

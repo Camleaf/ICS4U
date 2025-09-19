@@ -5,8 +5,10 @@ import pkg.board.Board;
 import pkg.board.Ship;
 public class Core {
     DefenseModule defenseModule;
+    int difficulty;
 
-    public Core(){
+    public Core(int difficulty){
+        this.difficulty = difficulty;
     }
     public void createShips(Board board){
         for (int i=0;i<5;i++){
@@ -16,6 +18,6 @@ public class Core {
         
     }
     public int[] attack(Board board){
-        return AttackModule.getAttackCoordinate(board, 2); //temporary
+        return AttackModule.getAttackCoordinate(board, this.difficulty); //temporary
     }
 }

@@ -10,6 +10,8 @@ public class Main {
     Board aBoard; // bot board
     Scanner input;
     Core AI;
+    int difficulty;
+
     public static void Clear(){System.out.print("\033\143");}
 
     public static void main(String[] args) {
@@ -20,7 +22,26 @@ public class Main {
         this.pBoard = new Board();
         this.aBoard = new Board();
         this.input = new Scanner(System.in);
-        this.AI = new Core();
+        
+        difficulty = 2;
+        while (true){
+            System.out.println("Choose difficulty: (1-3)");
+            String raw = input.nextLine().trim();
+            if (raw.length() == 0){
+                Clear();
+                System.out.println("Bad input 1");
+                continue;
+            } else if (!(raw.equals("1") || raw.equals("2") || raw.equals("3"))){
+                Clear();
+                System.out.println("Bad input 2");
+                continue;
+            }
+            difficulty =Integer.parseInt(raw);
+            break;
+        }
+        Clear();
+
+        this.AI = new Core(difficulty);
         this.initializeBoards();
         this.initializeAI();
 
@@ -32,7 +53,7 @@ public class Main {
             this.aBoard.displayOffense();
             System.out.println("Enter Coordinate: ");
 
-            String[] target = input.nextLine().strip().split("");
+            String[] target = input.nextLine().trim().split("");
             if (target.length != 2){
                 Clear();
                 System.out.println("Target must have length of 2");
@@ -107,7 +128,7 @@ public class Main {
                 System.out.println("wsad for movement, enter to submit each char. c to confirm, r to rotate");
                 char instruction;
                 try{
-                    instruction = input.nextLine().toLowerCase().charAt(0);
+                    instruction = input.nextLine().toLowerCase().trim().charAt(0);
                 } catch (IndexOutOfBoundsException e){Clear();continue;}
 
                 // init new ship

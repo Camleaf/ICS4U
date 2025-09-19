@@ -1,8 +1,6 @@
 package pkg.bot;
 import pkg.board.Board;
 import pkg.utils.Utils;
-
-import java.util.Arrays;
 import java.util.Random;
 import java.awt.Point;
 
