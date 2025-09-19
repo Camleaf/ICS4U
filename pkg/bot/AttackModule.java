@@ -23,7 +23,7 @@ public class AttackModule {
 
     public static int[] randomAttack(Board board){
         // Attacks randomly
-        int[][] legalMoves = board.getLegalMoves();
+        int[][] legalMoves = Utils.deepCopy(board.getLegalMoves());
         Random rand = new Random();
         return legalMoves[rand.nextInt(legalMoves.length)].clone();
     }
@@ -45,6 +45,8 @@ public class AttackModule {
 
 
     public static int[] normalAttack(Board board){
+        // seems to be giving attacks which dont exist within legalmoves
+        // this attack stalls out and stops sending attacks after a bit
         // Smart attack using a real strategy
         int[][] legalMoves = board.getLegalMoves();
         int[][] hitsArr = Utils.exclude(board.getAllShipHits(), board.getSunkenCoordinates());
@@ -89,25 +91,30 @@ public class AttackModule {
             }
             // Now check for hits
             for (Point direction : Board.DIRECTIONS ){
-                // the rest of the code is pretty solid its just this that is breaking
                 int index = 1;
                 int accul = 0;
                 while (true){
-                    if (Utils.contains(legalMoves, new int[]{coordinate[0]+(direction.y*index),coordinate[1]+(direction.x * index)})){
+                    if (!Utils.contains(hitsArr, new int[]{coordinate[0]+(direction.y*index),coordinate[1]+(direction.x * index)})){
                         rating.score += accul;
-                        break;
-                    } else if (!Utils.contains(hitsArr, new int[]{coordinate[0]+(direction.y*index),coordinate[1]+(direction.x * index)})){
                         break;
                     }
                     // It has to be a hit if the other two don't trigger
-                    accul += 100;
+                    accul += 1000;
                     index++;
                 }
             }
+            // System.out.println(currentScore);
             if (rating.score > currentScore){
                 currentScore = rating.score;
                 currentCoord = coordinate.clone();
             }
+
+            if (Utils.contains(board.getLegalMoves(),coordinate)){
+                System.out.println("In legal moves");
+                System.out.println(board.grid[coordinate[0]][coordinate[1]]);
+            }
+            // System.out.println(currentScore);
+            // System.out.println("Hi");
         }
 
 

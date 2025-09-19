@@ -7,7 +7,7 @@ import java.awt.Point;
 
 
 public class Board {
-    private int[][] grid;
+    public int[][] grid;
     private Ship[] shipArr = new Ship[5];
     public static int[][] emptyIntInt = {};
     public static final String[] LETTERS = {"A","B","C","D","E","F","G","H","I","J"};
@@ -127,7 +127,7 @@ public class Board {
                 break;
             }
             if (!ship.isSunken()){continue;}
-
+            System.out.println("1 sunk");
             for (int[] pos : ship.getCoordinates()){
                 shipHits.add(pos.clone());
             }

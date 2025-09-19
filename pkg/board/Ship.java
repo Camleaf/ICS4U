@@ -48,6 +48,8 @@ public class Ship {
     }
 
     public boolean isSunken(){
+        // System.out.println(hitCount);
+        // System.out.println(length);
         return hitCount == length;
     }
     public int getLength(){

@@ -31,14 +31,6 @@ public class DefenseModule {
         }
 
 
-
-        // for (int index = 0;index<4;index++){
-        //     Point direction = Board.DIRECTIONS[index];
-        //     Rating ratingArr = ratings[index];
-
-
-        // }
-        
         int[][] existingShips = board.getAllShipSquares();
         for (Rating rating : ratings){
             idx = 0;
