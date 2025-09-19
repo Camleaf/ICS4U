@@ -31,7 +31,7 @@ public class Main {
             String[] target = input.nextLine().strip().split("");
             this.aBoard.attack(new int[]{Utils.indexOf(Board.LETTERS,target[0].toUpperCase()),Integer.parseInt(target[1])});
             this.pBoard.attack(this.AI.attack(pBoard));
-            // Clear();
+            Clear();
         }
         
 

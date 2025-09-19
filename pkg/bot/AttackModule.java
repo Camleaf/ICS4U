@@ -4,7 +4,6 @@ import pkg.utils.Utils;
 
 import java.util.Arrays;
 import java.util.Random;
-import java.util.random.RandomGenerator.LeapableGenerator;
 import java.awt.Point;
 
 public class AttackModule {
@@ -33,7 +32,7 @@ public class AttackModule {
         int[][] legalMoves = board.getAllShipSquares();
         int[][] hits = board.getAllShipHits();
         for (int[] query : legalMoves){
-            if (Arrays.asList(hits).contains(query)){
+            if (Utils.contains(hits, query)){
                 continue;
             }
             return query.clone();
@@ -45,8 +44,6 @@ public class AttackModule {
 
 
     public static int[] normalAttack(Board board){
-        // seems to be giving attacks which dont exist within legalmoves
-        // this attack stalls out and stops sending attacks after a bit
         // Smart attack using a real strategy
         int[][] legalMoves = board.getLegalMoves();
         int[][] hitsArr = Utils.exclude(board.getAllShipHits(), board.getSunkenCoordinates());
@@ -103,19 +100,11 @@ public class AttackModule {
                     index++;
                 }
             }
-            // System.out.println(currentScore);
             if (rating.score > currentScore){
                 currentScore = rating.score;
                 currentCoord = coordinate.clone();
             }
-            // System.out.println(currentScore);
-            // System.out.println("Hi");
         }
-        // The coordinate it is ending up with is not in the legalmoves list. That is interesting
-        if (Utils.contains(board.getLegalMoves(),currentCoord)){
-                System.out.println("In legal moves");
-                System.out.println(board.grid[currentCoord[0]][currentCoord[1]]);
-            }
 
 
         return currentCoord;
