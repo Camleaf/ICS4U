@@ -1,4 +1,4 @@
-package U1.pkg.messaging;
+package pkg.messaging;
 
 public class Response {
     public String message;

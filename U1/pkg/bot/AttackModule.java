@@ -1,8 +1,8 @@
-package U1.pkg.bot;
+package pkg.bot;
 import java.util.Random;
 
-import U1.pkg.board.Board;
-import U1.pkg.utils.Utils;
+import pkg.board.Board;
+import pkg.utils.Utils;
 
 import java.awt.Point;
 
