@@ -58,7 +58,7 @@ public class AttackModule {
         int[] currentCoord = new int[2];
         int currentScore = 0;
 
-        for (IdvRating rating: ratings){
+        for (IdvRating rating: ratings){ // create a map which stores ratings and their scores which are augmented from data from other ratings. Useful to make the AI hit the center of areas more as opposed to edgeds
             // Regular attack prediction
             int[] coordinate = {rating.coordinate.y,rating.coordinate.x};
             for (int length: board.getAliveShipLengths()){
