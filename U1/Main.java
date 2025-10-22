@@ -1,11 +1,10 @@
-package U1;
 import java.util.Scanner;
 
-import U1.pkg.board.Board;
-import U1.pkg.board.Ship;
-import U1.pkg.bot.Core;
-import U1.pkg.messaging.Response;
-import U1.pkg.utils.Utils;
+import pkg.board.Board;
+import pkg.board.Ship;
+import pkg.bot.Core;
+import pkg.messaging.Response;
+import pkg.utils.Utils;
 
 public class Main {
     Board pBoard; // player board
