@@ -53,8 +53,8 @@ class MainLoop implements Runnable{
     public void run(){
         // Mainloop here
         while (running){
-            if (keyboard.isKeyPressed(37)){
-                // IT WORKSSSSS
+            if (keyboard.isKeyPressed(37)&& keyboard.isKeyPressed(38)){
+                // IT WORKSSSSS and SO DOES OVERFLOW INPUT LETS GO
                 System.out.println("Press");
                 this.end();
             }
