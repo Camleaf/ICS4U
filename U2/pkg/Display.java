@@ -11,6 +11,7 @@ public class Display {
         frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         frame.setSize(700,700);
         frame.setLocationRelativeTo(null);
+
     }
 
     public void show(){

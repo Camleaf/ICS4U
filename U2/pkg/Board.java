@@ -4,7 +4,7 @@ public class Board {
 
 
     // The 2d map. Each square represents a 600 x 600px area
-    public static int[][] map = {
+    public static final int[][] map = {
 			{0,0,0,0,0,0,0,0},
             {0,0,0,0,0,0,0,0},
             {0,0,0,0,0,0,0,0},
@@ -23,6 +23,8 @@ public class Board {
 
 
     public Board(){
-
+        
     }
+
+
 }
