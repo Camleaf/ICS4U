@@ -5,3 +5,5 @@ https://stackoverflow.com/questions/18037576/how-do-i-check-if-the-user-is-press
 
 
 https://jenkov.com/tutorials/java-concurrency/creating-and-starting-threads.html <- For running threads in java
+
+https://gist.github.com/alexpahom/1d41a8d4148eb778963edf1ef8c25087 <- For getting images as pixels (not really anything copy pasted just inspiration for my layer splicing approach)

@@ -1,6 +1,6 @@
 package pkg;
 import javax.swing.JFrame;
-import javax.swing.SwingUtilities;
+import pkg.display.Camera;
 
 public class Display {
     public JFrame frame;
@@ -16,7 +16,7 @@ public class Display {
 
     public void show(){
         frame.setVisible(true);
-    }
+    }-
 
 
     public void serveFrame(){
