@@ -13,8 +13,6 @@ public class KeyProcessor implements KeyListener {
         public Map<Integer, Boolean> keys = new HashMap<Integer, Boolean>();
         @Override public void keyPressed(KeyEvent e) {
             keys.put(e.getKeyCode(),true);
-            System.out.println(e.getKeyCode());
-            System.out.println(keys.getOrDefault(e.getKeyCode(),false));
 
         }
         @Override public void keyReleased(KeyEvent e) {
@@ -24,7 +22,6 @@ public class KeyProcessor implements KeyListener {
         @Override public void keyTyped(KeyEvent e) {}
 
         public boolean isKeyPressed(int keyCode){
-            // System.out.println(keyCode);
             return keys.getOrDefault(keyCode,false);
         }
     }
