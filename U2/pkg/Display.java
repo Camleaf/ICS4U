@@ -44,9 +44,9 @@ public class Display {
             // following dowhile loop was taken from stackoverflow
             do {
                 try{
+                    // get buffer graphics then draw next frame
                     Graphics g =  buffer.getDrawGraphics();
-                    // Run draw function
-
+                    drawFrame(g);
                 } finally {
                     // clear resources early
                     buffer.dispose();
@@ -59,17 +59,8 @@ public class Display {
         }
     }
 
-
-    /*
-     * bufferFrame is split from serveFrame so that the buffer can be created during the downtime on the 60hz loop, then serveFrame can be executed right as the clock ticks
-     */
-    public void bufferFrame(){
-        // Reset buffer frame
-        // Raycast frame onto buffer JFrame
-        // return frame
+    private void drawFrame(Graphics g){
+        
     }
 
-    public void serveFrame(){
-        // Push buffer frame to main frame
-    }
 }

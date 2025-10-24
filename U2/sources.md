@@ -1,3 +1,5 @@
+https://en.wikipedia.org/wiki/Ray_casting <- Wikipedia article which I've been using for theory (I know its a late commit but hey i forget things sometime)
+
 https://www.youtube.com/watch?v=1vVJPzVzaK8 <- For initial learning on proper setup
 
 
