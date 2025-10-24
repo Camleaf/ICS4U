@@ -64,9 +64,9 @@ class MainLoop implements Runnable{
             // This timer runs the loop at 60 fps
 
             long currentTime = Instant.now().toEpochMilli();
-            if (currentTime - previousTime <= 10){
+            if (currentTime - previousTime <= 20){
                 try{
-                    Thread.sleep(Math.abs((currentTime+10)-previousTime));
+                    Thread.sleep(Math.abs((currentTime+20)-previousTime));
                 }
                 catch (InterruptedException e){
                     e.printStackTrace();

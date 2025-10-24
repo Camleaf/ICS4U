@@ -3,12 +3,15 @@ import javax.swing.JFrame;
 import pkg.display.Camera;
 import pkg.display.Texture;
 import pkg.Board;
+
+import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Image;
 import java.awt.image.BufferStrategy;
 import pkg.display.texture.Wall;
 import java.awt.image.BufferedImage;
 import java.awt.image.DataBufferInt;
+import java.awt.color.*;
 public class Display {
     public Screen screen;
     public Camera camera;
@@ -22,6 +25,8 @@ public class Display {
 
     public void show(){
         screen.setVisible(true);
+        screen.createBufferStrategy(3);
+        screen.buffer = screen.getBufferStrategy();
     }
 
 
@@ -37,7 +42,7 @@ public class Display {
             setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
             setSize(700,700);
             setLocationRelativeTo(null);
-            buffer = getBufferStrategy();
+            setIgnoreRepaint(true);
             bufferFrame = new BufferedImage(700, 700, BufferedImage.TYPE_INT_RGB);
             pixels = (
                 (DataBufferInt) // this is a implementation of databuffer that can be used to plot pixels https://docs.oracle.com/javase/8/docs/api/index.html?java/awt/image/DataBufferInt.html
@@ -46,7 +51,8 @@ public class Display {
         public void serveFrame(){
 
             // Check if bufferstrategy is disposed
-            if (buffer == null){
+            if (getBufferStrategy() == null){
+
                 createBufferStrategy(3);
             }
             buffer = getBufferStrategy();
@@ -57,20 +63,18 @@ public class Display {
                     // get buffer graphics then draw next frame
                     Graphics g =  buffer.getDrawGraphics();
                     drawFrame(g);
-                } finally {
-                    // clear resources early
-                    buffer.dispose();
-                }
+                    g.dispose();
+                } finally {}
                 //push frame to tops
-                buffer.show();
 
             } while (buffer.contentsLost()); // According to stackoverflow the buffer can be lost periodically so this helps
-
+            buffer.show();
         }
 
         private void drawFrame(Graphics g){
             // fov should be 75. Around what the original raycasted programs used
 
+            // Now draw your scene or buffer
 
             // Initialize the angle system
             double rayAngle = -camera.FOV / 2.0; //current angle
@@ -137,19 +141,22 @@ public class Display {
                         int[] rgbValues = rgbData;
 
                         //See how big the wall should be 
-                        int wallVerticalAppearance;
+                        int wallHeight;
                         if (curDist != 0){
-                            wallVerticalAppearance = Math.abs(camera.width/curDist);
+                            wallHeight = Math.abs(camera.width/curDist);
                         } else {
-                            wallVerticalAppearance = camera.width;
+                            wallHeight = camera.width;
                         }
                         
 
+                        // I have no damn clue how this is working but it does sometimes this library is cooked
 
-
-                        for (int y=wallVerticalAppearance/-2;y<wallVerticalAppearance/2;y++){
-                            int color;
-                            //fix this
+                        for (int y = -wallHeight/2; y < wallHeight/2; y++) {
+                            int screenX = column;
+                            int screenY = y + (bufferFrame.getHeight()/2);
+                            if(screenX >= 0 && screenX < bufferFrame.getWidth() && screenY >= 0 && screenY < bufferFrame.getHeight()) {
+                                pixels[screenX + screenY * bufferFrame.getWidth()] = Color.RED.getRGB();
+                            }
                         }
 
                                                
@@ -162,8 +169,8 @@ public class Display {
 
                     // Base case where ray is out of render distance to save on optimization purposes
                     if (curDist > camera.renderDist){
-                        break;
                         // Maybe i could make a fog effect thing later
+                        break;
                     }
                 }
             }
