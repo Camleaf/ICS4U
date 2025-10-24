@@ -1,34 +1,17 @@
 package pkg.display;
-import javax.imageio.ImageIO;
-import java.awt.*;
-import java.awt.image.BufferedImage;
-import java.awt.image.MemoryImageSource;
-import java.awt.image.PixelGrabber;
-import java.io.*;
-import java.util.ArrayList;
-
+import pkg.display.texture.Wall;
+import java.util.Map;
+import static java.util.Map.entry;
 
 public class Texture {
-    /*
-     * Static class containing useful texture parsing functions
-     */
-
-    /*Where sideLength is in pixels and assumed walls are squares */
-    public static int[][] get2dArray(String path, int sideLength){
-
-        int[][] rgbData = new int[sideLength][sideLength];
-        try {
-            BufferedImage image = ImageIO.read(new File("src/initial.jpg"));
-            for (int i = 0;i<sideLength;i++){
-                image.getRGB(i, 0, 1, sideLength, rgbData[i], 0, sideLength);
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        return rgbData;
+    //Entry tracker
+    public static int BLANK = 1;
 
 
-    }
+    /*Texture Maps*/
+    public static Map<Integer, Wall> WALL = Map.ofEntries(
+        entry(1,new Wall("src/blank.png",64)) // simply add comma and new line with entry
+    );
+
 
 }

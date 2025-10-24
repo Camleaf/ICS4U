@@ -11,7 +11,7 @@ public class Main {
             @Override
             public void run() {
                 // move display to Mainloop dec
-                Display display = new Display();
+                Display display = new Display(4,4);
                 display.show();
                 KeyProcessor keyboard = new KeyProcessor();
                 display.frame.addKeyListener(keyboard);

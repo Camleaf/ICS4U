@@ -27,11 +27,11 @@ public class Camera {
     };
     
 
-    public Camera(int width, int renderDist){
+    public Camera(int x, int y, int width, int renderDist){
 
         // Initialize
-        x = 0;
-        y = 0;
+        this.x = x;
+        this.y = y;
         direction = 0;
         speed = 4;
 
