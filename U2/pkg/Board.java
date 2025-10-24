@@ -18,7 +18,7 @@ public class Board {
     };
 
     // The map to pixel scale. One tile should take up most of the screen
-    public static final int mapScale = 640;
+    public static final int mapScale = 20;
 
     // The height and width of the map
     public static final int mapLength = 8;

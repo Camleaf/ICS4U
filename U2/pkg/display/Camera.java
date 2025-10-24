@@ -8,8 +8,8 @@ public class Camera {
      */
 
 
-    public int x;
-    public int y;
+    public double x;
+    public double y;
     public int width;
     public int renderDist;
     public int FOV = 75;
@@ -34,7 +34,7 @@ public class Camera {
         this.x = x;
         this.y = y;
         direction = 0;
-        speed = 4;
+        speed = 1;
 
         this.width = width;
         this.renderDist = renderDist;
@@ -45,43 +45,42 @@ public class Camera {
         //Do rotation
 
         if (keyboard.isKeyPressed(Input.RIGHT_ARROW)){
-            direction += 0.5;
+            direction += 1;
         }
         if (keyboard.isKeyPressed(Input.LEFT_ARROW)){
-            direction -= 0.5;
+            direction -= 1;
         }
         // Movement
-        int tempX = x;
-        int tempY = y;
+        double tempX = x;
+        double tempY = y;
 
         if (keyboard.isKeyPressed(Input.FORWARD)){
-            tempY -= 5;
-            // tempX += Math.round(speed * Math.sin(Math.toRadians(direction)));
-            // tempY += Math.round(speed * Math.cos(Math.toRadians(direction)));
+
+            tempX += speed * Math.sin(Math.toRadians(direction));
+            tempY += speed * Math.cos(Math.toRadians(direction));
 
 
         } else if (keyboard.isKeyPressed(Input.BACKWARD)){
-            tempY += 5;
-            // tempX += Math.round(speed * Math.sin(Math.toRadians(-direction)));
-            // tempY += Math.round(speed * Math.cos(Math.toRadians(-direction)));
+
+            tempX += speed * Math.sin(Math.toRadians(-direction));
+            tempY += speed * Math.cos(Math.toRadians(-direction));
 
         }
 
 
         if (keyboard.isKeyPressed(Input.RIGHT)){
-            tempX += 5;
-            // tempX += Math.round(speed * Math.sin(Math.toRadians(direction+90)));
-            // tempY += Math.round(speed * Math.cos(Math.toRadians(direction+90)));
+
+            tempX += speed * Math.sin(Math.toRadians(direction+90));
+            tempY += speed * Math.cos(Math.toRadians(direction+90));
 
 
         } else if (keyboard.isKeyPressed(Input.LEFT)){
-            tempX -= 5;
-            // tempX += Math.round(speed * Math.sin(Math.toRadians(direction-90)));
-            // tempY += Math.round(speed * Math.cos(Math.toRadians(direction-90)));
+            tempX -= speed * Math.sin(Math.toRadians(direction+90));
+            tempY -= speed * Math.cos(Math.toRadians(direction+90));
         }
         
         // Check collision
-        if (!Board.isCollision(tempX, tempY)){
+        if (!Board.isCollision((int)tempX, (int)tempY)){
             x = tempX;
             y = tempY;
         }
