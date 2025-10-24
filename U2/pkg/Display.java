@@ -61,7 +61,7 @@ public class Display {
                     // clear resources early
                     buffer.dispose();
                 }
-                //push frame to top
+                //push frame to tops
                 buffer.show();
 
             } while (buffer.contentsLost()); // According to stackoverflow the buffer can be lost periodically so this helps
