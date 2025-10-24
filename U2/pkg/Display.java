@@ -76,6 +76,11 @@ public class Display {
             for (int i = 0; i < pixels.length; i++) {
                 pixels[i] = Color.WHITE.getRGB();
             }
+            for (int x = 0; x < bufferFrame.getWidth()-1; x++) {
+                for (int y = bufferFrame.getHeight()/2; y < bufferFrame.getHeight()-1;y++){
+                    pixels[x+y*bufferFrame.getWidth()] = Color.lightGray.getRGB();
+                }
+            }
             // fov should be 75. Around what the original raycasted programs used
 
             // Now draw your scene or buffer
@@ -101,6 +106,9 @@ public class Display {
                 int intersect = 0; // Horizontal is 0, vertical is 1
                 while(true){
                     
+   
+
+
                     // Initialize temporary variables for checking
                     double tempX = startX;
                     double tempY = startY;

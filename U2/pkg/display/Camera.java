@@ -62,8 +62,8 @@ public class Camera {
 
         } else if (keyboard.isKeyPressed(Input.BACKWARD)){
 
-            tempX += speed * Math.sin(Math.toRadians(-direction));
-            tempY += speed * Math.cos(Math.toRadians(-direction));
+            tempX -= speed * Math.sin(Math.toRadians(direction));
+            tempY -= speed * Math.cos(Math.toRadians(direction));
 
         }
 
