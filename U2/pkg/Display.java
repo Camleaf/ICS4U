@@ -90,7 +90,8 @@ public class Display {
             double rayAngle = camera.direction-camera.FOV / 2.0; //current angle
             double angleIncrease = camera.FOV/(camera.width*1.0); //the increase in ray for each angle to have a 75 deg FOV
 
-            int raySpeed = 2;
+            double raySpeed = 0.8;
+            double backStepSpeed = 0.1;
 
             for (int column = 0;column<camera.width;column++){
                 if (column > 0) rayAngle += angleIncrease;
@@ -102,7 +103,7 @@ public class Display {
 
                 double curDist = 0;
 
-                int[] prevSquare = new int[]{(int)startX/Board.mapScale,(int)startY/Board.mapScale};
+                int[] prevSquare = new int[]{(int)(startX/Board.mapScale),(int)(startY/Board.mapScale)};
                 int intersect = 0; // Horizontal is 0, vertical is 1
                 while(true){
                     
@@ -115,9 +116,11 @@ public class Display {
                     
 
                     // add to temp position variables movement normalized for raycast angle
+                    double xVel = (raySpeed * Math.sin(Math.toRadians(rayAngle%360)));
 
-                    tempX += (raySpeed * Math.sin(Math.toRadians(rayAngle)));
-                    tempY += (raySpeed * Math.cos(Math.toRadians(rayAngle)));
+                    double yVel = (raySpeed * Math.cos(Math.toRadians(rayAngle%360)));
+                    tempX += xVel;
+                    tempY += yVel;
 
                     
                     // Check if the ray has passed into another square and adjust intersect settings accordingly
@@ -135,63 +138,70 @@ public class Display {
                         prevSquare = new int[]{curSqX,curSqY};
                     }
 
-                    if (Board.isCollision((int)tempX, (int)tempY)){
+                    if (Board.isCollision(tempX, tempY)){
 
 
 
                         // Get the texture data based on texture assigned to collided square
-                        int boardValue = Board.getBoardSquare((int)tempX, (int)tempY);
+                        int boardValue = Board.getBoardSquare(tempX, tempY);
                         Wall texture = Texture.WALL.get(boardValue);
                         int[] rgbData = texture.rgbData;
 
 
                          // step backwards until we find exact edge intersect
+                         // This is to smooth out the edges of my walls
+                         // I found that using my earlier heuristic method where I effectively guessed where a wall is intersected, it would create blocky instead of smooth walls
+                         // If i feel like i have a bit of performance to spare, i should introduce checking for rays which pass through walls into other walls so that corners have more definition
+                         // also should make a checker for when rays pass through the corners of walls into open space to improve upon that corner definition because that is a sore spot atm
+                        if (intersect == 0){
 
-                        while (true){
-                            if (intersect == 0){
-                                //find both possible entry point/distance ratio
-                                double xDiff1 = tempX - ((int)tempX/Board.mapScale) * Board.mapScale;
-                                double xDiff2 = tempX - ((int)tempX/Board.mapScale)* Board.mapScale + Board.mapScale;
 
-                                // select closer wall because that means thats where ray entered
-                                double xDiff = (Math.abs(xDiff1) < Math.abs(xDiff2)) ? xDiff1 : xDiff2; 
-
-                                // Apply difference to x directly to find x coordinate of exit
-                                tempX -= xDiff; 
-
-                                //get ratio of x default movement to xdiff and use ratio to find the y position at point of intersection
-
-                                double diffRatio = (raySpeed * Math.sin(Math.toRadians(rayAngle))) / xDiff;
-
-                                tempY -= (raySpeed * Math.cos(Math.toRadians(rayAngle))) * diffRatio;
+                            double BackstepXVel = (backStepSpeed * Math.sin(Math.toRadians((rayAngle%360)-180)));
+                            double BackstepYVel = (backStepSpeed * Math.cos(Math.toRadians((rayAngle%360)-180)));
+                            double target;
+                            if (xVel < 0){
                                 
-
-
+                                target = ((int)(tempX/Board.mapScale)) * Board.mapScale + Board.mapScale;
+            
                             } else {
-                                //Same code as for x above just for y side instead
-                                double yDiff1 = tempY - ((int)tempY/Board.mapScale) * Board.mapScale;
-                                double yDiff2 = tempY - ((int)tempY/Board.mapScale)* Board.mapScale + Board.mapScale;
-
-
-                                double yDiff = (Math.abs(yDiff1) < Math.abs(yDiff2)) ? yDiff1 : yDiff2; 
-
-                                tempY -= yDiff; 
-                                double diffRatio = (raySpeed * Math.cos(Math.toRadians(rayAngle))) / yDiff;
-                                tempX -= (raySpeed * Math.sin(Math.toRadians(rayAngle))) * diffRatio;
-
-
+                                target = ((int)(tempX/Board.mapScale)) * Board.mapScale;
                             }
-                            break;
+
+                            while (Math.abs(target-(tempX + BackstepXVel)) > 0.15){
+                                tempX += BackstepXVel;
+                                tempY += BackstepYVel;
+                                curDist -= 0.1;
+                            }
+
+                        } else {
+                            double BackstepXVel = (backStepSpeed * Math.sin(Math.toRadians((rayAngle%360)-180)));
+                            double BackstepYVel = (backStepSpeed * Math.cos(Math.toRadians((rayAngle%360)-180)));
+                            double target;
+                            if (yVel < 0){
+                                
+                                target = ((int)(tempY/Board.mapScale)) * Board.mapScale + Board.mapScale;
+                                
+            
+                            } else {
+                                target = ((int)(tempY/Board.mapScale)) * Board.mapScale;
+                            }
+
+                            while (Math.abs(target-(tempY + BackstepYVel)) > 0.15){
+                                tempX += BackstepXVel;
+                                tempY += BackstepYVel;
+                                curDist -= 0.1;
+                            }
+
                         }
 
 
                         // Set the x-index to grab from texture to x or y depending on collision location
-                        int textureIndex = (int)tempX;
+                        double dTextureIndex = tempX;
                         if (intersect == 1){
-                            textureIndex = (int)tempY;
+                            dTextureIndex = tempY;
                         }
                         // Textureindex must change from the players pov to the texture pov, so from 640px/wall to 64px/wall
-                        textureIndex = (int)(textureIndex / Board.mapScale);
+                        int textureIndex = (int)(dTextureIndex / Board.mapScale);
                         textureIndex /= 10;
 
                         //See how big the wall should be 
