@@ -2,7 +2,7 @@ package pkg.display.texture;
 import pkg.display.texture.TextureUtil;
 
 public class Wall {
-    public int[][] rgbData;
+    public int[] rgbData;
     public int sideLength;
     public String path;
 

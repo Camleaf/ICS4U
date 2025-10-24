@@ -4,8 +4,11 @@ import pkg.display.Camera;
 import pkg.display.Texture;
 import pkg.Board;
 import java.awt.Graphics;
+import java.awt.Image;
 import java.awt.image.BufferStrategy;
 import pkg.display.texture.Wall;
+import java.awt.image.BufferedImage;
+import java.awt.image.DataBufferInt;
 public class Display {
     public Screen screen;
     public Camera camera;
@@ -25,7 +28,9 @@ public class Display {
     //
     public class Screen extends JFrame{
         // My bufferstrategy knowledge comes from this amazing stackoverflow article https://stackoverflow.com/questions/13590002/understand-bufferstrategy
-        BufferStrategy buffer;
+        private BufferStrategy buffer;
+        private BufferedImage bufferFrame;
+        public int[] pixels;
 
         public Screen(){
             setTitle("Raycast Sim");
@@ -33,6 +38,10 @@ public class Display {
             setSize(700,700);
             setLocationRelativeTo(null);
             buffer = getBufferStrategy();
+            bufferFrame = new BufferedImage(700, 700, BufferedImage.TYPE_INT_RGB);
+            pixels = (
+                (DataBufferInt) // this is a implementation of databuffer that can be used to plot pixels https://docs.oracle.com/javase/8/docs/api/index.html?java/awt/image/DataBufferInt.html
+                bufferFrame.getRaster().getDataBuffer()).getData();
         }
         public void serveFrame(){
 
@@ -79,23 +88,70 @@ public class Display {
 
                 int curDist = 0;
 
-    
+                int[] prevSquare = new int[]{(int)startX/Board.mapScale,(int)startY/Board.mapScale};
+                int intersect = 0; // Horizontal is 0, vertical is 1
                 while(true){
-
+                    
+                    // Initialize temporary variables for checking
                     int tempX = startX;
                     int tempY = startY;
+                    
+
+                    // add to temp position variables movement normalized for raycast angle
 
                     tempX += Math.round(raySpeed * Math.sin(Math.toRadians(rayAngle)));
                     tempY += Math.round(raySpeed * Math.cos(Math.toRadians(rayAngle)));
 
+                    
+                    // Check if the ray has passed into another square and adjust intersect settings accordingly
+                    // This block also has a optimization/shortcut where if it passes diagonally through a square that it will default to horizontal intersect
+
+                    if (tempX>=Board.mapScale*prevSquare[0] || tempY >= Board.mapScale*prevSquare[1]){
+
+                        int curSqX = (int)(tempX/Board.mapScale);
+                        int curSqY = (int)(tempY/Board.mapScale);
+                        if (Math.abs(curSqX-prevSquare[0]) == 1){ // if passed horizontally
+                            intersect = 0;
+                        } else if (Math.abs(curSqY-prevSquare[1])==1){ // if passed vertically
+                            intersect = 1;
+                        }
+                        prevSquare = new int[]{curSqX,curSqY};
+                    }
 
                     if (Board.isCollision(tempX, tempY)){
                         // Get the texture data based on texture assigned to collided square
                         int boardValue = Board.getBoardSquare(tempX, tempY);
                         Wall texture = Texture.WALL.get(boardValue);
-                        int[][] rgbData = texture.rgbData;
+                        int[] rgbData = texture.rgbData;
                         
-                        // Figure out how to separate down from sides
+                        // Set the x-index to grab from texture to x or y depending on collision location
+                        int textureIndex = tempX;
+                        if (intersect == 1){
+                            textureIndex = tempY;
+                        }
+                        // Textureindex must change from the players pov to the texture pov, so from 640px/wall to 64px/wall
+                        textureIndex = (int)(textureIndex / Board.mapScale);
+                        textureIndex /= 10;
+
+
+                        int[] rgbValues = rgbData;
+
+                        //See how big the wall should be 
+                        int wallVerticalAppearance;
+                        if (curDist != 0){
+                            wallVerticalAppearance = Math.abs(camera.width/curDist);
+                        } else {
+                            wallVerticalAppearance = camera.width;
+                        }
+                        
+
+
+
+                        for (int y=wallVerticalAppearance/-2;y<wallVerticalAppearance/2;y++){
+                            int color;
+                            //fix this
+                        }
+
                                                
                         break;
                     };
@@ -110,10 +166,8 @@ public class Display {
                         // Maybe i could make a fog effect thing later
                     }
                 }
-
-
-
             }
+            g.drawImage(bufferFrame, 0, 0, bufferFrame.getWidth(), bufferFrame.getHeight(), null);
         }
     }
 

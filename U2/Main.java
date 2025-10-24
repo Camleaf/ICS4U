@@ -60,12 +60,7 @@ class MainLoop implements Runnable{
                 System.out.println(idx/60);
             }
             
-            if (keyboard.isKeyPressed(37)&& keyboard.isKeyPressed(38)){
-                // IT WORKSSSSS and SO DOES OVERFLOW INPUT LETS GO
-                System.out.println("Press");
-                this.end();
-            }
-            
+
             // This timer runs the loop at 60 fps
 
             long currentTime = Instant.now().toEpochMilli();
@@ -78,8 +73,9 @@ class MainLoop implements Runnable{
                 }
             }
             display.camera.update(keyboard);
+            
             previousTime = currentTime;
-
+            display.screen.serveFrame();
             
             idx++;
         }

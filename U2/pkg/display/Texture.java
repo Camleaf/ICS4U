@@ -10,7 +10,7 @@ public class Texture {
 
     /*Texture Maps*/
     public static Map<Integer, Wall> WALL = Map.ofEntries(
-        entry(1,new Wall("src/blank.png",64)) // simply add comma and new line with entry
+        entry(1,new Wall("src/empty.png",64)) // simply add comma and new line with entry
     );
 
 
