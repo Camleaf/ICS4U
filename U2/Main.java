@@ -14,7 +14,7 @@ public class Main {
                 Display display = new Display(4,4);
                 display.show();
                 KeyProcessor keyboard = new KeyProcessor();
-                display.frame.addKeyListener(keyboard);
+                display.screen.addKeyListener(keyboard);
                 MainLoop main = new MainLoop(keyboard, display);
                 // I figured out why this doesn't work. I will need to multithread so that the main thread can handle swing and awt request without being blocked
             }

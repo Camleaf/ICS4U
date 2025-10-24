@@ -9,12 +9,14 @@ import java.util.Map;
 // made some modifications to better fit my usecase - eg. adding the hashmap to store all key status
 
 public class KeyProcessor implements KeyListener {
+        /*Input processor which takes key presses and releases and stores the current status of each keycode inside a integer-boolean map */
+
         public Map<Integer, Boolean> keys = new HashMap<Integer, Boolean>();
+
         @Override public void keyPressed(KeyEvent e) {
             keys.put(e.getKeyCode(),true);
-            System.out.println(e.getKeyCode());
-
         }
+
         @Override public void keyReleased(KeyEvent e) {
             keys.put(e.getKeyCode(),false);
         }
