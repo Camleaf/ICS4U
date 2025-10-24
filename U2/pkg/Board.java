@@ -25,7 +25,7 @@ public class Board {
 
     public static boolean isCollision(int x, int y){
 
-        if (map[(int)x/mapScale][(int)y/mapScale]!=0){
+        if (map[(int)y/mapScale][(int)x/mapScale]!=0){
             return true;
         }
 
@@ -33,7 +33,7 @@ public class Board {
     }
 
     public static int getBoardSquare(int x, int y){
-        return map[(int)x/mapScale][(int)y/mapScale];
+        return map[(int)y/mapScale][(int)x/mapScale];
     }
 
 }

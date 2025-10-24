@@ -1,4 +1,6 @@
 import javax.swing.SwingUtilities;
+
+import pkg.Board;
 import pkg.Display;
 import pkg.display.KeyProcessor;
 import java.lang.Thread;
@@ -56,9 +58,10 @@ class MainLoop implements Runnable{
         long previousTime = Instant.now().toEpochMilli();
         int idx = 0;
         while (running){
-            if (idx % 60 == 0){
-                System.out.println(idx/60);
-            }
+            // if (idx % 10 == 0){
+            //     System.out.print("\033\143");
+            //     System.out.printf("X:%d , Y:%d, Dir:%f, boxX:%d, boxY:%d\n",display.camera.x, display.camera.y, display.camera.direction,display.camera.x/Board.mapScale,display.camera.y/Board.mapScale);
+            // }
             
 
             // This timer runs the loop at 60 fps

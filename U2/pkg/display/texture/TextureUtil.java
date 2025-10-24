@@ -3,6 +3,7 @@ import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.io.File;
+import java.awt.Color;
 
 
 public class TextureUtil {
@@ -20,7 +21,7 @@ public class TextureUtil {
         } catch (IOException e) {
             e.printStackTrace();
         }
-
+        
         return rgbData;
 
 

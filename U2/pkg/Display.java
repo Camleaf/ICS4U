@@ -18,7 +18,7 @@ public class Display {
 
     public Display(int startingX, int startingY) {
         screen = new Screen();
-        camera = new Camera(startingX, startingY,700,Board.mapScale*4);
+        camera = new Camera(startingX*Board.mapScale, startingY*Board.mapScale,700,Board.mapScale*4);
 
 
     }
@@ -61,8 +61,9 @@ public class Display {
             do {
                 try{
                     // get buffer graphics then draw next frame
+                    drawFrame();
                     Graphics g =  buffer.getDrawGraphics();
-                    drawFrame(g);
+                    g.drawImage(bufferFrame, 0, 0, null);
                     g.dispose();
                 } finally {}
                 //push frame to tops
@@ -71,15 +72,18 @@ public class Display {
             buffer.show();
         }
 
-        private void drawFrame(Graphics g){
+        private void drawFrame(){
+            for (int i = 0; i < pixels.length; i++) {
+                pixels[i] = Color.RED.getRGB();
+            }
             // fov should be 75. Around what the original raycasted programs used
 
             // Now draw your scene or buffer
 
             // Initialize the angle system
-            double rayAngle = -camera.FOV / 2.0; //current angle
+            
+            double rayAngle = camera.direction-camera.FOV / 2.0; //current angle
             double angleIncrease = camera.FOV/camera.width; //the increase in ray for each angle to have a 75 deg FOV
-
 
             int raySpeed = 2;
 
@@ -127,6 +131,13 @@ public class Display {
                         int boardValue = Board.getBoardSquare(tempX, tempY);
                         Wall texture = Texture.WALL.get(boardValue);
                         int[] rgbData = texture.rgbData;
+
+                        // for (int i : rgbData){
+                        //     System.out.println(i);
+                            
+                        // }
+                        // System.out.println(rgbData.length);
+                        // try {wait(10);} catch (InterruptedException e) {};
                         
                         // Set the x-index to grab from texture to x or y depending on collision location
                         int textureIndex = tempX;
@@ -136,9 +147,6 @@ public class Display {
                         // Textureindex must change from the players pov to the texture pov, so from 640px/wall to 64px/wall
                         textureIndex = (int)(textureIndex / Board.mapScale);
                         textureIndex /= 10;
-
-
-                        int[] rgbValues = rgbData;
 
                         //See how big the wall should be 
                         int wallHeight;
@@ -151,13 +159,36 @@ public class Display {
 
                         // I have no damn clue how this is working but it does sometimes this library is cooked
 
+                        
+                        // for (int y = -wallHeight/2; y < wallHeight/2; y++) {
+                        //     int screenX = column;
+                        //     int screenY = y + (bufferFrame.getHeight()/2);
+                        //     double tyRatio = (double)(y + wallHeight/2) / wallHeight;
+                        //     int textureY = (int)(tyRatio * 64); 
+                        //     int color = rgbData[textureY*64+(textureIndex)];
+                        //      if (screenX < 0 || screenX >= bufferFrame.getWidth() || screenY < 0 || screenY >= bufferFrame.getHeight()) continue;
+                        //     pixels[screenX + screenY * bufferFrame.getWidth()] = color;
+                        // }
+
+                        int[][] pushData = new int[wallHeight][2];
+                        int i = 0;
                         for (int y = -wallHeight/2; y < wallHeight/2; y++) {
                             int screenX = column;
                             int screenY = y + (bufferFrame.getHeight()/2);
-                            if(screenX >= 0 && screenX < bufferFrame.getWidth() && screenY >= 0 && screenY < bufferFrame.getHeight()) {
-                                pixels[screenX + screenY * bufferFrame.getWidth()] = Color.RED.getRGB();
-                            }
+
+                            if (screenY < 0 || screenY >= bufferFrame.getHeight()) continue;
+
+                            float texYf = ((float)(y + wallHeight/2) / wallHeight) * 64;
+                            int textureY = Math.min(63, (int)texYf);
+
+                            int color = rgbData[textureY*64 + textureIndex];
+                            pushData[i] = new int[]{screenX + screenY * bufferFrame.getWidth(),color};
+                            i++;
                         }
+                        for (int[] data : pushData){
+                            pixels[data[0]] = data[1];
+                        }
+
 
                                                
                         break;
@@ -174,7 +205,6 @@ public class Display {
                     }
                 }
             }
-            g.drawImage(bufferFrame, 0, 0, bufferFrame.getWidth(), bufferFrame.getHeight(), null);
         }
     }
 

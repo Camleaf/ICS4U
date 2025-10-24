@@ -14,7 +14,7 @@ public class Camera {
     public int renderDist;
     public int FOV = 75;
     private int speed;
-    private double direction;
+    public double direction;
 
     // Input enum for easier handling of input data
     private class Input {
@@ -55,28 +55,29 @@ public class Camera {
         int tempY = y;
 
         if (keyboard.isKeyPressed(Input.FORWARD)){
-
-            tempX += Math.round(speed * Math.sin(Math.toRadians(direction)));
-            tempY += Math.round(speed * Math.cos(Math.toRadians(direction)));
+            tempY -= 5;
+            // tempX += Math.round(speed * Math.sin(Math.toRadians(direction)));
+            // tempY += Math.round(speed * Math.cos(Math.toRadians(direction)));
 
 
         } else if (keyboard.isKeyPressed(Input.BACKWARD)){
-
-            tempX += Math.round(speed * Math.sin(Math.toRadians(-direction)));
-            tempY += Math.round(speed * Math.cos(Math.toRadians(-direction)));
+            tempY += 5;
+            // tempX += Math.round(speed * Math.sin(Math.toRadians(-direction)));
+            // tempY += Math.round(speed * Math.cos(Math.toRadians(-direction)));
 
         }
 
 
         if (keyboard.isKeyPressed(Input.RIGHT)){
-
-            tempX += Math.round(speed * Math.sin(Math.toRadians(direction+90)));
-            tempY += Math.round(speed * Math.cos(Math.toRadians(direction+90)));
+            tempX += 5;
+            // tempX += Math.round(speed * Math.sin(Math.toRadians(direction+90)));
+            // tempY += Math.round(speed * Math.cos(Math.toRadians(direction+90)));
 
 
         } else if (keyboard.isKeyPressed(Input.LEFT)){
-            tempX += Math.round(speed * Math.sin(Math.toRadians(direction-90)));
-            tempY += Math.round(speed * Math.cos(Math.toRadians(direction-90)));
+            tempX -= 5;
+            // tempX += Math.round(speed * Math.sin(Math.toRadians(direction-90)));
+            // tempY += Math.round(speed * Math.cos(Math.toRadians(direction-90)));
         }
         
         // Check collision
