@@ -90,6 +90,8 @@ public class Display {
             double rayAngle = camera.direction-camera.FOV / 2.0; //current angle
             double angleIncrease = camera.FOV/(camera.width*1.0); //the increase in ray for each angle to have a 75 deg FOV
 
+
+            // At the moment the only thing stopping me from increasing performance by increasing the rayspeed upto 2 is because of the corner clipping issue which causes server corner definition issues
             double raySpeed = 0.8;
             double backStepSpeed = 0.1;
 
