@@ -2,6 +2,7 @@ import javax.swing.SwingUtilities;
 import pkg.Display;
 import pkg.display.KeyProcessor;
 import java.lang.Thread;
+import java.time.Instant;
 
 
 
@@ -52,12 +53,35 @@ class MainLoop implements Runnable{
 
     public void run(){
         // Mainloop here
+        long previousTime = Instant.now().toEpochMilli();
+        int idx = 0;
         while (running){
+            if (idx % 60 == 0){
+                System.out.println(idx/60);
+            }
+            
             if (keyboard.isKeyPressed(37)&& keyboard.isKeyPressed(38)){
                 // IT WORKSSSSS and SO DOES OVERFLOW INPUT LETS GO
                 System.out.println("Press");
                 this.end();
             }
+            
+            // This timer runs the loop at 60 fps
+
+            long currentTime = Instant.now().toEpochMilli();
+            if (currentTime - previousTime <= 10){
+                try{
+                    Thread.sleep(Math.abs((currentTime+10)-previousTime));
+                }
+                catch (InterruptedException e){
+                    e.printStackTrace();
+                }
+            }
+            display.camera.update(keyboard);
+            previousTime = currentTime;
+
+            
+            idx++;
         }
     }
 }

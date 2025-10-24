@@ -32,5 +32,8 @@ public class Board {
         return false;
     }
 
+    public static int getBoardSquare(int x, int y){
+        return map[x%mapScale][y%mapScale];
+    }
 
 }

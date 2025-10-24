@@ -12,6 +12,7 @@ public class Camera {
     public int y;
     public int width;
     public int renderDist;
+    public int FOV = 75;
     private int speed;
     private double direction;
 
