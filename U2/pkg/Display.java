@@ -60,7 +60,7 @@ public class Display {
     }
 
     private void drawFrame(Graphics g){
-        
+        // fov should be 75. Around what the original raycasted programs used
     }
 
 }
