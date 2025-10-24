@@ -16,7 +16,7 @@ public class Display {
 
     public void show(){
         frame.setVisible(true);
-    }-
+    }
 
 
     public void serveFrame(){
