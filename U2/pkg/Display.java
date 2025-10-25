@@ -3,15 +3,14 @@ import javax.swing.JFrame;
 import pkg.display.Camera;
 import pkg.display.Texture;
 import pkg.Board;
-
+import pkg.Utils;
 import java.awt.Color;
 import java.awt.Graphics;
-import java.awt.Image;
 import java.awt.image.BufferStrategy;
 import pkg.display.texture.Wall;
 import java.awt.image.BufferedImage;
 import java.awt.image.DataBufferInt;
-import java.awt.color.*;
+
 public class Display {
     public Screen screen;
     public Camera camera;
@@ -73,6 +72,8 @@ public class Display {
         }
 
         private void drawFrame(){
+
+        //////////////////////////////////////////// Board setup ////////////////////////////////////////////
             for (int i = 0; i < pixels.length; i++) {
                 pixels[i] = Color.WHITE.getRGB();
             }
@@ -91,13 +92,15 @@ public class Display {
             double angleIncrease = camera.FOV/(camera.width*1.0); //the increase in ray for each angle to have a 75 deg FOV
 
 
-            // At the moment the only thing stopping me from increasing performance by increasing the rayspeed upto 2 is because of the corner clipping issue which causes server corner definition issues
-            double raySpeed = 0.8;
+            // At the moment the only thing stopping me from increasing performance by increasing the rayspeed upto a higher level is because of the 
+            //                                                                  corner clipping issue which causes server corner definition issues
+            double raySpeed = 4;
             double backStepSpeed = 0.1;
 
+
+        //////////////////////////////////////////// Ray movement ////////////////////////////////////////////
             for (int column = 0;column<camera.width;column++){
                 if (column > 0) rayAngle += angleIncrease;
-                // System.out.println(rayAngle);
                 
                 
                 double startX = camera.x;
@@ -119,8 +122,9 @@ public class Display {
 
                     // add to temp position variables movement normalized for raycast angle
                     double xVel = (raySpeed * Math.sin(Math.toRadians(rayAngle%360)));
-
                     double yVel = (raySpeed * Math.cos(Math.toRadians(rayAngle%360)));
+                    double BackstepXVel = (backStepSpeed * Math.sin(Math.toRadians((rayAngle%360)-180)));
+                    double BackstepYVel = (backStepSpeed * Math.cos(Math.toRadians((rayAngle%360)-180)));
                     tempX += xVel;
                     tempY += yVel;
 
@@ -128,18 +132,75 @@ public class Display {
                     // Check if the ray has passed into another square and adjust intersect settings accordingly
                     // This block also has a optimization/shortcut where if it passes diagonally through a square that it will default to horizontal intersect
 
+        //////////////////////////////////////////// Intersect side/corner checking ////////////////////////////////////////////
                     if (tempX>=Board.mapScale*prevSquare[0] || tempY >= Board.mapScale*prevSquare[1]){
 
                         int curSqX = (int)(tempX/Board.mapScale);
                         int curSqY = (int)(tempY/Board.mapScale);
-                        if (Math.abs(curSqX-prevSquare[0]) == 1){ // if passed horizontally
+                        if (Math.abs(curSqX-prevSquare[0]) != 0 && Math.abs(curSqY-prevSquare[1])!=0){ // If passed diagonally
+
+                            // Check if it passed any other squares on the way to being a diagonal
+                            int xVelOrient = -Utils.sign(xVel);
+                            int yVelOrient = -Utils.sign(yVel);
+
+
+
+                            // Checks for collision for the first of two possible
+                            if (Board.isCollision((curSqX+xVelOrient)*Board.mapScale+1, curSqY*Board.mapScale+1)){
+                                intersect = 1;
+                                
+                                // Uses the stepback optimizer of the other thing to get the corner back into position
+                                double target;
+                                if (yVel < 0){
+                                    
+                                    target = curSqY * Board.mapScale + Board.mapScale;
+                                    
+                
+                                } else {
+                                    target = curSqY * Board.mapScale;
+                                }
+
+                                while (Math.abs(target-(tempY + BackstepYVel)) > 0.15){
+                                    tempX += BackstepXVel;
+                                    tempY += BackstepYVel;
+                                    curDist -= backStepSpeed;
+                                }
+
+                            } else 
+                            if (Board.isCollision(curSqX*Board.mapScale+1, (curSqY+yVelOrient)*Board.mapScale+1)){ // this the other
+                                
+                                intersect = 0;
+                                double target;
+                                if (xVel < 0){
+                                    
+                                    target = (curSqX) * Board.mapScale + Board.mapScale;
+                
+                                } else {
+                                    target = curSqX * Board.mapScale;
+                                }
+
+                                while (Math.abs(target-(tempX + BackstepXVel)) > 0.15){
+                                    tempX += BackstepXVel;
+                                    tempY += BackstepYVel;
+                                    curDist -= backStepSpeed;
+                                }
+
+                            }
+
+
+                            
+                        }
+                        else 
+                        if (Math.abs(curSqX-prevSquare[0]) !=0){ // if passed horizontally
                             intersect = 0;
-                        } else if (Math.abs(curSqY-prevSquare[1])==1){ // if passed vertically
+                        } else if (Math.abs(curSqY-prevSquare[1])!=0){ // if passed vertically
                             intersect = 1;
                         }
                         prevSquare = new int[]{curSqX,curSqY};
                     }
 
+
+        //////////////////////////////////////////// Collision Logic ////////////////////////////////////////////
                     if (Board.isCollision(tempX, tempY)){
 
 
@@ -157,9 +218,6 @@ public class Display {
                          // also should make a checker for when rays pass through the corners of walls into open space to improve upon that corner definition because that is a sore spot atm
                         if (intersect == 0){
 
-
-                            double BackstepXVel = (backStepSpeed * Math.sin(Math.toRadians((rayAngle%360)-180)));
-                            double BackstepYVel = (backStepSpeed * Math.cos(Math.toRadians((rayAngle%360)-180)));
                             double target;
                             if (xVel < 0){
                                 
@@ -172,12 +230,10 @@ public class Display {
                             while (Math.abs(target-(tempX + BackstepXVel)) > 0.15){
                                 tempX += BackstepXVel;
                                 tempY += BackstepYVel;
-                                curDist -= 0.1;
+                                curDist -= backStepSpeed;
                             }
 
                         } else {
-                            double BackstepXVel = (backStepSpeed * Math.sin(Math.toRadians((rayAngle%360)-180)));
-                            double BackstepYVel = (backStepSpeed * Math.cos(Math.toRadians((rayAngle%360)-180)));
                             double target;
                             if (yVel < 0){
                                 
@@ -191,26 +247,27 @@ public class Display {
                             while (Math.abs(target-(tempY + BackstepYVel)) > 0.15){
                                 tempX += BackstepXVel;
                                 tempY += BackstepYVel;
-                                curDist -= 0.1;
+                                curDist -= backStepSpeed;
                             }
 
                         }
 
 
                         // Set the x-index to grab from texture to x or y depending on collision location
-                        double dTextureIndex = tempX;
+                        double dTextureIndex = tempY;
                         if (intersect == 1){
-                            dTextureIndex = tempY;
+                            dTextureIndex = tempX;
                         }
+
                         // Textureindex must change from the players pov to the texture pov, so from 640px/wall to 64px/wall
-                        int textureIndex = (int)(dTextureIndex / Board.mapScale);
-                        textureIndex /= 10;
+                        int textureIndex = (int)((dTextureIndex % Board.mapScale));
+
 
                         //See how big the wall should be 
                         curDist *= Math.cos(Math.toRadians(rayAngle - camera.direction));
                         double wallCalc;
                         if (curDist != 0){
-                            wallCalc = Math.abs(2*camera.width/curDist);
+                            wallCalc = Math.abs(32*camera.width/curDist);
                         } else {
                             wallCalc = camera.width;
                         }
@@ -231,7 +288,8 @@ public class Display {
                             int textureY = Math.min(63, (int)texYf);
 
                             int color = rgbData[textureY*64 + textureIndex];
-                            pushData[i] = new int[]{screenX + screenY * bufferFrame.getWidth(),Color.DARK_GRAY.getRGB()};
+                            // I need to figure out why this colouring isn't working
+                            pushData[i] = new int[]{screenX + screenY * bufferFrame.getWidth(),color};
                             i++;
                         }
                         for (int[] data : pushData){

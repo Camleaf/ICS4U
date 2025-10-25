@@ -15,6 +15,6 @@ public class Wall {
         }
         this.sideLength = sideLength;
         this.path = path;
-        rgbData = TextureUtil.get2dArray(path, sideLength);
+        rgbData = TextureUtil.get2dArray(path, sideLength).clone();
     }
 }

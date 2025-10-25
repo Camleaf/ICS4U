@@ -18,7 +18,7 @@ public class Board {
     };
 
     // The map to pixel scale. One tile should take up most of the screen
-    public static final int mapScale = 20;
+    public static final int mapScale = 64;
 
     // The height and width of the map
     public static final int mapLength = 8;
@@ -40,6 +40,16 @@ public class Board {
 
         return false;
     }
+
+    public static boolean isCollisionWith(double x, double y, int mapX, int mapY){
+
+        if ((int)(y/mapScale) == mapY && (int)(x/mapScale)==mapX){
+            return true;
+        }
+
+        return false;
+    }
+
 
     public static int getBoardSquare(int x, int y){
         return map[(int)y/mapScale][(int)x/mapScale];

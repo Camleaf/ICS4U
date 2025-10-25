@@ -13,7 +13,7 @@ public class Camera {
     public int width;
     public int renderDist;
     public int FOV = 75;
-    private int speed;
+    private double speed;
     public double direction;
 
     // Input enum for easier handling of input data
@@ -34,7 +34,7 @@ public class Camera {
         this.x = x;
         this.y = y;
         direction = 0;
-        speed = 1;
+        speed = 2.5;
 
         this.width = width;
         this.renderDist = renderDist;
@@ -45,10 +45,10 @@ public class Camera {
         //Do rotation
 
         if (keyboard.isKeyPressed(Input.RIGHT_ARROW)){
-            direction += 1;
+            direction += 2;
         }
         if (keyboard.isKeyPressed(Input.LEFT_ARROW)){
-            direction -= 1;
+            direction -= 2;
         }
         // Movement
         double tempX = x;
