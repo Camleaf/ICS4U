@@ -76,7 +76,7 @@ public class Display {
 
         //////////////////////////////////////////// Board setup ////////////////////////////////////////////
             for (int i = 0; i < pixels.length; i++) {
-                pixels[i] = Color.GRAY.getRGB();
+                pixels[i] = new Color(135, 206, 235).getRGB();
             }
             for (int x = 0; x < bufferFrame.getWidth()-1; x++) {
                 for (int y = bufferFrame.getHeight()/2; y < bufferFrame.getHeight()-1;y++){
