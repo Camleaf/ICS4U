@@ -45,10 +45,10 @@ public class Camera {
         //Do rotation
 
         if (keyboard.isKeyPressed(Input.RIGHT_ARROW)){
-            direction += 2;
+            direction += 3;
         }
         if (keyboard.isKeyPressed(Input.LEFT_ARROW)){
-            direction -= 2;
+            direction -= 3;
         }
         // Movement
         double tempX = x;

@@ -96,7 +96,7 @@ public class Display {
             // At the moment the only thing stopping me from increasing performance by increasing the rayspeed upto a higher level is because of the 
             //                                                                  corner clipping issue which causes server corner definition issues
             // I have a fix which made the corner clipping a lot better but leaves a lot to be desired
-            double raySpeed = 6;
+            double raySpeed = 2;
             double backStepSpeed = 0.1;
 
 
@@ -115,8 +115,6 @@ public class Display {
                 while(true){
                     
    
-
-
                     // Initialize temporary variables for checking
                     double tempX = startX;
                     double tempY = startY;
