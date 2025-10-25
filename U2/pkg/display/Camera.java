@@ -1,6 +1,7 @@
 package pkg.display;
 import pkg.display.KeyProcessor;
 import pkg.Board;
+import pkg.Utils;
 
 public class Camera {
     /*
@@ -74,10 +75,6 @@ public class Camera {
             tempY += curYSpeed;
         }
 
-        if (!Board.isCollision((int)tempX+curXSpeed*4, (int)tempY+curYSpeed*4)){
-            x = tempX;
-            y = tempY;
-        }
 
         /////// left-right movement///////
         if (keyboard.isKeyPressed(Input.RIGHT)){
@@ -95,8 +92,10 @@ public class Camera {
         }
         
         // Check collision
-        if (!Board.isCollision((int)tempX+curXSpeed*4, (int)tempY+curYSpeed*4)){
+        if (!Board.isCollision(tempX+speed*4*Utils.sign(curXSpeed), tempY)){
             x = tempX;
+        }
+        if (!Board.isCollision(tempX, tempY+speed*4*Utils.sign(curYSpeed))){
             y = tempY;
         }
 

@@ -11,8 +11,8 @@ public class Board {
             {2,0,0,0,0,0,0,2},
             {2,0,2,0,2,2,0,2},
             {2,0,2,0,0,2,0,2},
-            {2,0,1,1,0,2,0,2},
-            {2,0,1,0,0,2,0,2},
+            {2,0,0,2,0,2,0,2},
+            {2,0,2,0,0,2,0,2},
             {2,0,0,0,0,0,0,2},
             {2,2,2,2,2,2,2,2},
     };
@@ -43,11 +43,13 @@ public class Board {
 
     public static boolean isCollisionWith(double x, double y, int mapX, int mapY){
 
-        if ((int)(y/mapScale) == mapY && (int)(x/mapScale)==mapX){
-            return true;
+        int tileX = (int)Math.floor(x / mapScale);
+        int tileY = (int)Math.floor(y / mapScale);
+        if (tileX == mapX && tileY == mapY) {
+            return map[mapY][mapX] != 0;
         }
-
         return false;
+
     }
 
 

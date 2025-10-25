@@ -17,7 +17,7 @@ public class Display {
 
     public Display(int startingX, int startingY) {
         screen = new Screen();
-        camera = new Camera(startingX*Board.mapScale, startingY*Board.mapScale,700,Board.mapScale*10);
+        camera = new Camera(startingX*Board.mapScale, startingY*Board.mapScale,700,Board.mapScale*7);
 
 
     }
@@ -95,7 +95,10 @@ public class Display {
 
             // At the moment the only thing stopping me from increasing performance by increasing the rayspeed upto a higher level is because of the 
             //                                                                  corner clipping issue which causes server corner definition issues
-            // I have a fix which made the corner clipping a lot better but leaves a lot to be desired
+            // I have a fix which made the corner clipping a lot better. still has a bit that could be better but overall is great
+
+            // increasing rayspeed increases loading speed, however it increases time per operation of smoothing and reduces visual fidelity.
+            // increasing backStepSpeed is vice versa, however it should never be touched as unless raySpeed is extremely high its impact on visual fidelity is much greater than that on performance
             double raySpeed = 2;
             double backStepSpeed = 0.1;
 
@@ -133,10 +136,23 @@ public class Display {
                     // This block also has a optimization/shortcut where if it passes diagonally through a square that it will default to horizontal intersect
 
         //////////////////////////////////////////// Intersect side/corner checking ////////////////////////////////////////////
-                    if (tempX>=Board.mapScale*prevSquare[0] || tempY >= Board.mapScale*prevSquare[1]){
+                    int curSqX = (int)(tempX/Board.mapScale);
+                    int curSqY = (int)(tempY/Board.mapScale);
+                    if (Math.abs(curSqX-prevSquare[0]) !=0 || Math.abs(curSqY-prevSquare[1])!=0){
 
-                        int curSqX = (int)(tempX/Board.mapScale);
-                        int curSqY = (int)(tempY/Board.mapScale);
+
+                        // so as it stands my diagonal code works a bit but not too much.
+                        // New idea as pseudocode (not what is implemented right now)
+                        /*
+                         * 1.check if ray passed diagonally
+                         * 2a. if either of the squares it passed were a hit, backtrack until it hits the square or until the backtrack distance is equal to the regular ray speed
+                         *      3a - Update intersection status accordingly
+                         * 2b.if no hits, just keep the same intersection status as before because it will have the same
+                         * 
+                         * 
+                         * 
+                         */
+
                         if (Math.abs(curSqX-prevSquare[0]) != 0 && Math.abs(curSqY-prevSquare[1])!=0){ // If passed diagonally
 
                             // Check if it passed any other squares on the way to being a diagonal
@@ -144,51 +160,38 @@ public class Display {
                             int yVelOrient = -Utils.sign(yVel);
 
 
+                            if (Board.isCollision((curSqX+xVelOrient)*Board.mapScale, curSqY*Board.mapScale) || Board.isCollision(curSqX*Board.mapScale, (curSqY+yVelOrient)*Board.mapScale)){
 
-                            // Checks for collision for the first of two possible
-                            if (Board.isCollision((curSqX+xVelOrient)*Board.mapScale+1, curSqY*Board.mapScale+1)){
-                                intersect = 1;
-                                
-                                // Uses the stepback optimizer of the other thing to get the corner back into position
-                                double target;
-                                if (yVel < 0){
-                                    
-                                    target = curSqY * Board.mapScale + Board.mapScale;
-                                    
-                
-                                } else {
-                                    target = curSqY * Board.mapScale;
-                                }
+                                double stepAcc = 0; // accumulates backstepspeeds
+                                int steps = 0;
+                                while (true){
 
-                                while (Math.abs(target-(tempY + BackstepYVel)) > 0.15){
+                                    if (stepAcc >= raySpeed){
+                                        curDist += stepAcc;
+                                        tempX -= BackstepXVel*steps;
+                                        tempY -= BackstepYVel*steps;
+                                        intersect = (intersect == 0) ? 1 : 0;
+                                        break; 
+                                    }
+
+                                    if (Board.isCollisionWith(tempX, tempY, curSqX, curSqY+yVelOrient)){
+                                        intersect = 0;
+                                        break;
+                                    };
+
+                                    if (Board.isCollisionWith(tempX, tempY, curSqX+xVelOrient, curSqY)){
+                                        intersect = 1;
+                                        break;
+                                    };
+
+
                                     tempX += BackstepXVel;
                                     tempY += BackstepYVel;
                                     curDist -= backStepSpeed;
+                                    stepAcc += backStepSpeed;
+                                    steps += 1;
                                 }
-
-                            } else 
-                            if (Board.isCollision(curSqX*Board.mapScale+1, (curSqY+yVelOrient)*Board.mapScale+1)){ // this the other
-                                
-                                intersect = 0;
-                                double target;
-                                if (xVel < 0){
-                                    
-                                    target = (curSqX) * Board.mapScale + Board.mapScale;
-                
-                                } else {
-                                    target = curSqX * Board.mapScale;
-                                }
-
-                                while (Math.abs(target-(tempX + BackstepXVel)) > 0.15){
-                                    tempX += BackstepXVel;
-                                    tempY += BackstepYVel;
-                                    curDist -= backStepSpeed;
-                                }
-
-                            }
-
-
-                            
+                            }                            
                         }
                         else 
                         if (Math.abs(curSqX-prevSquare[0]) !=0){ // if passed horizontally
@@ -271,7 +274,8 @@ public class Display {
                         } else {
                             wallCalc = camera.width;
                         }
-                        int wallHeight = (int) wallCalc;
+                        
+                        int wallHeight = (wallCalc < bufferFrame.getHeight()*4) ? (int) wallCalc : bufferFrame.getHeight()*4-1;
 
                         // I have no damn clue how this is working but it does sometimes this library is cooked
 
@@ -286,6 +290,11 @@ public class Display {
 
                             float texYf = ((float)(y + wallHeight/2) / wallHeight) * 64;
                             int textureY = Math.min(63, (int)texYf);
+                            
+                            if (textureIndex < 0)textureIndex = 0;
+                            else if (textureIndex >= 64)textureIndex = 63;
+                            if (textureY < 0)textureY = 0;
+                            else if (textureY >= 64)textureY = 63;
 
                             int color = rgbData[textureY*64 + textureIndex];
                             // I need to figure out why this colouring isn't working
