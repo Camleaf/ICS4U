@@ -69,6 +69,7 @@ public class Display {
 
             } while (buffer.contentsLost()); // According to stackoverflow the buffer can be lost periodically so this helps
             buffer.show();
+            buffer.dispose();
         }
 
         private void drawFrame(){
