@@ -75,11 +75,11 @@ public class Display {
 
         //////////////////////////////////////////// Board setup ////////////////////////////////////////////
             for (int i = 0; i < pixels.length; i++) {
-                pixels[i] = Color.WHITE.getRGB();
+                pixels[i] = Color.GRAY.getRGB();
             }
             for (int x = 0; x < bufferFrame.getWidth()-1; x++) {
                 for (int y = bufferFrame.getHeight()/2; y < bufferFrame.getHeight()-1;y++){
-                    pixels[x+y*bufferFrame.getWidth()] = Color.lightGray.getRGB();
+                    pixels[x+y*bufferFrame.getWidth()] = Color.darkGray.getRGB();
                 }
             }
             // fov should be 75. Around what the original raycasted programs used
@@ -94,7 +94,8 @@ public class Display {
 
             // At the moment the only thing stopping me from increasing performance by increasing the rayspeed upto a higher level is because of the 
             //                                                                  corner clipping issue which causes server corner definition issues
-            double raySpeed = 4;
+            // I have a fix which made the corner clipping a lot better but leaves a lot to be desired
+            double raySpeed = 6;
             double backStepSpeed = 0.1;
 
 

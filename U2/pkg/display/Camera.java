@@ -54,33 +54,48 @@ public class Camera {
         double tempX = x;
         double tempY = y;
 
+        double curXSpeed = 0;
+        double curYSpeed = 0;
+
         if (keyboard.isKeyPressed(Input.FORWARD)){
 
-            tempX += speed * Math.sin(Math.toRadians(direction));
-            tempY += speed * Math.cos(Math.toRadians(direction));
+
+            curXSpeed = speed * Math.sin(Math.toRadians(direction));
+            curYSpeed = speed * Math.cos(Math.toRadians(direction));
+            tempX += curXSpeed;
+            tempY += curYSpeed;
 
 
         } else if (keyboard.isKeyPressed(Input.BACKWARD)){
 
-            tempX -= speed * Math.sin(Math.toRadians(direction));
-            tempY -= speed * Math.cos(Math.toRadians(direction));
-
+            curXSpeed = -speed * Math.sin(Math.toRadians(direction));
+            curYSpeed = -speed * Math.cos(Math.toRadians(direction));
+            tempX += curXSpeed;
+            tempY += curYSpeed;
         }
 
+        if (!Board.isCollision((int)tempX+curXSpeed*4, (int)tempY+curYSpeed*4)){
+            x = tempX;
+            y = tempY;
+        }
 
+        /////// left-right movement///////
         if (keyboard.isKeyPressed(Input.RIGHT)){
 
-            tempX += speed * Math.sin(Math.toRadians(direction+90));
-            tempY += speed * Math.cos(Math.toRadians(direction+90));
-
+            curXSpeed = speed * Math.sin(Math.toRadians(direction+90));
+            curYSpeed = speed * Math.cos(Math.toRadians(direction+90));
+            tempX += curXSpeed;
+            tempY += curYSpeed;
 
         } else if (keyboard.isKeyPressed(Input.LEFT)){
-            tempX -= speed * Math.sin(Math.toRadians(direction+90));
-            tempY -= speed * Math.cos(Math.toRadians(direction+90));
+            curXSpeed = -speed * Math.sin(Math.toRadians(direction+90));
+            curYSpeed = -speed * Math.cos(Math.toRadians(direction+90));
+            tempX += curXSpeed;
+            tempY += curYSpeed;
         }
         
         // Check collision
-        if (!Board.isCollision((int)tempX, (int)tempY)){
+        if (!Board.isCollision((int)tempX+curXSpeed*4, (int)tempY+curYSpeed*4)){
             x = tempX;
             y = tempY;
         }

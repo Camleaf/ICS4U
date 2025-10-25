@@ -6,11 +6,13 @@ import static java.util.Map.entry;
 public class Texture {
     //Entry tracker
     public static int BLANK = 1;
+    public static int BRICK = 2;
 
 
     /*Texture Maps*/
     public static Map<Integer, Wall> WALL = Map.ofEntries(
-        entry(1,new Wall("src/empty.png",64)) // simply add comma and new line with entry
+        entry(BLANK,new Wall("src/empty.png",64)), // simply add comma and new line with entry
+        entry(BRICK,new Wall("src/brick.png",64))
     );
 
 
