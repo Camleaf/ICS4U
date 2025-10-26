@@ -92,13 +92,13 @@ public class Camera {
         }
         
         // Check collision
-        if (!Board.isCollision(tempX+speed*4*Utils.sign(curXSpeed), tempY)){
+        if (!Board.isCollision(tempX+(speed*4), tempY) && !Board.isCollision(tempX-(speed*4), tempY)){
             x = tempX;
         }
-        if (!Board.isCollision(tempX, tempY+speed*4*Utils.sign(curYSpeed))){
+
+        if (!Board.isCollision(tempX, tempY+(speed*4)) && !Board.isCollision(tempX, tempY-(speed*4))){
             y = tempY;
         }
-
 
 
     }
