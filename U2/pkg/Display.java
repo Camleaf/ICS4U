@@ -24,7 +24,7 @@ public class Display {
 
     public void show(){
         screen.setVisible(true);
-        screen.createBufferStrategy(3);
+        screen.createBufferStrategy(2);
         screen.buffer = screen.getBufferStrategy();
     }
 
@@ -52,7 +52,7 @@ public class Display {
             // Check if bufferstrategy is disposed
             if (getBufferStrategy() == null){
 
-                createBufferStrategy(3);
+                createBufferStrategy(2);
             }
             buffer = getBufferStrategy();
             
