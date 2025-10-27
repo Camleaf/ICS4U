@@ -103,4 +103,9 @@ public class Camera {
 
     }
 
+    public String boardSquareAsString(){
+        String output = String.format("%d, %d",(int)(x/Board.mapScale), (int)(y/Board.mapScale));
+        return output;
+    }
+
 }

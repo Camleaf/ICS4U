@@ -61,6 +61,20 @@ public class Board {
         return map[(int)(y/mapScale)][(int)(x/mapScale)];
     }
 
+    public static String asString(){
+        String output = "";
+        for (int row = 0; row < mapLength; row++){
+            for (int col = 0; col < mapLength; col++){
+                output += Integer.toString(map[row][col]) + ((col != mapLength-1) ? ",  " : "");
+            }
+            if (row != mapLength-1){
+                output += "\n";
+            }
+            
+        }
+        return output;
+    }
+
 }
 
 

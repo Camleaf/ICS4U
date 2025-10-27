@@ -47,7 +47,7 @@ public class Display {
 
     public void switchToMenuRender(boolean hostage){ // holds current thread hostage or not
         flush();
-        screen.setIgnoreRepaint(false);
+        screen.setIgnoreRepaint(true);
         initMenu();
     }
 
@@ -78,7 +78,7 @@ public class Display {
     public void initMenu(){
         // Initialize all components on the menu
         //Just manually put in the components because why not
-        Component[] collection = new Component[4];
+        Component[] collection = new Component[6];
         JLabel title = new JLabel();
         title.setBounds(100, 0, 200, 100);
         title.setText("Map Editor Menu");
@@ -99,11 +99,26 @@ public class Display {
         collection[2] = mapSizeLabel;
 
 
-        JTextField mapSizeText = new JTextField(Board.mapLength);
-        
-        mapSizeText.setBounds(100, 100, 200, 25);
-        this.screen.add(mapSizeText);
-        collection[3] = mapSizeText;
+        JTextArea mapText = new JTextArea();
+        mapText.append(Board.asString());
+        mapText.setBounds(100, 100, 150,150);
+        mapText.setLineWrap(true);
+        this.screen.add(mapText);
+        collection[3] = mapText;
+
+
+        JLabel posLabel = new JLabel();
+        posLabel.setBounds(300, 35, 300, 100);
+        posLabel.setText("Player starting coordinates [(x,y) as block squares]");
+        this.screen.add(posLabel);
+        collection[4] = posLabel;
+
+
+        JTextField posField = new JTextField();
+        posField.setText(camera.boardSquareAsString());
+        posField.setBounds(300, 100, 50,25);
+        this.screen.add(posField);
+        collection[5] = posField;
 
 
         this.screen.repaint();
@@ -143,6 +158,7 @@ public class Display {
             setSize(700,700);
             setLocationRelativeTo(null);
             setIgnoreRepaint(true);
+            setLayout(null);
             bufferFrame = new BufferedImage(700, 700, BufferedImage.TYPE_INT_RGB);
             pixels = (
                 (DataBufferInt) // this is a implementation of databuffer that can be used to plot pixels https://docs.oracle.com/javase/8/docs/api/index.html?java/awt/image/DataBufferInt.html
