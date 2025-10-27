@@ -1,31 +1,112 @@
 package pkg;
 import javax.swing.JFrame;
 import pkg.display.Camera;
+import pkg.display.KeyProcessor;
 import pkg.display.Texture;
 import pkg.Board;
 import pkg.Utils;
 import java.awt.Color;
 import java.awt.Graphics;
+import java.awt.event.ActionListener;
 import java.awt.image.BufferStrategy;
 import pkg.display.texture.Wall;
 import java.awt.image.BufferedImage;
 import java.awt.image.DataBufferInt;
+import java.time.Instant;
+import java.awt.Component;
+import javax.swing.JLabel;
+import javax.swing.JButton;
+import java.awt.event.ActionListener;
+import java.awt.event.ActionEvent;
 
 public class Display {
     public Screen screen;
     public Camera camera;
+    public boolean isHostage;
 
     public Display(int startingX, int startingY) {
         screen = new Screen();
         camera = new Camera(startingX*Board.mapScale, startingY*Board.mapScale,700,Board.mapScale*7);
-
-
     }
 
     public void show(){
         screen.setVisible(true);
         screen.createBufferStrategy(2);
         screen.buffer = screen.getBufferStrategy();
+    }
+
+    public void flush(){
+        screen.repaint();
+        screen.createBufferStrategy(2);
+        screen.buffer = screen.getBufferStrategy();
+    }
+
+
+    public void switchToMenuRender(boolean hostage){ // holds current thread hostage or not
+        flush();
+        screen.setIgnoreRepaint(false);
+        initMenu();
+    }
+
+    public void switchToGame(){
+        flush();
+        screen.setIgnoreRepaint(true);
+    }
+
+    public void holdHostage(){
+        // keep a infinite loop running at a slow tick rate to hold the thread hostage
+        isHostage = true;
+        long previousTime = Instant.now().toEpochMilli();
+        while (isHostage){
+            System.out.println("ishostage");
+            long currentTime = Instant.now().toEpochMilli();
+            if (currentTime - previousTime <= 1000){
+                try{
+                    Thread.sleep(Math.abs((currentTime+1000)-previousTime));
+                }
+                catch (InterruptedException e){
+                    e.printStackTrace();
+                }
+            }
+        }
+    }
+
+    public void initMenu(){
+        // Initialize all components on the menu
+        //Just manually put in the components because why not
+        Component[] collection = new Component[2];
+        JLabel j = new JLabel();
+        j.setBounds(100, 0, 200, 100);
+        j.setText("Map Builder Menu");
+        this.screen.add(j);
+        collection[0] = j;
+
+
+        JButton b = new JButton("Enter 3D Environment");
+        b.setBounds(250, 500, 200, 100);
+        this.screen.add(b);
+        collection[1] = b;
+        this.screen.repaint();
+
+        b.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                isHostage = false;
+            }
+        });
+
+
+        holdHostage();
+        // remove components i just adde.
+        // I'm aware removeall exists but that gets rid of stuff I'd like to keep
+        for (Component comp : collection){
+            this.screen.remove(comp);
+        }
+        switchToGame();
+
+
+
+
+
     }
 
 
@@ -48,7 +129,6 @@ public class Display {
                 bufferFrame.getRaster().getDataBuffer()).getData();
         }
         public void serveFrame(){
-
             // Check if bufferstrategy is disposed
             if (getBufferStrategy() == null){
 
@@ -63,6 +143,8 @@ public class Display {
                     drawFrame();
                     Graphics g =  buffer.getDrawGraphics();
                     g.drawImage(bufferFrame, 0, 0, null);
+                    char[] windowText = "Press Esc for map editor".toCharArray();
+                    g.drawChars(windowText,0,windowText.length,10,50);
                     g.dispose();
                 } finally {}
                 //push frame to tops
