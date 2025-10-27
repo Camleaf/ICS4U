@@ -15,6 +15,7 @@ public class KeyProcessor implements KeyListener {
 
         @Override public void keyPressed(KeyEvent e) {
             keys.put(e.getKeyCode(),true);
+            
         }
 
         @Override public void keyReleased(KeyEvent e) {
@@ -32,7 +33,7 @@ public class KeyProcessor implements KeyListener {
 
         public boolean[] areKeysPressed(int[] keyCodes){
             /*
-             * Given an array of keyCodes, returns an array x where x[i] = (true if is keyCodes[i] pressed otherwise false)
+             * Given an array of keyCodes, returns an array x sadasdaswhere x[i] = (true if is keyCodes[i] pressed otherwise false)
              */
             boolean[] arePressed = new boolean[keyCodes.length];
             int idx = 0;

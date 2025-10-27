@@ -15,9 +15,12 @@ import java.awt.image.DataBufferInt;
 import java.time.Instant;
 import java.awt.Component;
 import javax.swing.JLabel;
+import javax.swing.JTextField;
 import javax.swing.JButton;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
+import javax.swing.JTextField;
+import javax.swing.JTextArea;
 
 public class Display {
     public Screen screen;
@@ -51,6 +54,7 @@ public class Display {
     public void switchToGame(){
         flush();
         screen.setIgnoreRepaint(true);
+        screen.requestFocusInWindow();
     }
 
     public void holdHostage(){
@@ -58,7 +62,7 @@ public class Display {
         isHostage = true;
         long previousTime = Instant.now().toEpochMilli();
         while (isHostage){
-            System.out.println("ishostage");
+            // System.out.println("ishostage");
             long currentTime = Instant.now().toEpochMilli();
             if (currentTime - previousTime <= 1000){
                 try{
@@ -74,29 +78,45 @@ public class Display {
     public void initMenu(){
         // Initialize all components on the menu
         //Just manually put in the components because why not
-        Component[] collection = new Component[2];
-        JLabel j = new JLabel();
-        j.setBounds(100, 0, 200, 100);
-        j.setText("Map Builder Menu");
-        this.screen.add(j);
-        collection[0] = j;
+        Component[] collection = new Component[4];
+        JLabel title = new JLabel();
+        title.setBounds(100, 0, 200, 100);
+        title.setText("Map Editor Menu");
+        this.screen.add(title);
+        collection[0] = title;
+
+        JButton playGame = new JButton("Enter 3D Environment");
+        playGame.setBounds(250, 500, 200, 100);
+        this.screen.add(playGame);
+        collection[1] = playGame;
 
 
-        JButton b = new JButton("Enter 3D Environment");
-        b.setBounds(250, 500, 200, 100);
-        this.screen.add(b);
-        collection[1] = b;
+
+        JLabel mapSizeLabel = new JLabel();
+        mapSizeLabel.setBounds(100, 35, 150, 100);
+        mapSizeLabel.setText(String.format("Map (side length %d):", Board.mapLength));
+        this.screen.add(mapSizeLabel);
+        collection[2] = mapSizeLabel;
+
+
+        JTextField mapSizeText = new JTextField(Board.mapLength);
+        
+        mapSizeText.setBounds(100, 100, 200, 25);
+        this.screen.add(mapSizeText);
+        collection[3] = mapSizeText;
+
+
         this.screen.repaint();
-
-        b.addActionListener(new ActionListener() {
+        playGame.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 isHostage = false;
             }
         });
 
 
-        holdHostage();
-        // remove components i just adde.
+        holdHostage(); // This holds the thread hostage until the eventlistener is called. acts as a resource-efficient wait until event
+
+        // remove components i just added
         // I'm aware removeall exists but that gets rid of stuff I'd like to keep
         for (Component comp : collection){
             this.screen.remove(comp);

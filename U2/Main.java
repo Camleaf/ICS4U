@@ -60,6 +60,7 @@ class MainLoop implements Runnable{
         while (running){
             if (keyboard.isKeyPressed(27)){
                 display.switchToMenuRender(true);
+                
                 //Holds thread hostage until released. effectively same as pausing it
                 // so input gets frozen after this for some reason
             }
