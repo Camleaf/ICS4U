@@ -5,11 +5,16 @@ import pkg.Display;
 import pkg.display.KeyProcessor;
 import java.lang.Thread;
 import java.time.Instant;
+import java.util.Scanner;
 
 
 
 public class Main {
     public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+        System.out.println("Welcome to my beta version of my project\nOnce you boot the game, you can press escape to enter the map editor. The controls are wsad for movement, and arrow keys to rotate.\n Press Enter to launch > ");
+        scanner.nextLine();
+        scanner.close();
         SwingUtilities.invokeLater(new Runnable() { // Man i love the jswing and awt docs they make no sense but it works
             @Override
             public void run() {
@@ -18,6 +23,7 @@ public class Main {
                 display.show();
                 KeyProcessor keyboard = new KeyProcessor();
                 display.screen.addKeyListener(keyboard);
+                display.screen.requestFocus();
                 MainLoop main = new MainLoop(keyboard, display);
                 // I figured out why this doesn't work. I will need to multithread so that the main thread can handle swing and awt request without being blocked
             }

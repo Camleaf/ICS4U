@@ -73,7 +73,7 @@ public class Board {
     }
 
     public boolean isOutOfBounds(double x, double y){
-        return (int)(y/mapScale) < 0 || (int)(x/mapScale) < 0 || (int)(y/mapScale) >= mapLength || (int)(x/mapScale) >= mapLength;
+        return y < 0 || x < 0 || y >= mapLength*mapScale || x >= mapLength*mapScale;
     }
 
     public void resetBoard(){

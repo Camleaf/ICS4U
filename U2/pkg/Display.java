@@ -21,6 +21,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import javax.swing.JTextField;
 import javax.swing.JTextArea;
+import java.awt.Font;
 
 public class Display {
     public Screen screen;
@@ -271,9 +272,11 @@ public class Display {
                     drawFrame();
                     Graphics g =  buffer.getDrawGraphics();
                     g.drawImage(bufferFrame, 0, 0, null);
-                    char[] windowText = "Press Esc for map editor".toCharArray();
-                    g.drawChars(windowText,0,windowText.length,10,50);
+                    g.setFont(new Font("SansSerif", Font.BOLD, 24));
+                    String windowText = "Press Esc for map editor";
+                    g.drawString(windowText,10,50);
                     g.dispose();
+                    
                 } catch (Exception e){
                     
                 } finally {}
@@ -343,7 +346,9 @@ public class Display {
                     tempX += xVel;
                     tempY += yVel;
 
-
+                    if (board.isOutOfBounds(tempX, tempY)){
+                        break;
+                    }
 
                     
                     // Check if the ray has passed into another square and adjust intersect settings accordingly
@@ -372,10 +377,6 @@ public class Display {
                             int xVelOrient = -Utils.sign(xVel);
                             int yVelOrient = -Utils.sign(yVel);
 
-
-                            if (board.isOutOfBounds(tempX,tempY)){
-                                // do nothing
-                            } else
                             if (board.isCollision((curSqX+xVelOrient)*Board.mapScale, curSqY*Board.mapScale) || board.isCollision(curSqX*Board.mapScale, (curSqY+yVelOrient)*Board.mapScale)){
 
                                 double stepAcc = 0; // accumulates backstepspeeds
@@ -422,15 +423,11 @@ public class Display {
         //////////////////////////////////////////// Collision Logic ////////////////////////////////////////////
                     if (board.isCollision(tempX, tempY) || board.isOutOfBounds(tempX, tempY)){
 
-                        boolean inBounds = !board.isOutOfBounds(tempX, tempY);
-
                         // Get the texture data based on texture assigned to collided square
                         int[] rgbData = new int[]{};
-                        if (inBounds){
-                            int boardValue = board.getBoardSquare(tempX, tempY);
-                            Wall texture = Texture.WALL.get(boardValue);
-                            rgbData = texture.rgbData;
-                        }
+                        int boardValue = board.getBoardSquare(tempX, tempY);
+                        Wall texture = Texture.WALL.get(boardValue);
+                        rgbData = texture.rgbData;
 
                          // step backwards until we find exact edge intersect
                          // This is to smooth out the edges of my walls
@@ -506,20 +503,14 @@ public class Display {
 
                             if (screenY < 0 || screenY >= bufferFrame.getHeight()) continue;
 
-                            int color;
-                            if (inBounds){
-                                float texYf = ((float)(y + wallHeight/2) / wallHeight) * 64;
-                                int textureY = Math.min(63, (int)texYf);
-                                
-                                if (textureIndex < 0)textureIndex = 0;
-                                else if (textureIndex >= 64)textureIndex = 63;
-                                if (textureY < 0)textureY = 0;
-                                else if (textureY >= 64)textureY = 63;
-
-                                color = rgbData[textureY*64 + textureIndex];
-                            } else {
-                                color = SKYBLUE;
-                            }
+                            float texYf = ((float)(y + wallHeight/2) / wallHeight) * 64;
+                            int textureY = Math.min(63, (int)texYf);
+                            
+                            if (textureIndex < 0)textureIndex = 0;
+                            else if (textureIndex >= 64)textureIndex = 63;
+                            if (textureY < 0)textureY = 0;
+                            else if (textureY >= 64)textureY = 63;
+                            int color = rgbData[textureY*64 + textureIndex];
                             // I need to figure out why this colouring isn't working
                             pushData[i] = new int[]{screenX + screenY * bufferFrame.getWidth(),color};
                             i++;
