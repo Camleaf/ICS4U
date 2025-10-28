@@ -6,24 +6,29 @@ public class Board {
     */
 
     // The 2d map. Each square represents a 600 x 600px area
-    public static final int[][] map = {
+
+    // predefined map by me
+    public static final int[][] defaultMap = {
 			{2,2,2,2,2,2,2,2},
             {2,0,0,0,0,0,0,2},
-            {2,0,2,0,2,2,0,2},
-            {2,0,2,0,0,2,0,2},
-            {2,0,0,2,0,2,0,2},
+            {2,0,1,0,2,2,0,2},
+            {2,0,1,0,0,2,0,2},
+            {2,0,0,1,0,2,0,2},
             {2,0,2,0,0,2,0,2},
             {2,0,0,0,0,0,0,2},
             {2,2,2,2,2,2,2,2},
     };
 
+
+    // mutable map by user. default set to my predefined map
+    public int[][] map = Utils.deepCopy(defaultMap);
     // The map to pixel scale. One tile should take up most of the screen
     public static final int mapScale = 64;
 
     // The height and width of the map
     public static final int mapLength = 8;
 
-    public static boolean isCollision(int x, int y){
+    public boolean isCollision(int x, int y){
 
         if (map[(int)y/mapScale][(int)x/mapScale]!=0){
             return true;
@@ -32,7 +37,7 @@ public class Board {
         return false;
     }
 
-    public static boolean isCollision(double x, double y){
+    public boolean isCollision(double x, double y){
 
         if (map[(int)(y/mapScale)][(int)(x/mapScale)]!=0){
             return true;
@@ -41,7 +46,7 @@ public class Board {
         return false;
     }
 
-    public static boolean isCollisionWith(double x, double y, int mapX, int mapY){
+    public boolean isCollisionWith(double x, double y, int mapX, int mapY){
 
         int tileX = (int)Math.floor(x / mapScale);
         int tileY = (int)Math.floor(y / mapScale);
@@ -53,15 +58,23 @@ public class Board {
     }
 
 
-    public static int getBoardSquare(int x, int y){
+    public int getBoardSquare(int x, int y){
         return map[(int)y/mapScale][(int)x/mapScale];
     }
 
-    public static int getBoardSquare(double x, double y){
+    public int getBoardSquare(double x, double y){
         return map[(int)(y/mapScale)][(int)(x/mapScale)];
     }
 
-    public static String asString(){
+    public void setBoard(int[][] map){
+        this.map = Utils.deepCopy(map);
+    }
+
+    public void resetBoard(){
+        setBoard(defaultMap);
+    }
+
+    public String asString(){
         String output = "";
         for (int row = 0; row < mapLength; row++){
             for (int col = 0; col < mapLength; col++){

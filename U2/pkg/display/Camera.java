@@ -16,6 +16,7 @@ public class Camera {
     public int FOV = 75;
     private double speed;
     public double direction;
+    private Board board;
 
     // Input enum for easier handling of input data
     private class Input {
@@ -29,16 +30,20 @@ public class Camera {
     };
     
 
-    public Camera(int x, int y, int width, int renderDist){
-
+    public Camera(int mapX, int mapY, int width, int renderDist, Board board){
+        this.board = board;
         // Initialize
-        this.x = x;
-        this.y = y;
+        setGridCoords(mapX, mapY);
         direction = 0;
         speed = 2.5;
 
         this.width = width;
         this.renderDist = renderDist;
+    }
+
+    public void setGridCoords(int mapX,int mapY){
+        this.x = mapX * Board.mapScale + Board.mapScale/2;
+        this.y = mapY * Board.mapScale + Board.mapScale/2;
     }
 
 
@@ -92,11 +97,11 @@ public class Camera {
         }
         
         // Check collision
-        if (!Board.isCollision(tempX+(speed*4), tempY) && !Board.isCollision(tempX-(speed*4), tempY)){
+        if (!board.isCollision(tempX+(speed*4), tempY) && !board.isCollision(tempX-(speed*4), tempY)){
             x = tempX;
         }
 
-        if (!Board.isCollision(tempX, tempY+(speed*4)) && !Board.isCollision(tempX, tempY-(speed*4))){
+        if (!board.isCollision(tempX, tempY+(speed*4)) && !board.isCollision(tempX, tempY-(speed*4))){
             y = tempY;
         }
 

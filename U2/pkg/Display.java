@@ -26,10 +26,12 @@ public class Display {
     public Screen screen;
     public Camera camera;
     public boolean isHostage;
+    public Board board;
 
     public Display(int startingX, int startingY) {
         screen = new Screen();
-        camera = new Camera(startingX*Board.mapScale, startingY*Board.mapScale,700,Board.mapScale*7);
+        board = new Board();
+        camera = new Camera(startingX, startingY,700,Board.mapScale*7, board);
     }
 
     public void show(){
@@ -78,7 +80,7 @@ public class Display {
     public void initMenu(){
         // Initialize all components on the menu
         //Just manually put in the components because why not
-        Component[] collection = new Component[6];
+        Component[] collection = new Component[8];
         JLabel title = new JLabel();
         title.setBounds(100, 0, 200, 100);
         title.setText("Map Editor Menu");
@@ -86,11 +88,9 @@ public class Display {
         collection[0] = title;
 
         JButton playGame = new JButton("Enter 3D Environment");
-        playGame.setBounds(250, 500, 200, 100);
+        playGame.setBounds(350, 500, 200, 100);
         this.screen.add(playGame);
         collection[1] = playGame;
-
-
 
         JLabel mapSizeLabel = new JLabel();
         mapSizeLabel.setBounds(100, 35, 150, 100);
@@ -100,7 +100,7 @@ public class Display {
 
 
         JTextArea mapText = new JTextArea();
-        mapText.append(Board.asString());
+        mapText.append(board.asString());
         mapText.setBounds(100, 100, 150,150);
         mapText.setLineWrap(true);
         this.screen.add(mapText);
@@ -121,6 +121,18 @@ public class Display {
         collection[5] = posField;
 
 
+        JButton resetGame = new JButton("Reset Settings");
+        resetGame.setBounds(100, 500, 200, 100);
+        this.screen.add(resetGame);
+        collection[6] = resetGame;
+
+        JLabel errLabel = new JLabel();
+        errLabel.setBounds(100, 350, 500, 100);
+        errLabel.setText("");
+        this.screen.add(errLabel);
+        collection[7] = errLabel;
+
+
         this.screen.repaint();
         playGame.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
@@ -129,8 +141,88 @@ public class Display {
         });
 
 
-        holdHostage(); // This holds the thread hostage until the eventlistener is called. acts as a resource-efficient wait until event
+        resetGame.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+               camera.setGridCoords(1, 1);
+               posField.setText(camera.boardSquareAsString());
+               board.resetBoard();
+               mapText.setText(board.asString());
+               screen.repaint();
+               
+            }
+        });
 
+
+
+        while (true){ // Holds a loop in case bad input is given
+            holdHostage(); // This holds the thread hostage until the eventlistener is called. acts as a resource-efficient wait until event
+            
+            boolean repeat = false;
+            String[] boardInput = mapText.getText().split("\n");
+            int[][] builtMap = new int[8][8];
+            if (boardInput.length != 8){
+                errLabel.setText("The board must have exactly 8 rows");
+                continue;
+            }
+            
+            int rIdx = 0; 
+            for (String row : boardInput){ // iterate through rows on the board
+                int cIdx = 0;
+                String[] rowChars = row.split(",");
+
+                if (rowChars.length != 8){
+                    // check length
+                    errLabel.setText("The board must have exactly 8 columns in each row");
+                    repeat = true;
+                    break;
+                }
+
+                // Iterate throw individual chars
+                for (String Rchr : rowChars){
+                    String chr = Rchr.trim();
+
+                    if (!Utils.contains(Utils.numberChars,chr)){
+                        errLabel.setText(String.format("Board squares must be a single integer above 0 and at below %d",Texture.textureIndexLimit));
+                        repeat = true;
+                        break;
+                    } else if (Integer.parseInt(chr) < 0 || Integer.parseInt(chr) > Texture.textureIndexLimit){
+                        errLabel.setText(String.format("Board squares must be a single integer above 0 and at below %d",Texture.textureIndexLimit));
+                        repeat = true;
+                        break;
+                    }
+
+                    builtMap[rIdx][cIdx] = Integer.parseInt(chr);
+
+                    cIdx++;
+                }
+                rIdx++;
+                if (repeat) break;
+            } 
+            if (repeat) continue;
+
+            board.setBoard(builtMap); // sent parsed map off to board class
+
+
+            // Handle player coord input. // put wall checking before this
+            String[] inputCoords = posField.getText().split(",");
+            if (inputCoords.length != 2){
+                errLabel.setText("Input coords must be of length 2 with separator of \',\'");
+                continue;
+            } else if (!Utils.contains(Utils.numberChars,inputCoords[0].trim()) || !Utils.contains(Utils.numberChars,inputCoords[1].trim())){
+                errLabel.setText("Input coords must be integers where 0 <= x < 8");
+                continue;
+            } else if (Integer.parseInt(inputCoords[0].trim()) > 7 || Integer.parseInt(inputCoords[1].trim()) > 7 || Integer.parseInt(inputCoords[0].trim()) < 0 || Integer.parseInt(inputCoords[1].trim()) < 0){
+                errLabel.setText("Input coords must be integers where 0 <= x < 8");
+                continue;
+            } else if (board.isCollision(Integer.parseInt(inputCoords[0].trim())*Board.mapScale,Integer.parseInt(inputCoords[1].trim())*Board.mapScale)){
+                errLabel.setText("Player initial position can not be inside of a wall");
+                continue;
+            }
+
+
+            camera.setGridCoords(Integer.parseInt(inputCoords[0].trim()), Integer.parseInt(inputCoords[1].trim()));
+            break;
+        }
         // remove components i just added
         // I'm aware removeall exists but that gets rid of stuff I'd like to keep
         for (Component comp : collection){
@@ -278,7 +370,7 @@ public class Display {
                             int yVelOrient = -Utils.sign(yVel);
 
 
-                            if (Board.isCollision((curSqX+xVelOrient)*Board.mapScale, curSqY*Board.mapScale) || Board.isCollision(curSqX*Board.mapScale, (curSqY+yVelOrient)*Board.mapScale)){
+                            if (board.isCollision((curSqX+xVelOrient)*Board.mapScale, curSqY*Board.mapScale) || board.isCollision(curSqX*Board.mapScale, (curSqY+yVelOrient)*Board.mapScale)){
 
                                 double stepAcc = 0; // accumulates backstepspeeds
                                 int steps = 0;
@@ -292,12 +384,12 @@ public class Display {
                                         break; 
                                     }
 
-                                    if (Board.isCollisionWith(tempX, tempY, curSqX, curSqY+yVelOrient)){
+                                    if (board.isCollisionWith(tempX, tempY, curSqX, curSqY+yVelOrient)){
                                         intersect = 0;
                                         break;
                                     };
 
-                                    if (Board.isCollisionWith(tempX, tempY, curSqX+xVelOrient, curSqY)){
+                                    if (board.isCollisionWith(tempX, tempY, curSqX+xVelOrient, curSqY)){
                                         intersect = 1;
                                         break;
                                     };
@@ -322,12 +414,12 @@ public class Display {
 
 
         //////////////////////////////////////////// Collision Logic ////////////////////////////////////////////
-                    if (Board.isCollision(tempX, tempY)){
+                    if (board.isCollision(tempX, tempY)){
 
 
 
                         // Get the texture data based on texture assigned to collided square
-                        int boardValue = Board.getBoardSquare(tempX, tempY);
+                        int boardValue = board.getBoardSquare(tempX, tempY);
                         Wall texture = Texture.WALL.get(boardValue);
                         int[] rgbData = texture.rgbData;
 
