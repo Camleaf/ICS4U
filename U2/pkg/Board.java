@@ -38,7 +38,9 @@ public class Board {
     }
 
     public boolean isCollision(double x, double y){
-
+        if (isOutOfBounds(x,y)){
+            return true;
+        }
         if (map[(int)(y/mapScale)][(int)(x/mapScale)]!=0){
             return true;
         }
@@ -68,6 +70,10 @@ public class Board {
 
     public void setBoard(int[][] map){
         this.map = Utils.deepCopy(map);
+    }
+
+    public boolean isOutOfBounds(double x, double y){
+        return (int)(y/mapScale) < 0 || (int)(x/mapScale) < 0 || (int)(y/mapScale) >= mapLength || (int)(x/mapScale) >= mapLength;
     }
 
     public void resetBoard(){
