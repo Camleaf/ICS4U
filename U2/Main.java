@@ -4,14 +4,9 @@ import pkg.Display;
 import pkg.display.KeyProcessor;
 import java.lang.Thread;
 import java.time.Instant;
-import java.util.Scanner;
 
 public class Main {
     public static void main(String[] args) {
-        Scanner scanner = new Scanner(System.in);
-        System.out.println("Welcome to my beta version of my project\nOnce you boot the game, you can press escape to enter the map editor. The controls are wsad for movement, and arrow keys to rotate.\n Press Enter to launch > ");
-        scanner.nextLine();
-        scanner.close();
         SwingUtilities.invokeLater(new Runnable() { // Man i love the jswing and awt docs they make no sense but it works
             @Override
             public void run() {
@@ -60,6 +55,7 @@ class MainLoop implements Runnable{
         // Mainloop here
         long previousTime = Instant.now().toEpochMilli();
         int idx = 0;
+        display.switchToMenuRender(true);
         while (running){
             if (keyboard.isKeyPressed(27)){
                 display.switchToMenuRender(true);

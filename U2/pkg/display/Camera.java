@@ -72,7 +72,8 @@ public class Camera {
             tempY += curYSpeed;
 
 
-        } else if (keyboard.isKeyPressed(Input.BACKWARD)){
+        } 
+        if (keyboard.isKeyPressed(Input.BACKWARD)){
 
             curXSpeed = -speed * Math.sin(Math.toRadians(direction));
             curYSpeed = -speed * Math.cos(Math.toRadians(direction));
@@ -89,7 +90,8 @@ public class Camera {
             tempX += curXSpeed;
             tempY += curYSpeed;
 
-        } else if (keyboard.isKeyPressed(Input.LEFT)){
+        } 
+        if (keyboard.isKeyPressed(Input.LEFT)){
             curXSpeed = -speed * Math.sin(Math.toRadians(direction+90));
             curYSpeed = -speed * Math.cos(Math.toRadians(direction+90));
             tempX += curXSpeed;

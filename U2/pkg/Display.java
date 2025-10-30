@@ -81,7 +81,7 @@ public class Display {
     public void initMenu(){
         // Initialize all components on the menu
         //Just manually put in the components because why not
-        Component[] collection = new Component[8];
+        Component[] collection = new Component[9];
         JLabel title = new JLabel();
         title.setBounds(100, 0, 200, 100);
         title.setText("Map Editor Menu");
@@ -133,6 +133,12 @@ public class Display {
         this.screen.add(errLabel);
         collection[7] = errLabel;
 
+        JLabel infoLabel = new JLabel();
+        posLabel.setBounds(350, 200, 300, 400); // todo figure out how to newline
+        posLabel.setText("Welcome to my 3D raycasting engine! To move around in it, use the WSAD keys and to rotate use the left and right arrow keys\nTo edit the map and your position, edit the two open text fields below.\n To get back to this menu when in 3D, press esc");
+        this.screen.add(infoLabel);
+        collection[8] = infoLabel;
+
 
         this.screen.repaint();
         playGame.addActionListener(new ActionListener() {
@@ -166,7 +172,8 @@ public class Display {
                 continue;
             }
             
-            int rIdx = 0; 
+            int rIdx = 0;
+            int emptyCount = 0;
             for (String row : boardInput){ // iterate through rows on the board
                 int cIdx = 0;
                 String[] rowChars = row.split(",");
@@ -191,6 +198,7 @@ public class Display {
                         repeat = true;
                         break;
                     }
+                    if (Integer.parseInt(chr) == 0) emptyCount += 1;
 
                     builtMap[rIdx][cIdx] = Integer.parseInt(chr);
 
@@ -200,6 +208,11 @@ public class Display {
                 if (repeat) break;
             } 
             if (repeat) continue;
+
+            if (emptyCount == 64){
+                errLabel.setText("You must have at least one wall in your board");
+                continue;
+            }
 
             board.setBoard(builtMap); // sent parsed map off to board class
 
@@ -370,9 +383,6 @@ public class Display {
                          * 2a. if either of the squares it passed were a hit, backtrack until it hits the square or until the backtrack distance is equal to the regular ray speed
                          *      3a - Update intersection status accordingly
                          * 2b.if no hits, just keep the same intersection status as before because it will have the same
-                         * 
-                         * 
-                         * 
                          */
 
                         if (Math.abs(curSqX-prevSquare[0]) != 0 && Math.abs(curSqY-prevSquare[1])!=0){ // If passed diagonally
