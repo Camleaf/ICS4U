@@ -272,9 +272,10 @@ public class Display {
                     drawFrame();
                     Graphics g =  buffer.getDrawGraphics();
                     g.drawImage(bufferFrame, 0, 0, null);
-                    g.setFont(new Font("SansSerif", Font.BOLD, 24));
-                    String windowText = "Press Esc for map editor";
-                    g.drawString(windowText,10,50);
+                    char[] windowText = "Press Esc for map editor".toCharArray();
+                    char[] windowText2 = "WSAD to move, Arrow keys to Rotate".toCharArray();
+                    g.drawChars(windowText,0,windowText.length,10,65);
+                    g.drawChars(windowText2,0,windowText2.length,10,50);
                     g.dispose();
                     
                 } catch (Exception e){
@@ -283,10 +284,12 @@ public class Display {
                 //push frame to tops
 
             } while (buffer.contentsLost()); // According to stackoverflow the buffer can be lost periodically so this helps
-            buffer.show();
+            if (!(buffer == null)){
+                buffer.show();
+            }
             buffer.dispose();
         }
-
+        
         private void drawFrame(){
             int SKYBLUE = new Color(135, 206, 235).getRGB();
         //////////////////////////////////////////// Board setup ////////////////////////////////////////////

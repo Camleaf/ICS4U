@@ -1,13 +1,10 @@
 import javax.swing.SwingUtilities;
-
 import pkg.Board;
 import pkg.Display;
 import pkg.display.KeyProcessor;
 import java.lang.Thread;
 import java.time.Instant;
 import java.util.Scanner;
-
-
 
 public class Main {
     public static void main(String[] args) {
@@ -18,7 +15,7 @@ public class Main {
         SwingUtilities.invokeLater(new Runnable() { // Man i love the jswing and awt docs they make no sense but it works
             @Override
             public void run() {
-                // move display to Mainloop dec
+               // move display to Mainloop dec
                 Display display = new Display(4,4);
                 display.show();
                 KeyProcessor keyboard = new KeyProcessor();
