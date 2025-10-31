@@ -9,6 +9,8 @@ import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.event.ActionListener;
 import java.awt.image.BufferStrategy;
+
+import pkg.display.texture.MenuContentPane;
 import pkg.display.texture.Wall;
 import java.awt.image.BufferedImage;
 import java.awt.image.DataBufferInt;
@@ -22,6 +24,8 @@ import java.awt.event.ActionEvent;
 import javax.swing.JTextField;
 import javax.swing.JTextArea;
 import java.awt.Font;
+import java.awt.Image;
+import javax.swing.ImageIcon;
 
 public class Display {
     public Screen screen;
@@ -81,7 +85,27 @@ public class Display {
     public void initMenu(){
         // Initialize all components on the menu
         //Just manually put in the components because why not
+        final Color SKYBLUE = new Color(205, 235, 247);
+        final Color INPUTBLUE = new Color(205, 247, 246);
+        screen.setContentPane(new MenuContentPane());
+        screen.setLayout(null);
+        Font textFont = new Font("Verdana", Font.PLAIN, 12);
+
+
         Component[] collection = new Component[9];
+
+        // ImageIcon backgroundImage = new ImageIcon("src/menu.png");
+        // backgroundImage = new ImageIcon(backgroundImage.getImage().getScaledInstance(this.screen.getWidth(), this.screen.getHeight(),Image.SCALE_DEFAULT));
+        
+
+        // JLabel backgroundLabel = new JLabel();
+        // backgroundLabel.setBounds(0,0,700,700);
+        // backgroundLabel.setIcon(backgroundImage);
+        // this.screen.add(backgroundLabel);
+        // screen.setComponentZOrder(backgroundLabel,0);
+        // collection[9] = backgroundLabel;
+
+
         JLabel title = new JLabel();
         title.setBounds(100, 0, 200, 100);
         title.setText("Map Editor Menu");
@@ -90,11 +114,12 @@ public class Display {
 
         JButton playGame = new JButton("Enter 3D Environment");
         playGame.setBounds(350, 500, 200, 100);
+        playGame.setBackground(INPUTBLUE);
         this.screen.add(playGame);
         collection[1] = playGame;
 
         JLabel mapSizeLabel = new JLabel();
-        mapSizeLabel.setBounds(100, 35, 150, 100);
+        mapSizeLabel.setBounds(100, 135, 150, 100);
         mapSizeLabel.setText(String.format("Map (side length %d):", Board.mapLength));
         this.screen.add(mapSizeLabel);
         collection[2] = mapSizeLabel;
@@ -102,14 +127,15 @@ public class Display {
 
         JTextArea mapText = new JTextArea();
         mapText.append(board.asString());
-        mapText.setBounds(100, 100, 150,150);
+        mapText.setBounds(100, 200, 150,150);
         mapText.setLineWrap(true);
+        mapText.setBackground(INPUTBLUE);
         this.screen.add(mapText);
         collection[3] = mapText;
 
 
         JLabel posLabel = new JLabel();
-        posLabel.setBounds(300, 35, 300, 100);
+        posLabel.setBounds(300, 135, 300, 100);
         posLabel.setText("Player starting coordinates [(x,y) as block squares]");
         this.screen.add(posLabel);
         collection[4] = posLabel;
@@ -117,13 +143,15 @@ public class Display {
 
         JTextField posField = new JTextField();
         posField.setText(camera.boardSquareAsString());
-        posField.setBounds(300, 100, 50,25);
+        posField.setBounds(300, 200, 50,25);
+        posField.setBackground(INPUTBLUE);
         this.screen.add(posField);
         collection[5] = posField;
 
 
         JButton resetGame = new JButton("Reset Settings");
         resetGame.setBounds(100, 500, 200, 100);
+        resetGame.setBackground(INPUTBLUE);
         this.screen.add(resetGame);
         collection[6] = resetGame;
 
@@ -134,8 +162,11 @@ public class Display {
         collection[7] = errLabel;
 
         JLabel infoLabel = new JLabel();
-        posLabel.setBounds(350, 200, 300, 400); // todo figure out how to newline
-        posLabel.setText("Welcome to my 3D raycasting engine! To move around in it, use the WSAD keys and to rotate use the left and right arrow keys\nTo edit the map and your position, edit the two open text fields below.\n To get back to this menu when in 3D, press esc");
+        infoLabel.setBounds(100, -90, 500, 400); // todo figure out how to newline
+        String htmlText = "<html><p>Welcome to my 3D raycasting engine! To move around in it, use the \'WSAD\'' keys and to rotate use the LR arrow keys<br>" +
+                        "To edit the map and your position, edit the two open text fields below.<br>" +
+                        " To get back to this menu when in 3D, press the \'Escape\' key</></html";
+        infoLabel.setText(htmlText);
         this.screen.add(infoLabel);
         collection[8] = infoLabel;
 
@@ -159,6 +190,10 @@ public class Display {
             }
         });
 
+        for (Component comp : collection){
+            comp.setFont(textFont);
+        }
+        this.screen.repaint();
 
 
         while (true){ // Holds a loop in case bad input is given
@@ -242,6 +277,8 @@ public class Display {
         for (Component comp : collection){
             this.screen.remove(comp);
         }
+        
+        screen.getContentPane().setBackground(null);
         switchToGame();
 
 

@@ -20,6 +20,6 @@ public class Texture {
     public static boolean textureIndexInBounds(int idx){
         return idx < 0 || idx > 2; // update this based on new keys added
     }
-
+    
 
 }
