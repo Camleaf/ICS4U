@@ -94,21 +94,21 @@ public class Display {
 
         Component[] collection = new Component[9];
 
-        // ImageIcon backgroundImage = new ImageIcon("src/menu.png");
-        // backgroundImage = new ImageIcon(backgroundImage.getImage().getScaledInstance(this.screen.getWidth(), this.screen.getHeight(),Image.SCALE_DEFAULT));
-        
 
-        // JLabel backgroundLabel = new JLabel();
-        // backgroundLabel.setBounds(0,0,700,700);
-        // backgroundLabel.setIcon(backgroundImage);
-        // this.screen.add(backgroundLabel);
-        // screen.setComponentZOrder(backgroundLabel,0);
-        // collection[9] = backgroundLabel;
-
+        JLabel infoLabel = new JLabel();
+        infoLabel.setBounds(100, 70, 500, 100); // todo figure out how to newline
+        String htmlText = "<html><p>Welcome to my 3D raycasting engine! To move around in it, use the \'WSAD\'' keys and to rotate use the LR arrow keys<br>" +
+                        "To edit the map and your position, edit the two open text fields below.<br>" +
+                        " To get back to this menu when in 3D, press the \'Escape\' key</></html";
+        infoLabel.setText(htmlText);
+        infoLabel.setOpaque(true);
+        this.screen.add(infoLabel);
+        collection[8] = infoLabel;
 
         JLabel title = new JLabel();
-        title.setBounds(100, 0, 200, 100);
+        title.setBounds(100, 45, 100, 20);
         title.setText("Map Editor Menu");
+        title.setOpaque(true);
         this.screen.add(title);
         collection[0] = title;
 
@@ -119,8 +119,9 @@ public class Display {
         collection[1] = playGame;
 
         JLabel mapSizeLabel = new JLabel();
-        mapSizeLabel.setBounds(100, 135, 150, 100);
+        mapSizeLabel.setBounds(100, 175, 150, 20);
         mapSizeLabel.setText(String.format("Map (side length %d):", Board.mapLength));
+        mapSizeLabel.setOpaque(true);
         this.screen.add(mapSizeLabel);
         collection[2] = mapSizeLabel;
 
@@ -135,8 +136,9 @@ public class Display {
 
 
         JLabel posLabel = new JLabel();
-        posLabel.setBounds(300, 135, 300, 100);
-        posLabel.setText("Player starting coordinates [(x,y) as block squares]");
+        posLabel.setBounds(300, 175, 300, 20);
+        posLabel.setText("Player starting coordinates (x,y)");
+        posLabel.setOpaque(true);
         this.screen.add(posLabel);
         collection[4] = posLabel;
 
@@ -156,19 +158,10 @@ public class Display {
         collection[6] = resetGame;
 
         JLabel errLabel = new JLabel();
-        errLabel.setBounds(100, 350, 500, 100);
+        errLabel.setBounds(100, 380, 500, 40);
         errLabel.setText("");
         this.screen.add(errLabel);
         collection[7] = errLabel;
-
-        JLabel infoLabel = new JLabel();
-        infoLabel.setBounds(100, -90, 500, 400); // todo figure out how to newline
-        String htmlText = "<html><p>Welcome to my 3D raycasting engine! To move around in it, use the \'WSAD\'' keys and to rotate use the LR arrow keys<br>" +
-                        "To edit the map and your position, edit the two open text fields below.<br>" +
-                        " To get back to this menu when in 3D, press the \'Escape\' key</></html";
-        infoLabel.setText(htmlText);
-        this.screen.add(infoLabel);
-        collection[8] = infoLabel;
 
 
         this.screen.repaint();
@@ -185,6 +178,8 @@ public class Display {
                posField.setText(camera.boardSquareAsString());
                board.resetBoard();
                mapText.setText(board.asString());
+               errLabel.setText("");
+               errLabel.setOpaque(true);
                screen.repaint();
                
             }
@@ -198,7 +193,7 @@ public class Display {
 
         while (true){ // Holds a loop in case bad input is given
             holdHostage(); // This holds the thread hostage until the eventlistener is called. acts as a resource-efficient wait until event
-            
+            errLabel.setOpaque(true);
             boolean repeat = false;
             String[] boardInput = mapText.getText().split("\n");
             int[][] builtMap = new int[8][8];
