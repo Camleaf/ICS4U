@@ -179,7 +179,7 @@ public class Display {
                board.resetBoard();
                mapText.setText(board.asString());
                errLabel.setText("");
-               errLabel.setOpaque(true);
+               errLabel.setOpaque(false);
                screen.repaint();
                
             }
