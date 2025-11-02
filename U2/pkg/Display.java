@@ -9,7 +9,6 @@ import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.event.ActionListener;
 import java.awt.image.BufferStrategy;
-
 import pkg.display.texture.MenuContentPane;
 import pkg.display.texture.Wall;
 import java.awt.image.BufferedImage;
