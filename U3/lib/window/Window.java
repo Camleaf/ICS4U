@@ -1,5 +1,7 @@
 package lib.window;
 import javax.swing.JFrame;
+import javax.swing.JLayeredPane;
+import javax.swing.JPanel;
 
 public class Window extends JFrame{
     /*
@@ -13,6 +15,6 @@ public class Window extends JFrame{
         setLocationRelativeTo(null);
         setIgnoreRepaint(true);
         setLayout(null);
+        setContentPane(new JLayeredPane());
     }
-    
 }

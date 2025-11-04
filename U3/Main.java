@@ -68,6 +68,7 @@ class MainLoop implements Runnable{
                     e.printStackTrace();
                 }
             }
+            display.testServe(idx%250,idx%250);
             previousTime = currentTime;
             
             idx++;
