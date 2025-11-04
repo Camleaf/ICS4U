@@ -76,6 +76,8 @@ class MainLoop implements Runnable{
                     e.printStackTrace();
                 }
             }
+
+            
             display.camera.update(keyboard);
             
             previousTime = currentTime;
