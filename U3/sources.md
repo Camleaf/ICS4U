@@ -1,0 +1,1 @@
+https://opengameart.org/content/pixel-chess-pieces <- Chess game pieces sprites
