@@ -15,7 +15,8 @@ public class Texture {
 
     private JLabel swingImage;
     private BufferedImage image;
-    private int[] raster;
+    private int w;
+    private int h;
 
     /**
      * Constructor of the texture class that grabs the image and resizes it to the desired w,h. Also creates a swing JLabel for usage in swing
@@ -24,14 +25,14 @@ public class Texture {
      * @param h Height of the image. The image will rescale to thie height if it is not already at this size
      */
     public Texture(String path, int w, int h){
-        BufferedImage image;
+        this.w = w;
+        this.h = h;
         try {
             image = rescale(ImageIO.read(new File(path)),w,h);
         } catch (IOException e) {
             e.printStackTrace();
-            throw new Error("Error reading texture");
+            image = new BufferedImage(w, h, BufferedImage.TYPE_INT_RGB);
         }
-        raster = rasterize(image);
         swingImage = makeSwingComponent();
     }
 
@@ -39,18 +40,7 @@ public class Texture {
      * Internal methods
     */
 
-    /**
-     * Rasterizes a given BufferedImage and returns an int[]
-     * @param image image to rasterize
-     * @return a single-dimensional int array arranged via the BufferedImage.getRGB() return docs.
-     */
-    private int[] rasterize(BufferedImage image){
 
-        int[] raster = new int[image.getWidth()*image.getHeight()];
-        image.getRGB(0, 0, image.getWidth(), image.getHeight(), raster, 0, image.getWidth());
-
-        return raster;
-    }
     /**
      * Rescales a BuferedImage to the given w,h
      * @param image a bufferImage to be scaled
@@ -72,7 +62,7 @@ public class Texture {
 
     private JLabel makeSwingComponent(){
         JLabel swingImage = new JLabel();
-        swingImage.setBounds(0, 0, image.getWidth(), image.getHeight());
+        swingImage.setBounds(0, 0, this.w, this.h);
         swingImage.setIcon(getImageIcon());
         return swingImage;
     }
@@ -87,7 +77,7 @@ public class Texture {
      * @param h the height of the subregion
      * @return a subimage of the texture with upper-left corner x,y and dimensions w,h
      */
-    public BufferedImage slice(int x, int y, int w, int h){
+    public BufferedImage getSlice(int x, int y, int w, int h){
         return image.getSubimage(x,y,w,h);
     }
 

@@ -74,7 +74,8 @@ public class GraphicsPanel extends JPanel{
      * @param x the x coordinate of the upper-left corner
      * @param y the y coordinate of the upper-left corner
      */
-    public void drawImage(BufferedImage image, int x, int y){
+
+    public void drawBufferedImage(BufferedImage image, int x, int y){
         Graphics g = buffer.getGraphics();
         g.drawImage(image, x, y, null);
         g.dispose();
