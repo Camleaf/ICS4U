@@ -69,6 +69,19 @@ public class GraphicsPanel extends JPanel{
     }
 
     /**
+     * Draws the given BufferedImage to the panel with upper-left corner (x,y)
+     * @param image the BufferedImage to draw to the screen
+     * @param x the x coordinate of the upper-left corner
+     * @param y the y coordinate of the upper-left corner
+     */
+    public void drawImage(BufferedImage image, int x, int y){
+        Graphics g = buffer.getGraphics();
+        g.drawImage(image, x, y, null);
+        g.dispose();
+    }
+
+
+    /**
         * Draws an rect with top-left corner (x,y) and dimensions (w,h)
         * @param x  integer x coordinate of top left corner of rect
         * @param y  integer y coordinate of top left corner of rect
