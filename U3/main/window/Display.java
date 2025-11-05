@@ -25,6 +25,8 @@ public class Display {
         window.add(xp,Integer.valueOf(1));
         
         test = new Texture("src/testTexture.png", 256, 256);
+        test.setSwingLocation(300, 300);
+        window.add(test.getSwingComponent(),Integer.valueOf(0));
     }
 
 
@@ -40,6 +42,8 @@ public class Display {
         xp.drawRectBorder(250-x,250-y,50,50,Color.RED);
         xp.drawBufferedImage(test.getSlice(0,0,128,128), x, y);
         xp.setLocation(x,y);
+
+        test.setSwingLocation(x, 300-y);
 
         window.repaint();
     }

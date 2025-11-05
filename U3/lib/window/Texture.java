@@ -106,4 +106,33 @@ public class Texture {
         return swingImage;
     }
 
+    /**
+     * Sets the bounds of the texture for when when it is to be added to a swing frame
+     * @param x the x coordinate of the upper-left corner of the texture
+     * @param y the y coordinate of the upper-left corner of the texture
+     * @param w the width of the texture
+     * @param h the height of the texture
+     */
+    public void setSwingBounds(int x, int y, int w, int h){
+        swingImage.setBounds(x,y,w,h);
+    }
+
+    /**
+     * Sets the location of the texture for when it is to be added to a swing frame
+     * @param x the x coordinate of the upper-left corner of the texture
+     * @param y the y coordinate of the upper-left corner of the texture
+     */
+    public void setSwingLocation(int x, int y){
+        swingImage.setLocation(x, y);
+    }
+
+    /**
+     * Sets the dimensions of the texture for when when it is to be added to a swing frame
+     * @param w the width of the texture
+     * @param h the height of the texture
+     */
+    public void setSwingSize(int w, int h){
+        swingImage.setSize(w,h);
+    }
+
 }
