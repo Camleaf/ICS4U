@@ -32,8 +32,9 @@ public class Display {
     public void testServe(int x, int y){
         // any function which runs on the seperate thread and is regularly run such as this function should never contain definitions, only updates
         xp.flushBuffer();
-        xp.drawEllipse(x, y, 50, 80, Color.BLUE);
-        xp.drawCircle(x, 250-y, 25, Color.RED);
+        xp.drawEllipse(x, 250-y, 50, 80, Color.BLUE);
+        
+        xp.drawRectBorder(250-x,250-y,50,50,Color.RED);
         xp.setLocation(x,y);
 
         window.repaint();

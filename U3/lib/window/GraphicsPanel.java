@@ -85,6 +85,20 @@ public class GraphicsPanel extends JPanel{
             }
         }
     }
+    /**
+        * Draws a hollow rect with top-left corner (x,y) and dimensions (w,h)
+        * @param x  integer x coordinate of top left corner of rect
+        * @param y  integer y coordinate of top left corner of rect
+        * @param w  width of rect
+        * @param h  height of rect
+        * @param colour Colour of the rect
+    */
+    public void drawRectBorder(int x, int y, int w, int h, Color colour){
+        Graphics g = buffer.getGraphics();
+        g.setColor(colour);
+        g.drawRect(x, y, w, h);
+        g.dispose();
+    }
 
     /**
         * Draws an ellipse with centre {x-(w/2),y-(h/2)}, and dimensions w,h
@@ -101,6 +115,21 @@ public class GraphicsPanel extends JPanel{
         g.dispose();
     }
 
+    /**
+        * Draws a hollow ellipse with centre {x-(w/2),y-(h/2)}, and dimensions w,h
+        * @param x integer x coordinate of top left of bounding box of ellipse with sidelength w
+        * @param y integer y coordinte of top left of bounding box of ellipse with sidelength h
+        * @param w Width of the ellipse and its bounding box
+        * @param h Height of the ellipse and its bounding box
+        * @param colour Colour of the ellipse border
+    */
+    public void drawEllipseBorder(int x, int y, int w, int h, Color colour){
+        Graphics g = buffer.getGraphics();
+        g.setColor(colour);
+        g.drawOval(x,y,w,h);
+        g.dispose();
+    }
+
 
     /**
         * Draws a circle with centre {x-r,y-r}, and radius r
@@ -109,8 +138,21 @@ public class GraphicsPanel extends JPanel{
         * @param r Radius of the circle
         * @param colour Colour of the circle
     */
+
     public void drawCircle(int x, int y, int r, Color colour){
         drawEllipse(x, y, r*2, r*2, colour);
+    }
+
+    /**
+        * Draws a hollow circle with centre {x-r,y-r}, and radius r
+        * @param x integer x coordinate of top left of bounding box of ellipse with sidelength 2r
+        * @param y integer y coordinte of top left of bounding box of ellipse with sidelength 2r
+        * @param r Radius of the circle
+        * @param colour Colour of the circle
+    */
+
+    public void drawCircleBorder(int x, int y, int r, Color colour){
+        drawEllipseBorder(x, y, r*2, r*2, colour);
     }
 
     public int getWidth(){return this.width;};
