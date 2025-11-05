@@ -4,20 +4,25 @@ import javax.swing.JPanel;
 import java.awt.image.BufferedImage;
 import java.awt.image.DataBufferInt;
 import java.awt.Color;
+import java.awt.image.BufferStrategy;
+
 
 public class GraphicsPanel extends JPanel{
     /*
      * Individual graphics panel which abstracts modifying pixels individually into direct operations like bliting rasterized images and drawing geometric objects
      */
-    BufferedImage buffer;
-    int[] pixels;
-    int width;
-    int height;
+    private BufferedImage buffer;
+    private BufferStrategy bufferStrategy;
+    private int[] pixels;
+    private int width;
+    private int height;
     
     public GraphicsPanel(int width, int height){
         setLayout(null);
         setSize(width,height);
         setIgnoreRepaint(true);
+        setBackground(Color.BLACK);
+        setDoubleBuffered(true);
         this.width = width;
         this.height = height;
         buffer = new BufferedImage(width, height,BufferedImage.TYPE_INT_RGB);
@@ -36,9 +41,11 @@ public class GraphicsPanel extends JPanel{
     }
     
     /*Public
-     *  drawText:       Draws a string to screen at x,y coordinates using the default font
-     *  drawRect:       Draws a rectangle at (int) x, (int) y with dimensions (int) w, (int) h and background (Color) colour
-     *  flushBuffer:    Flushes the pixels of the current buffer of type BufferedImage and resets them to AWT's Color.BLACK
+     *  drawText   :     Draws a string to screen at x,y coordinates using the default font
+     *  drawRect   :     Draws a rectangle at (int) x, (int) y with dimensions (int) w, (int) h and background (Color) colour
+     *  flushBuffer:     Flushes the pixels of the current buffer of type BufferedImage and resets them to AWT's Color.BLACK
+     *  getWidth   :     Returns the integer width of the panel
+     *  getHeight  :     Returns the integer height of the panel
      */
 
     public void flushBuffer(){
@@ -65,7 +72,9 @@ public class GraphicsPanel extends JPanel{
             }
         }
     }
+    public int getWidth(){return this.width;};
 
+    public int getHeight(){return this.height;};
 
 
 

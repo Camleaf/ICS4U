@@ -1,6 +1,6 @@
 package main.window;
 import lib.window.GraphicsPanel;
-import lib.window.Window;
+import lib.Window;
 import java.awt.Color;
 
 public class Display {
@@ -19,11 +19,12 @@ public class Display {
         // fix z-fighting issue
         xp = new GraphicsPanel(300, 300);
         xp.setBounds(250,250,300,300);
-        window.add(xp,1);
+        window.add(xp,Integer.valueOf(1));
+         
 
         px = new GraphicsPanel(300, 300);
         px.setBounds(250,250,300,300);
-        window.add(px,2);
+        window.add(px,Integer.valueOf(0));
     }
 
 
@@ -37,6 +38,7 @@ public class Display {
         xp.setLocation(x,y);
 
         px.flushBuffer();
+        px.drawRect(0, 0, px.getWidth(), px.getHeight(), Color.darkGray);
         px.drawRect(x, y, 50, 50, Color.BLUE);
         px.setLocation(x,500-y);
         window.repaint();

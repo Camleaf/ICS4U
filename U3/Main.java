@@ -1,5 +1,4 @@
 import javax.swing.SwingUtilities;
-
 import lib.interactions.Keyboard;
 import main.window.Display;
 import java.lang.Thread;

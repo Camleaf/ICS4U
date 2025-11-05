@@ -1,11 +1,10 @@
-package lib.window;
+package lib;
 import javax.swing.JFrame;
 import javax.swing.JLayeredPane;
-import javax.swing.JPanel;
 
 public class Window extends JFrame{
     /*
-    * Interfaces directly with swing, handles buffers and deals with graphics. No interfacing with game data or objects should be done from this class
+    * Is the interface between all custom panels and the main game. No interfacing with game data or objects should be done from this class
     */
 
     public Window(String title, int width, int height){
