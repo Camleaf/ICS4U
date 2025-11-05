@@ -6,11 +6,11 @@ import java.util.HashMap;
 import java.util.Map;
 
 
-// Code from U2 project
-
+/**
+    * Input processor which takes key presses and releases and stores the current status of each keycode inside a integer-boolean map
+    @author CamLeaf
+*/
 public class Keyboard implements KeyListener {
-        /*Input processor which takes key presses and releases and stores the current status of each keycode inside a integer-boolean map */
-
         public Map<Integer, Boolean> keys = new HashMap<Integer, Boolean>();
 
         @Override public void keyPressed(KeyEvent e) {
@@ -23,24 +23,12 @@ public class Keyboard implements KeyListener {
         }
 
         @Override public void keyTyped(KeyEvent e) {}
-
+        /**
+            * Given an integer keyCode, returns a boolean value corresponding to the pressed status of the related key.
+            * @param keyCode An integer keyCode corresponding to Java's KeyCode documentation
+            * @return A boolean where true means that the key is pressed and false means the key is not.
+        */
         public boolean isKeyPressed(int keyCode){
-            /*
-             * Given a keyCode, returns a boolean value where true is pressed and false is off
-             */
             return keys.getOrDefault(keyCode,false);
-        }
-
-        public boolean[] areKeysPressed(int[] keyCodes){
-            /*
-             * Given an array of keyCodes, returns an array x sadasdaswhere x[i] = (true if is keyCodes[i] pressed otherwise false)
-             */
-            boolean[] arePressed = new boolean[keyCodes.length];
-            int idx = 0;
-            for (int keyCode : keyCodes){
-                arePressed[idx] = isKeyPressed(keyCode);
-                idx++;
-            }
-            return arePressed;
         }
     }

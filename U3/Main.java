@@ -3,7 +3,9 @@ import lib.interactions.Keyboard;
 import main.window.Display;
 import java.lang.Thread;
 import java.time.Instant;
-
+/**
+    @author CamLeaf
+*/
 public class Main {
     public static void main(String[] args) {
         SwingUtilities.invokeLater(new Runnable() { // Man i love the jswing and awt docs they make no sense but it works
@@ -21,7 +23,9 @@ public class Main {
         });
     }
 }
-
+/**
+    @author CamLeaf
+*/
 class MainLoop implements Runnable{
     Thread thread;
     boolean running;
@@ -56,7 +60,7 @@ class MainLoop implements Runnable{
         int idx = 0;
         while (running){
 
-            // This timer runs the loop at 60 fps
+            // If not bottlenecked by system capacity, this loop will run a negligible amount below 50fps
 
             long currentTime = Instant.now().toEpochMilli();
             if (currentTime - previousTime <= 20){

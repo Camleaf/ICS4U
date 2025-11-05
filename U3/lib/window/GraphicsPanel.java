@@ -6,11 +6,13 @@ import java.awt.image.DataBufferInt;
 import java.awt.Color;
 import java.awt.image.BufferStrategy;
 
-
+/**
+    * Individual graphics panel which abstracts modifying pixels individually into direct operations like bliting rasterized images and drawing geometric objects
+    * <p>
+    * Do not call the <b>paintComponent</b> method as swing will call it itself and is internal
+    @author CamLeaf
+*/
 public class GraphicsPanel extends JPanel{
-    /*
-     * Individual graphics panel which abstracts modifying pixels individually into direct operations like bliting rasterized images and drawing geometric objects
-     */
     private BufferedImage buffer;
     private int[] pixels;
     private int width;
@@ -50,7 +52,7 @@ public class GraphicsPanel extends JPanel{
      */
 
     /**
-     * Flushes the bufferFrame
+     * Flushes the buffer frame
      */
     public void flushBuffer(){
         Graphics g = buffer.getGraphics();
@@ -69,10 +71,10 @@ public class GraphicsPanel extends JPanel{
 
     /**
         * Draws an rect with top-left corner (x,y) and dimensions (w,h)
-        * @param x X coordinate of top left corner of rect
-        * @param y Y coordinate of top left corner of rect
-        * @param w Width of rect
-        * @param h Height of rect
+        * @param x  integer x coordinate of top left corner of rect
+        * @param y  integer y coordinate of top left corner of rect
+        * @param w  width of rect
+        * @param h  height of rect
         * @param colour Colour of the rect
     */
     public void drawRect(int x, int y, int w, int h, Color colour){
@@ -87,8 +89,8 @@ public class GraphicsPanel extends JPanel{
 
     /**
         * Draws an ellipse with centre {x-(w/2),y-(h/2)}, and dimensions w,h
-        * @param x X coordinate of top left of bounding box of ellipse with sidelength w
-        * @param y Y coordinte of top left of bounding box of ellipse with sidelength h
+        * @param x integer x coordinate of top left of bounding box of ellipse with sidelength w
+        * @param y integer y coordinte of top left of bounding box of ellipse with sidelength h
         * @param w Width of the ellipse and its bounding box
         * @param h Height of the ellipse and its bounding box
         * @param colour Colour of the ellipse
@@ -103,8 +105,8 @@ public class GraphicsPanel extends JPanel{
 
     /**
         * Draws a circle with centre {x-r,y-r}, and radius r
-        * @param x X coordinate of top left of bounding box of ellipse with sidelength 2r
-        * @param y Y coordinte of top left of bounding box of ellipse with sidelength 2r
+        * @param x integer x coordinate of top left of bounding box of ellipse with sidelength 2r
+        * @param y integer y coordinte of top left of bounding box of ellipse with sidelength 2r
         * @param r Radius of the circle
         * @param colour Colour of the circle
     */

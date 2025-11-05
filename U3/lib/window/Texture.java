@@ -6,7 +6,9 @@ import java.awt.Graphics;
 import java.awt.image.BufferedImage;
 import javax.imageio.ImageIO;
 
-
+/**
+    @author CamLeaf
+*/
 public class Texture {
     
 
