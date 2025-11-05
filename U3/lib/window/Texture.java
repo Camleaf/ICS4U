@@ -70,7 +70,7 @@ public class Texture {
      * Public methods
      */
     /**
-     * Gets a subimage of the texture with top left coordinate x,y and dimensions w,h as a BufferedImage
+     * Gets a subimage of the texture with top left coordinate x,y and dimensions w,h as a BufferedImage. Typically would be used for a sprite sheet
      * @param x the x coordinate of the upper-left corner of the subregion
      * @param y the y coordinate of the upper-left corner of the subregion
      * @param w the width of the subregion
