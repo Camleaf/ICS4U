@@ -4,7 +4,6 @@ import javax.swing.JPanel;
 import java.awt.image.BufferedImage;
 import java.awt.image.DataBufferInt;
 import java.awt.Color;
-import java.awt.image.BufferStrategy;
 
 /**
     * Individual graphics panel which abstracts modifying pixels individually into direct operations like bliting rasterized images and drawing geometric objects
