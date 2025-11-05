@@ -12,7 +12,6 @@ public class GraphicsPanel extends JPanel{
      * Individual graphics panel which abstracts modifying pixels individually into direct operations like bliting rasterized images and drawing geometric objects
      */
     private BufferedImage buffer;
-    private BufferStrategy bufferStrategy;
     private int[] pixels;
     private int width;
     private int height;
@@ -44,10 +43,15 @@ public class GraphicsPanel extends JPanel{
      *  drawText   :     Draws a string to screen at x,y coordinates using the default font
      *  drawRect   :     Draws a rectangle at (int) x, (int) y with dimensions (int) w, (int) h and background (Color) colour
      *  flushBuffer:     Flushes the pixels of the current buffer of type BufferedImage and resets them to AWT's Color.BLACK
+     *  drawEllipse:     Draws an ellipse with centre {x-(w/2),y-(h/2)}, and dimensions w,h
+     *  drawCircle :     Draws a circle with centre {x-r,y-r}, and radius r
      *  getWidth   :     Returns the integer width of the panel
      *  getHeight  :     Returns the integer height of the panel
      */
 
+    /**
+     * Flushes the bufferFrame
+     */
     public void flushBuffer(){
         Graphics g = buffer.getGraphics();
         g.setColor(Color.BLACK);
@@ -63,6 +67,14 @@ public class GraphicsPanel extends JPanel{
         g.dispose();
     }
 
+    /**
+        * Draws an rect with top-left corner (x,y) and dimensions (w,h)
+        * @param x X coordinate of top left corner of rect
+        * @param y Y coordinate of top left corner of rect
+        * @param w Width of rect
+        * @param h Height of rect
+        * @param colour Colour of the rect
+    */
     public void drawRect(int x, int y, int w, int h, Color colour){
         int colourInt = colour.getRGB(); 
         for (int col = x;col<x+w;col++){
@@ -72,10 +84,36 @@ public class GraphicsPanel extends JPanel{
             }
         }
     }
+
+    /**
+        * Draws an ellipse with centre {x-(w/2),y-(h/2)}, and dimensions w,h
+        * @param x X coordinate of top left of bounding box of ellipse with sidelength w
+        * @param y Y coordinte of top left of bounding box of ellipse with sidelength h
+        * @param w Width of the ellipse and its bounding box
+        * @param h Height of the ellipse and its bounding box
+        * @param colour Colour of the ellipse
+    */
+    public void drawEllipse(int x, int y, int w, int h, Color colour){
+        Graphics g = buffer.getGraphics();
+        g.setColor(colour);
+        g.fillOval(x,y,w,h);
+        g.dispose();
+    }
+
+
+    /**
+        * Draws a circle with centre {x-r,y-r}, and radius r
+        * @param x X coordinate of top left of bounding box of ellipse with sidelength 2r
+        * @param y Y coordinte of top left of bounding box of ellipse with sidelength 2r
+        * @param r Radius of the circle
+        * @param colour Colour of the circle
+    */
+    public void drawCircle(int x, int y, int r, Color colour){
+        drawEllipse(x, y, r*2, r*2, colour);
+    }
+
     public int getWidth(){return this.width;};
 
     public int getHeight(){return this.height;};
-
-
 
 }

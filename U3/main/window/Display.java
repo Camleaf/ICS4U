@@ -9,22 +9,16 @@ public class Display {
      */
     public Window window;
     GraphicsPanel xp;
-    GraphicsPanel px;
 
     public Display(){
         window = new Window("Chess", 800,800);
         /*
          * Screen wil be 800 x 800
          */
-        // fix z-fighting issue
         xp = new GraphicsPanel(300, 300);
         xp.setBounds(250,250,300,300);
         window.add(xp,Integer.valueOf(1));
-         
-
-        px = new GraphicsPanel(300, 300);
-        px.setBounds(250,250,300,300);
-        window.add(px,Integer.valueOf(0));
+        
     }
 
 
@@ -34,13 +28,10 @@ public class Display {
 
     public void testServe(int x, int y){
         xp.flushBuffer();
-        xp.drawRect(x, y, 50, 50, Color.RED);
+        xp.drawEllipse(x, y, 50, 80, Color.BLUE);
+        xp.drawCircle(x, 250-y, 25, Color.RED);
         xp.setLocation(x,y);
 
-        px.flushBuffer();
-        px.drawRect(0, 0, px.getWidth(), px.getHeight(), Color.darkGray);
-        px.drawRect(x, y, 50, 50, Color.BLUE);
-        px.setLocation(x,500-y);
         window.repaint();
     }
 }
