@@ -1,10 +1,9 @@
 package main.window;
-import lib.window.GraphicsPanel;
-import lib.window.Texture;
+import main.window.panels.BoardPanel;
 import lib.Window;
 import java.awt.Color;
 /**
-    * Utilises the rendering methods from the Screen class to render game-specific elements and objects.
+    * Utilises the rendering methods from the Screen class to render game-specific elements and objects. Only contains renderloops and displays the game objects. Does not modify the game objects
     @author CamLeaf
 */
 public class Display {
@@ -12,9 +11,11 @@ public class Display {
     public Window window;
 
     public Display(){
-        window = new Window("Chess", 800,800);
+        window = new Window("Chess", 800,640);
+        BoardPanel b = new BoardPanel(512);
+        window.add(b);
         /*
-         * Screen wil be 800 x 800
+         * Screen will be 800 x 800
          */
     }
 

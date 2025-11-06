@@ -21,18 +21,20 @@ public class Texture {
     /**
      * Constructor of the texture class that grabs the image and resizes it to the desired w,h. Also creates a swing JLabel for usage in swing
      * @param path Path of the image from the cwd
-     * @param w Width of the image. The image will rescale to this width if it is not already at this size
-     * @param h Height of the image. The image will rescale to thie height if it is not already at this size
+     * @param w Width of the image. The image will rescale to this width if it is not already at this size. If w < 0, then the image's native width will be used
+     * @param h Height of the image. The image will rescale to thie height if it is not already at this size. If h < 0, then the image's native width will be used
      */
     public Texture(String path, int w, int h){
-        this.w = w;
-        this.h = h;
+
         try {
-            image = rescale(ImageIO.read(new File(path)),w,h);
+            image = ImageIO.read(new File(path));
         } catch (IOException e) {
             e.printStackTrace();
             image = new BufferedImage(w, h, BufferedImage.TYPE_INT_RGB);
         }
+        this.w = (w >= 0) ? w : image.getWidth();
+        this.h = (h >= 0) ? h : image.getHeight();
+        image = rescale(image,w,h);
         swingImage = makeSwingComponent();
     }
 
@@ -50,7 +52,7 @@ public class Texture {
      */
     private BufferedImage rescale(BufferedImage image, int w, int h){
 
-        if (image.getWidth() == w && image.getHeight() == h){return image;}
+        if (image.getWidth() == w && image.getHeight() == h || w < 0 || h < 0){return image;}
 
         Image scaledImage = image.getScaledInstance(w, h, Image.SCALE_DEFAULT);
         BufferedImage scaledBuffer = new BufferedImage(w, h, image.getType());

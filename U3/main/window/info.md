@@ -1,0 +1,1 @@
+The window folder is used for game-related display. It does not contain any game logic.
