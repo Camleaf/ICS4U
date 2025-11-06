@@ -1,5 +1,5 @@
 package main.window;
-import main.window.panels.BoardPanel;
+import main.game.Board;
 import lib.Window;
 import java.awt.Color;
 /**
@@ -12,7 +12,7 @@ public class Display {
 
     public Display(){
         window = new Window("Chess", 800,640);
-        BoardPanel b = new BoardPanel(512);
+        Board b = new Board(512);
         window.add(b);
         /*
          * Screen will be 800 x 800

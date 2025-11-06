@@ -2,7 +2,7 @@ package main.game.board;
 
 public class Piece {
     public static enum Type {
-        PAWN(0), BISHOP(1), KING(2), KNIGHT(3), QUEEN(4), ROOK(5);
+        EMPTY(-1), PAWN(0), BISHOP(1), KING(2), KNIGHT(3), QUEEN(4), ROOK(5);
         public int id;
         private Type(int index){
             this.id = index;
@@ -39,5 +39,5 @@ public class Piece {
         this.hasMoved = hasMoved;
     }
 
-    
+
 }

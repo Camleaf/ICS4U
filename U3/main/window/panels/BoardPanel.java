@@ -2,8 +2,8 @@ package main.window.panels;
 import lib.window.GraphicsPanel;
 import lib.window.Texture;
 import main.window.Colours;
-import main.game.Board;
 import main.game.board.Piece;
+import java.awt.Color;
 /**
  * Class inheriting from GraphicsPanel and in turn JPanel. Meant to use the GraphicsPanel abstractions to provide all game-specific chessBoard functions. Doesn't contain critical game logic, just game-specific rendering
  * @author Camleaf
@@ -25,15 +25,12 @@ public class BoardPanel extends GraphicsPanel {
         this.squareSize = this.gridSize/8;
 
         setBounds(0, 0, gridSize, gridSize);
-        paintBackground();
-        paintPiece(Piece.Type.QUEEN,Piece.Colour.BLACK,5,3);
-        paintPiece(Piece.Type.KING,Piece.Colour.WHITE,5,2);
     } 
     
     /**
      * Paints the background of the grid in the classic checkerboard fashion. Will overwrite everything rendered to the board
      */
-    private void paintBackground(){
+    public void paintBackground(){
         flushBuffer();
         for (int row = 0; row < 8; row++){
             for (int col = 0;col<8;col++){
@@ -56,6 +53,15 @@ public class BoardPanel extends GraphicsPanel {
     }
 
     /**
+     * Highlights a square. Will overwrite any piece currently rendered onto the square
+     * @param x the x-value of the coordinate to highlight
+     * @param y the y-value of the coordinate to highlight
+     */
+    public void highlightSquare(int x, int y, Color colour){
+        drawRect(x * squareSize, y*squareSize,squareSize,squareSize,colour);
+    }
+
+    /**
      * Paints a piece onto the board
      * @param piece a class representing a piece from the enum Pieces from class board 
      * @param colour a class representing one of two colours, black and white, from the enum Colour from class board 
@@ -63,6 +69,7 @@ public class BoardPanel extends GraphicsPanel {
      * @param y the y-value of the coordinate of which to render the piece
      */
     public void paintPiece(Piece.Type piece, Piece.Colour colour, int x, int y){
+        if (piece.equals(Piece.Type.EMPTY)){return;}
 
         int pieceX = (colour.id == 0) ? 0 : 2*spriteSize;
         int pieceY = piece.id * spriteSize;
