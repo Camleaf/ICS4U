@@ -1,5 +1,6 @@
 import javax.swing.SwingUtilities;
 import lib.interactions.Keyboard;
+import lib.interactions.Mouse;
 import main.window.Display;
 import java.lang.Thread;
 import java.time.Instant;
@@ -16,9 +17,10 @@ public class Main {
                 display.show();
                 Keyboard keyboard = new Keyboard();
                 display.window.addKeyListener(keyboard);
+                Mouse mouse = new Mouse();
+                display.window.addMouseListener(mouse);
                 display.window.requestFocus();
-
-                MainLoop main = new MainLoop(keyboard, display);
+                MainLoop main = new MainLoop(keyboard, display, mouse);
             }
         });
     }
@@ -31,12 +33,14 @@ class MainLoop implements Runnable{
     boolean running;
     Keyboard keyboard;
     Display display;
+    Mouse mouse;
 
-    public MainLoop(Keyboard keyboard, Display display) {
+    public MainLoop(Keyboard keyboard, Display display, Mouse mouse) {
         thread = new Thread(this);
         thread.setDaemon(true);
         this.keyboard = keyboard;
         this.display = display;
+        this.mouse = mouse;
         start();
     }
 
@@ -73,7 +77,7 @@ class MainLoop implements Runnable{
             }
 
             previousTime = currentTime;
-            
+            mouse.clearStack();
             idx++;
         }
     }

@@ -18,7 +18,7 @@ public class GraphicsPanel extends JPanel{
     private int height;
     
     public GraphicsPanel(int width, int height){
-        setLayout(null);
+        setLayout(null); 
         setSize(width,height);
         setIgnoreRepaint(true);
         setBackground(Color.BLACK);

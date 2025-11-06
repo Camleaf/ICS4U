@@ -3,6 +3,7 @@ import lib.window.GraphicsPanel;
 import lib.window.Texture;
 import main.window.Colours;
 import main.game.Board;
+import main.game.board.Piece;
 /**
  * Class inheriting from GraphicsPanel and in turn JPanel. Meant to use the GraphicsPanel abstractions to provide all game-specific chessBoard functions. Doesn't contain critical game logic, just game-specific rendering
  * @author Camleaf
@@ -25,8 +26,8 @@ public class BoardPanel extends GraphicsPanel {
 
         setBounds(0, 0, gridSize, gridSize);
         paintBackground();
-        paintPiece(Board.Pieces.QUEEN,Board.Colour.BLACK,5,3);
-        paintPiece(Board.Pieces.KING,Board.Colour.WHITE,5,2);
+        paintPiece(Piece.Type.QUEEN,Piece.Colour.BLACK,5,3);
+        paintPiece(Piece.Type.KING,Piece.Colour.WHITE,5,2);
     } 
     
     /**
@@ -61,7 +62,7 @@ public class BoardPanel extends GraphicsPanel {
      * @param x the x-value of the coordinate of which to render the piece
      * @param y the y-value of the coordinate of which to render the piece
      */
-    public void paintPiece(Board.Pieces piece, Board.Colour colour, int x, int y){
+    public void paintPiece(Piece.Type piece, Piece.Colour colour, int x, int y){
 
         int pieceX = (colour.id == 0) ? 0 : 2*spriteSize;
         int pieceY = piece.id * spriteSize;

@@ -10,7 +10,7 @@ import java.util.Map;
     @author CamLeaf
 */
 public class Keyboard implements KeyListener {
-        public Map<Integer, Boolean> keys = new HashMap<Integer, Boolean>();
+        private Map<Integer, Boolean> keys = new HashMap<Integer, Boolean>();
 
         @Override public void keyPressed(KeyEvent e) {
             keys.put(e.getKeyCode(),true);
