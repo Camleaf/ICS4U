@@ -37,8 +37,8 @@ public class Board extends BoardPanel {
         for (int idx = 2;idx<6;idx++){
             board[idx] = generatePieceLine(new Piece.Type[]{EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,EMPTY}, idx, NONE);
         }
-        board[6] = generatePieceLine(new Piece.Type[]{PAWN,PAWN,PAWN,PAWN,PAWN,PAWN,PAWN,PAWN}, 1, WHITE);
-        board[7] = generatePieceLine(new Piece.Type[]{ROOK,KNIGHT,BISHOP,QUEEN,KING,BISHOP,KNIGHT,ROOK}, 0, WHITE);
+        board[6] = generatePieceLine(new Piece.Type[]{PAWN,PAWN,PAWN,PAWN,PAWN,PAWN,PAWN,PAWN}, 6, WHITE);
+        board[7] = generatePieceLine(new Piece.Type[]{ROOK,KNIGHT,BISHOP,QUEEN,KING,BISHOP,KNIGHT,ROOK}, 7, WHITE);
         return board;
     }
 
@@ -67,18 +67,67 @@ public class Board extends BoardPanel {
         Rectangle bounds = this.getBounds();
         if (bounds.contains(clickPos)){
 
-            Point clickedSquare = new Point(clickPos.x/squareSize, clickPos.y/squareSize); // squareSize was intialized in the super() call to BoardPanel
+            Point clickedSquare = new Point(
+                (int) Math.round( Math.floor( ( (double)clickPos.x ) / squareSize )), 
+                (int) Math.round( Math.floor( ( (double)clickPos.y ) / squareSize ))
+            ); // squareSize was intialized in the super() call to BoardPanel
+            System.out.println(clickPos.toString());
+            System.out.println(clickedSquare.toString());
+            
+            
             Piece interactedPiece = board[clickedSquare.y][clickedSquare.x];
 
-            if (this.selectedPoint.x == -1 || this.selectedPoint.y == -1){
+            if (this.selectedPoint.x == -1 || this.selectedPoint.y == -1){ // If the previously clicked square isn't defined
+                if (interactedPiece.getType().equals(EMPTY)){return;} // If the clicked point is an empty we don't want to define that as a clicked piece
                 selectedPoint.setLocation(interactedPiece.x,interactedPiece.y);
-            } else {
+                // Will eventually add highlighting here
+            } else { // if it is that means there is a piece there
                 Piece prevPiece = board[selectedPoint.y][selectedPoint.x];
+                boolean accepted = handleMove(prevPiece, interactedPiece);
+
+                if (!accepted){
+                    // If the move wasn't accepted that means that either the move wasn't valid (haven't implemented yet) or they tried to click on a friendly piece
+                    // Both edge cases are handled inside the move function
+                    return;
+                }
+
+                this.selectedPoint.setLocation(-1, -1);
+
             }
 
 
-        } else {
+        } else { // If the click is out of bounds of the board we want to reset the selectedPoint
             this.selectedPoint.setLocation(-1,-1);
         }
     }
+
+    public boolean handleMove(Piece piece, Piece destinationPiece){
+
+        // System.out.printf("%d %d || %d %d\n", piece.x, piece.y, destinationPiece.x, destinationPiece.y);
+        if ( piece.getColour().equals( destinationPiece.getColour() )){ // If white attacks white, or black attacks black
+            this.selectedPoint.setLocation(destinationPiece.x,destinationPiece.y);
+            return false;
+        }
+        // Now just overwrite the piece it lands on and let garbage collector clean it up. Then add a space where the piece used to be referenced
+        // There is a lot of crazy issues in the corners for some reason. Things tping around and deleting things they shouldnt
+        // I've isolated that the fault is not the rendering but the swapping of coords for some reason
+        paintEmpty(destinationPiece.x,destinationPiece.y);
+        paintEmpty(piece.x,piece.y);
+
+        board[destinationPiece.y][destinationPiece.x] = piece;
+
+        board[piece.y][piece.x] = new Piece(piece.y,piece.x,EMPTY,NONE);
+
+        piece.setLocation(destinationPiece.x,destinationPiece.y);
+
+        paintPiece(piece.getType(),piece.getColour(),piece.x,piece.y);
+        refresh();
+        paintBackground();
+
+
+
+        return true;
+    }
+
+
 }

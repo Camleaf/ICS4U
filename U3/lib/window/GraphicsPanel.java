@@ -50,9 +50,14 @@ public class GraphicsPanel extends JPanel{
      *  getHeight  :     Returns the integer height of the panel
      */
     
+
+    public void refresh(){
+        repaint();
+    }
+
     /**
      * Flushes the buffer frame
-     */
+     */     
     public void flushBuffer(){
         Graphics g = buffer.getGraphics();
         g.setColor(Color.BLACK);

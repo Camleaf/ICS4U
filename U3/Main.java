@@ -65,6 +65,8 @@ class MainLoop implements Runnable{
     public void run(){
         // Mainloop here
         while (running){
+            game.updateBoard();
+            game.refresh();
             mouse.clearStack();
             clock.tick();
         }

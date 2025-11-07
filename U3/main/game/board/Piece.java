@@ -47,5 +47,10 @@ public class Piece {
         return this.colour;
     }
 
+    public void setLocation(int x, int y){
+        this.x = x;
+        this.y = y;
+    }
+
 
 }

@@ -28,6 +28,9 @@ public class Game {
         window.setVisible(true);
         window.repaint();
     }
+    public void refresh(){
+        window.repaint();
+    }
 
     public void addListeners(Keyboard keyboard, Mouse mouse){
         this.keyboard = keyboard;
