@@ -1,6 +1,7 @@
 import javax.swing.SwingUtilities;
 import lib.interactions.Keyboard;
 import lib.interactions.Mouse;
+import lib.logic.Clock;
 import main.window.Display;
 import java.lang.Thread;
 import java.time.Instant;
@@ -34,6 +35,7 @@ class MainLoop implements Runnable{
     Keyboard keyboard;
     Display display;
     Mouse mouse;
+    Clock clock;
 
     public MainLoop(Keyboard keyboard, Display display, Mouse mouse) {
         thread = new Thread(this);
@@ -41,6 +43,7 @@ class MainLoop implements Runnable{
         this.keyboard = keyboard;
         this.display = display;
         this.mouse = mouse;
+        this.clock = new Clock(60);
         start();
     }
 
@@ -60,25 +63,16 @@ class MainLoop implements Runnable{
 
     public void run(){
         // Mainloop here
-        long previousTime = Instant.now().toEpochMilli();
         int idx = 0;
         while (running){
 
             // If not bottlenecked by system capacity, this loop will run a negligible amount below 50fps
 
-            long currentTime = Instant.now().toEpochMilli();
-            if (currentTime - previousTime <= 20){
-                try{
-                    Thread.sleep(Math.abs((currentTime+20)-previousTime));
-                }
-                catch (InterruptedException e){
-                    e.printStackTrace();
-                }
-            }
+            System.out.println(idx);
 
-            previousTime = currentTime;
             mouse.clearStack();
             idx++;
+            clock.tick();
         }
     }
 }
