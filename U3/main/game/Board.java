@@ -71,8 +71,6 @@ public class Board extends BoardPanel {
                 (int) Math.round( Math.floor( ( (double)clickPos.x ) / squareSize )), 
                 (int) Math.round( Math.floor( ( (double)clickPos.y ) / squareSize ))
             ); // squareSize was intialized in the super() call to BoardPanel
-            System.out.println(clickPos.toString());
-            System.out.println(clickedSquare.toString());
             
             
             Piece interactedPiece = board[clickedSquare.y][clickedSquare.x];
@@ -101,33 +99,47 @@ public class Board extends BoardPanel {
         }
     }
 
-    public boolean handleMove(Piece piece, Piece destinationPiece){
+    /**
+     * Handles the act of moving a piece, which includes switching the coords, and painting over parts of the board
+     * @param piece the piece being moved
+     * @param destinationPiece the piece or empty which is the destination
+     */
+    private boolean handleMove(Piece piece, Piece destinationPiece){
 
-        // System.out.printf("%d %d || %d %d\n", piece.x, piece.y, destinationPiece.x, destinationPiece.y);
-        if ( piece.getColour().equals( destinationPiece.getColour() )){ // If white attacks white, or black attacks black
-            this.selectedPoint.setLocation(destinationPiece.x,destinationPiece.y);
+        if (!isValidMove(piece, destinationPiece)){
             return false;
         }
+
         // Now just overwrite the piece it lands on and let garbage collector clean it up. Then add a space where the piece used to be referenced
-        // There is a lot of crazy issues in the corners for some reason. Things tping around and deleting things they shouldnt
-        // I've isolated that the fault is not the rendering but the swapping of coords for some reason
+        
+        // Overwrite old squares on display
         paintEmpty(destinationPiece.x,destinationPiece.y);
         paintEmpty(piece.x,piece.y);
 
+        // Give desination location and coordinates to moving piece then overwrite it's original spot
+
         board[destinationPiece.y][destinationPiece.x] = piece;
-
-        board[piece.y][piece.x] = new Piece(piece.y,piece.x,EMPTY,NONE);
-
+        board[piece.y][piece.x] = new Piece(piece.x,piece.y,EMPTY,NONE);
         piece.setLocation(destinationPiece.x,destinationPiece.y);
 
+        // Paint piece in new spot
         paintPiece(piece.getType(),piece.getColour(),piece.x,piece.y);
-        refresh();
-        paintBackground();
-
-
 
         return true;
     }
 
+    /** Given a piece and destination, determines if the move is valid, and follows Chess's rules.
+     * @param piece the piece being moved
+     * @param destinationPiece the piece or empty which is the destination
+     */
+    private boolean isValidMove(Piece piece, Piece destinationPiece){
 
+        if ( piece.getColour().equals( destinationPiece.getColour() )){ // If white attacks white, or black attacks black
+            this.selectedPoint.setLocation(destinationPiece.x,destinationPiece.y);
+            return false;
+        }
+
+        // Add actual move checking, en passant checking, if king is in check checking. And turns. That too
+        return true;
+    }
 }
