@@ -13,7 +13,7 @@ public class BoardPanel extends GraphicsPanel {
     private final int spriteSize = 64;
     private final int spriteSheetSize = 256;
     private int gridSize; //preferably a multiple of 8
-    private int squareSize;
+    public int squareSize;
     
     /**
      * @author Camleaf
@@ -80,12 +80,29 @@ public class BoardPanel extends GraphicsPanel {
         drawBufferedImage(spriteSheet.getSlice(pieceX,pieceY,spriteSize,spriteSize), x*squareSize, y*squareSize);
     }
 
-
+    /**
+     * Paints an empty square at a given coordinate (x,y) overwriting what was there previously
+     * @param x the x-value of the coordinate of which to render the square
+     * @param y the y-value of the coordinate of which to render the square
+     */
     public void paintEmpty(int x, int y){
         if ((y%2 + x)%2==0){
             drawRect(x*squareSize,y*squareSize,squareSize,squareSize,Colours.boardWhite);
         } else {
             drawRect(x*squareSize,y*squareSize,squareSize,squareSize,Colours.boardBlack);
+        }
+    }
+
+    /**
+     * Draws the current stored board. Will not overwrite the background. 
+     * <p>
+     * Is inefficient and should only be used after a buffer clear and when loading a completely different board state. Smaller changes should use the  inherited paintPiece and paintEmpty functions directly
+     */
+    public void drawCurrentBoard(Piece[][] board){
+        for (int row = 0; row < 8; row++){
+            for (int col = 0; col < 8; col++){
+                paintPiece(board[row][col].getType(), board[row][col].getColour(),col,row);
+            }
         }
     }
 

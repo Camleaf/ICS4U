@@ -5,6 +5,10 @@ import java.util.ArrayDeque;
 import java.util.Deque;
 import java.awt.Point;
 
+/**
+ * 
+ * @author Camleaf
+ */
 public class Mouse extends MouseAdapter {
     private Deque<Point> eventStack = new ArrayDeque<Point>();
 
@@ -20,11 +24,19 @@ public class Mouse extends MouseAdapter {
         eventStack.clear();
     }
 
-    public Point getNextEvent(){
+    public Point pollEvent(){
         return eventStack.poll();
     }
 
-    public Point peekNextEvent(){
+    public Point pollLastEvent(){
+        return eventStack.pollLast();
+    }
+
+    public Point peekEvent(){
+        return eventStack.peek();
+    }
+
+    public Point peekLastEvent(){
         return eventStack.peek();
     }
 }

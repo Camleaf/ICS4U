@@ -2,9 +2,8 @@ import javax.swing.SwingUtilities;
 import lib.interactions.Keyboard;
 import lib.interactions.Mouse;
 import lib.logic.Clock;
-import main.window.Display;
+import main.Game;
 import java.lang.Thread;
-import java.time.Instant;
 /**
     @author CamLeaf
 */
@@ -13,15 +12,17 @@ public class Main {
         SwingUtilities.invokeLater(new Runnable() { // Man i love the jswing and awt docs they make no sense but it works
             @Override
             public void run() {
-                // add display stuff
-                Display display = new Display();
-                display.show();
+                // initialize globals stuff
+                Game game = new Game();
+                game.show();
                 Keyboard keyboard = new Keyboard();
-                display.window.addKeyListener(keyboard);
+                game.window.addKeyListener(keyboard);
                 Mouse mouse = new Mouse();
-                display.window.addMouseListener(mouse);
-                display.window.requestFocus();
-                MainLoop main = new MainLoop(keyboard, display, mouse);
+                game.window.addMouseListener(mouse);
+                game.window.requestFocus();
+
+                game.addListeners(keyboard,mouse);
+                MainLoop main = new MainLoop(keyboard, game, mouse);
             }
         });
     }
@@ -33,15 +34,15 @@ class MainLoop implements Runnable{
     Thread thread;
     boolean running;
     Keyboard keyboard;
-    Display display;
+    Game game;
     Mouse mouse;
     Clock clock;
 
-    public MainLoop(Keyboard keyboard, Display display, Mouse mouse) {
+    public MainLoop(Keyboard keyboard, Game game, Mouse mouse) {
         thread = new Thread(this);
         thread.setDaemon(true);
         this.keyboard = keyboard;
-        this.display = display;
+        this.game = game;
         this.mouse = mouse;
         this.clock = new Clock(60);
         start();
@@ -63,15 +64,8 @@ class MainLoop implements Runnable{
 
     public void run(){
         // Mainloop here
-        int idx = 0;
         while (running){
-
-            // If not bottlenecked by system capacity, this loop will run a negligible amount below 50fps
-
-            System.out.println(idx);
-
             mouse.clearStack();
-            idx++;
             clock.tick();
         }
     }

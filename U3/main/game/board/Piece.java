@@ -17,8 +17,8 @@ public class Piece {
     }
 
 
-    private int x;
-    private int y;
+    public int x;
+    public int y;
     private Type type;
     private Colour colour;
     private Boolean hasMoved;

@@ -4,6 +4,8 @@ import static main.game.board.Piece.Type.*;
 import static main.game.board.Piece.Colour.*;
 import main.window.Colours;
 import main.window.panels.BoardPanel;
+import java.awt.Point;
+import java.awt.Rectangle;
 
 /**
  * Contains the data for the chess game, and all methods which can mutate that data
@@ -11,7 +13,8 @@ import main.window.panels.BoardPanel;
  */
 public class Board extends BoardPanel {
 
-    Piece[][] board;
+    private Piece[][] board;
+    private Point selectedPoint = new Point(-1,-1);
 
     public Board(int gridSize){
         super(gridSize);
@@ -19,7 +22,7 @@ public class Board extends BoardPanel {
         paintBackground();
         highlightSquare(5, 3, Colours.selectHighlight);
         highlightSquare(5, 2);
-        drawCurrentBoard();
+        drawCurrentBoard(board);
     }
 
     /**
@@ -56,15 +59,26 @@ public class Board extends BoardPanel {
     }
 
     /**
-     * Draws the current stored board. Will not overwrite the background. 
+     * Handles a click at a given java.awt.Point on the board.
      * <p>
-     * Is inefficient and should only be used after a buffer clear and when loading a completely different board state. Smaller changes should use the  inherited paintPiece and paintEmpty functions directly
+     * @return the acceptance status of the click
      */
-    private void drawCurrentBoard(){
-        for (int row = 0; row < 8; row++){
-            for (int col = 0; col < 8; col++){
-                paintPiece(board[row][col].getType(), board[row][col].getColour(),col,row);
+    public void handleMouseClick(Point clickPos){
+        Rectangle bounds = this.getBounds();
+        if (bounds.contains(clickPos)){
+
+            Point clickedSquare = new Point(clickPos.x/squareSize, clickPos.y/squareSize); // squareSize was intialized in the super() call to BoardPanel
+            Piece interactedPiece = board[clickedSquare.y][clickedSquare.x];
+
+            if (this.selectedPoint.x == -1 || this.selectedPoint.y == -1){
+                selectedPoint.setLocation(interactedPiece.x,interactedPiece.y);
+            } else {
+                Piece prevPiece = board[selectedPoint.y][selectedPoint.x];
             }
+
+
+        } else {
+            this.selectedPoint.setLocation(-1,-1);
         }
     }
 }
