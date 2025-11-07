@@ -1,7 +1,6 @@
 package main.window;
 import main.game.Board;
 import lib.Window;
-import java.awt.Color;
 /**
     * Utilises the rendering methods from the Screen class to render game-specific elements and objects. Only contains renderloops and displays the game objects. Does not modify the game objects
     @author CamLeaf
