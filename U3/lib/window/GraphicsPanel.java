@@ -49,7 +49,7 @@ public class GraphicsPanel extends JPanel{
      *  getWidth   :     Returns the integer width of the panel
      *  getHeight  :     Returns the integer height of the panel
      */
-
+    
     /**
      * Flushes the buffer frame
      */

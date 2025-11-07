@@ -11,7 +11,7 @@ public class Piece {
 
 
     public static enum Colour {
-        WHITE(0),BLACK(1);
+        NONE(-1), WHITE(0),BLACK(1);
         public int id;
         private Colour(int index){this.id = index;}
     }
@@ -37,6 +37,14 @@ public class Piece {
         this.type = type;
         this.colour = colour;
         this.hasMoved = hasMoved;
+    }
+
+    public Type getType(){
+        return this.type;
+    }
+
+    public Colour getColour(){
+        return this.colour;
     }
 
 

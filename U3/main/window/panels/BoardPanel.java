@@ -81,4 +81,12 @@ public class BoardPanel extends GraphicsPanel {
     }
 
 
+    public void paintEmpty(int x, int y){
+        if ((y%2 + x)%2==0){
+            drawRect(x*squareSize,y*squareSize,squareSize,squareSize,Colours.boardWhite);
+        } else {
+            drawRect(x*squareSize,y*squareSize,squareSize,squareSize,Colours.boardBlack);
+        }
+    }
+
 }
