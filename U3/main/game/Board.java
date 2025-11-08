@@ -6,6 +6,9 @@ import static main.game.board.Piece.Colour.*;
 import main.window.panels.BoardPanel;
 import java.awt.Point;
 import java.awt.Rectangle;
+import java.util.HashMap;
+import lib.logic.Utils;
+import java.util.ArrayList;
 
 /**
  * Contains the data for the chess game, and all methods which can mutate that data
@@ -17,12 +20,14 @@ public class Board extends BoardPanel {
     private Point selectedPoint = new Point(-1,-1);
     private Piece.Colour turn = WHITE;
     private Highlight prevMoveHighlight = new Highlight();
+    private HashMap<Point,Point[]> legalMoves = new HashMap<>();
 
     public Board(int gridSize){
         super(gridSize);
         board = generateDefaultBoard();
         paintBackground();
         drawCurrentBoard(board);
+        calculateLegalMoves();
     }
 
     /**
@@ -136,11 +141,13 @@ public class Board extends BoardPanel {
 
         // Paint piece in new spot
         paintPiece(piece.getType(),piece.getColour(),piece.x,piece.y);
-
+        piece.setMoved(true);
         // Modify the prevMoveHighlight
         
 
         turn = (turn.equals(WHITE)) ? BLACK : WHITE;
+
+        calculateLegalMoves(); // Recalculate legal moves list AFTER turn has been changed
 
         return true;
     }
@@ -161,8 +168,77 @@ public class Board extends BoardPanel {
             return false;
         }
 
-        // Add actual move checking, en passant checking, if king is in check checking. And turns. That too
+        // checks against the current legalmoves list if the move is possible
+        if (!Utils.contains( legalMoves.getOrDefault( piece.getLocation(), new Point[0] ),destinationPiece.getLocation())){
+            return false;
+        }
+    
         return true;
+    }
+
+    /**
+     * Calculates the legal moves of all pieces on the board and stores them on the board
+     */
+    private void calculateLegalMoves(){
+        legalMoves.clear(); //empty the arr so moves don't randomly keep stacking up
+
+        for (int row = 0;row<8;row++){
+            for (int col = 0;col<8;col++){
+                Piece piece = board[row][col];
+
+                if (!piece.getColour().equals(turn)){ // Since this happens after turn change we want to get legal moves for current turn pieces only. This will also filter out the empties
+                    continue;
+                }
+                // Build pieces
+                ArrayList<Point> validMoves = new ArrayList<Point>();
+
+                switch (piece.getType()){
+                    case PAWN: // Note: will need to add en passant checking to here but I don't have the infrastructure to do that yet
+                        int colourAdjust = (piece.getColour().equals(WHITE)) ? -1:1;
+                        if (!piece.hasMoved()){ // Add double move forward
+                            validMoves.add(
+                                new Point(col,row + (2*colourAdjust))
+                            );
+                        }
+                        // document this later
+                        if (row+colourAdjust >= 0 && row+colourAdjust <8){
+                            if (board[row+colourAdjust][col].getType()==EMPTY){
+                                validMoves.add(new Point(col,row+colourAdjust));
+                            }
+                            for (int i : new int[]{-1,1}){
+                                if (col+i <0 || col+i > 7){ continue;}
+
+                                if (board[row+colourAdjust][col+i].getType()!=EMPTY){
+                                    validMoves.add(new Point(col+i,row+colourAdjust));
+                                }
+                            }
+                        }
+
+                        break;
+                    case KNIGHT:
+
+                        break;
+                    case BISHOP:
+
+                        break;
+                    case ROOK:
+
+                        break;
+                    case QUEEN:
+                    
+                        break;
+                    case KING:
+                        break;
+                    default:
+                        break;
+                }
+                legalMoves.put(new Point(col,row), validMoves.toArray(new Point[validMoves.size()]));
+                
+            }
+        }
+
+
+
     }
 
 }

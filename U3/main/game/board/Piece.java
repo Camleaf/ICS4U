@@ -1,4 +1,5 @@
 package main.game.board;
+import java.awt.Point;
 
 public class Piece {
     public static enum Type {
@@ -50,6 +51,22 @@ public class Piece {
     public void setLocation(int x, int y){
         this.x = x;
         this.y = y;
+    }
+    public void setLocation(Point point){
+        this.x = point.x;
+        this.y = point.y;
+    }
+
+    public Point getLocation(){
+        return new Point(x,y);
+    }
+    
+    public void setMoved(boolean hasMoved){
+        this.hasMoved = hasMoved;
+    }
+
+    public boolean hasMoved(){
+        return this.hasMoved;
     }
 
 
