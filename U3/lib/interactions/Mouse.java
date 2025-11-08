@@ -24,23 +24,37 @@ public class Mouse extends MouseAdapter {
             eventStack.offer(point);
         }
     }
-
+    /**
+     * Clears the mouse eventDeque that has accumulated since the last clear
+    */
     public void clearStack(){
         eventStack.clear();
     }
 
+    /** Polls the first element in the mouse event buffer
+     * @return the first element in the mouse event buffer
+     */
     public Point pollEvent(){
         return eventStack.poll();
     }
 
+    /** Polls the last element in the mouse event buffer
+     * @return the last element in the mouse event buffer
+     */
     public Point pollLastEvent(){
         return eventStack.pollLast();
     }
 
+    /** Peeks the first element in the mouse event buffer
+     * @return the first element in the mouse event buffer
+     */
     public Point peekEvent(){
         return eventStack.peek();
     }
 
+    /** Peeks the last element in the mouse event buffer
+     * @return the last element in the mouse event buffer
+     */
     public Point peekLastEvent(){
         return eventStack.peekLast();
     }
