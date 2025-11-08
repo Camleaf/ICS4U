@@ -1,4 +1,5 @@
 package main.game;
+import main.game.board.Highlight;
 import main.game.board.Piece;
 import static main.game.board.Piece.Type.*;
 import static main.game.board.Piece.Colour.*;
@@ -15,13 +16,13 @@ public class Board extends BoardPanel {
 
     private Piece[][] board;
     private Point selectedPoint = new Point(-1,-1);
+    private Piece.Colour turn = WHITE;
+    private Highlight prevMoveHighlight = new Highlight();
 
     public Board(int gridSize){
         super(gridSize);
         board = generateDefaultBoard();
         paintBackground();
-        highlightSquare(5, 3, Colours.selectHighlight);
-        highlightSquare(5, 2);
         drawCurrentBoard(board);
     }
 
@@ -76,8 +77,9 @@ public class Board extends BoardPanel {
             Piece interactedPiece = board[clickedSquare.y][clickedSquare.x];
 
             if (this.selectedPoint.x == -1 || this.selectedPoint.y == -1){ // If the previously clicked square isn't defined
-                if (interactedPiece.getType().equals(EMPTY)){return;} // If the clicked point is an empty we don't want to define that as a clicked piece
+                if (interactedPiece.getType().equals(EMPTY) || !interactedPiece.getColour().equals(turn)){return;} // If the clicked point is an empty we don't want to define that as a clicked piece
                 selectedPoint.setLocation(interactedPiece.x,interactedPiece.y);
+                paintPiece(interactedPiece,PIECE_PAINT_HIGHLIGHT_SELECT);
                 // Will eventually add highlighting here
             } else { // if it is that means there is a piece there
                 Piece prevPiece = board[selectedPoint.y][selectedPoint.x];
@@ -95,9 +97,13 @@ public class Board extends BoardPanel {
 
 
         } else { // If the click is out of bounds of the board we want to reset the selectedPoint
+            if (selectedPoint.x > 0 && selectedPoint.y != 0) paintPiece(board[selectedPoint.y][selectedPoint.x],PIECE_PAINT_OVERWRITE);
+
             this.selectedPoint.setLocation(-1,-1);
         }
     }
+
+
 
     /**
      * Handles the act of moving a piece, which includes switching the coords, and painting over parts of the board
@@ -110,12 +116,19 @@ public class Board extends BoardPanel {
             return false;
         }
 
-        // Now just overwrite the piece it lands on and let garbage collector clean it up. Then add a space where the piece used to be referenced
-        
-        // Overwrite old squares on display
-        paintEmpty(destinationPiece.x,destinationPiece.y);
-        paintEmpty(piece.x,piece.y);
+        //Remove old movement highlighted squares
 
+        for (Point point : prevMoveHighlight.getSquares()){
+            if (point == null){continue;}
+            paintPiece(board[point.y][point.x],PIECE_PAINT_OVERWRITE);
+        }
+
+        // Now just overwrite the piece it lands on and let garbage collector clean it up. Then add a space where the piece used to be referenced
+        // Overwrite old squares on display and set them to highlight
+        prevMoveHighlight.set(new Point(piece.x,piece.y), new Point(destinationPiece.x,destinationPiece.y));
+        paintHighlight(destinationPiece.x,destinationPiece.y);
+        paintHighlight(piece.x,piece.y);
+        
         // Give desination location and coordinates to moving piece then overwrite it's original spot
 
         board[destinationPiece.y][destinationPiece.x] = piece;
@@ -125,21 +138,32 @@ public class Board extends BoardPanel {
         // Paint piece in new spot
         paintPiece(piece.getType(),piece.getColour(),piece.x,piece.y);
 
+        // Modify the prevMoveHighlight
+        
+
+        turn = (turn.equals(WHITE)) ? BLACK : WHITE;
+
         return true;
     }
+
+
+
 
     /** Given a piece and destination, determines if the move is valid, and follows Chess's rules.
      * @param piece the piece being moved
      * @param destinationPiece the piece or empty which is the destination
      */
     private boolean isValidMove(Piece piece, Piece destinationPiece){
-
+        
         if ( piece.getColour().equals( destinationPiece.getColour() )){ // If white attacks white, or black attacks black
+            paintPiece(piece,PIECE_PAINT_OVERWRITE);
             this.selectedPoint.setLocation(destinationPiece.x,destinationPiece.y);
+            paintPiece(destinationPiece,PIECE_PAINT_HIGHLIGHT_SELECT);
             return false;
         }
 
         // Add actual move checking, en passant checking, if king is in check checking. And turns. That too
         return true;
     }
+
 }

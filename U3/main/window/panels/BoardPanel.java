@@ -48,7 +48,7 @@ public class BoardPanel extends GraphicsPanel {
      * @param x the x-value of the coordinate to highlight
      * @param y the y-value of the coordinate to highlight
      */
-    public void highlightSquare(int x, int y){
+    public void paintHighlight(int x, int y){
         drawRect(x * squareSize, y*squareSize,squareSize,squareSize,Colours.boardHighlight);
     }
 
@@ -57,7 +57,7 @@ public class BoardPanel extends GraphicsPanel {
      * @param x the x-value of the coordinate to highlight
      * @param y the y-value of the coordinate to highlight
      */
-    public void highlightSquare(int x, int y, Color colour){
+    public void paintHighlight(int x, int y, Color colour){
         drawRect(x * squareSize, y*squareSize,squareSize,squareSize,colour);
     }
 
@@ -79,6 +79,64 @@ public class BoardPanel extends GraphicsPanel {
         }
         drawBufferedImage(spriteSheet.getSlice(pieceX,pieceY,spriteSize,spriteSize), x*squareSize, y*squareSize);
     }
+
+    // Variables for the variable paintPiece
+    public static final int PIECE_PAINT_DEFAULT = 0;
+    public static final int PIECE_PAINT_OVERWRITE = 1;
+    public static final int PIECE_PAINT_HIGHLIGHT = 2;
+    public static final int PIECE_PAINT_HIGHLIGHT_SELECT = 3;
+    /**
+     * Paints a piece onto the board with the option to use a specific drawing mode
+     * @param piece a class representing a piece from the enum Pieces from class board 
+     * @param colour a class representing one of two colours, black and white, from the enum Colour from class board 
+     * @param x the x-value of the coordinate of which to render the piece
+     * @param y the y-value of the coordinate of which to render the piece
+     * @param mode the mode of the piece paint.
+     * <ul>
+     * <li><b>0</b> default paint</li>
+     * <li><b>1</b> overwrites background with regular board colour</li>
+     * <li><b>2</b> overwrites background with highlight color of last move</li>
+     * <li><b>3</b> overwrites background with highlight color of current selection</li>
+     */
+    public void paintPiece(Piece.Type piece, Piece.Colour colour, int x, int y, int mode){
+        switch (mode){
+            case (PIECE_PAINT_OVERWRITE):
+                paintEmpty(x, y);
+                break;
+            case (PIECE_PAINT_HIGHLIGHT):
+                paintHighlight(x,y);
+                break;
+            case (PIECE_PAINT_HIGHLIGHT_SELECT):
+                paintHighlight(x,y,Colours.selectHighlight);
+                break;
+        }   
+
+        paintPiece(piece, colour, x, y);
+    }
+    /**
+     * Paints a piece onto the board based on the piece's internal coordinates, type, and colour
+     * @param piece a class representing a piece from the enum Pieces from class board 
+    */
+    public void paintPiece(Piece piece){
+        paintPiece(piece.getType(),piece.getColour(),piece.x,piece.y);
+    }
+
+
+    /**
+     * According to a specific mode, Paints a piece onto the board based on the piece's internal coordinates, type, and colour.
+     * @param piece a class representing a piece from the enum Pieces from class board 
+     * @param mode the mode of the piece paint.
+     * <ul>
+     * <li><b>0</b> default paint</li>
+     * <li><b>1</b> overwrites background with regular board colour</li>
+     * <li><b>2</b> overwrites background with highlight color of last move</li>
+     * <li><b>3</b> overwrites background with highlight color of current selection</li>
+    */
+    public void paintPiece(Piece piece, int mode){
+        paintPiece(piece.getType(),piece.getColour(),piece.x,piece.y,mode);
+    }
+
+    
 
     /**
      * Paints an empty square at a given coordinate (x,y) overwriting what was there previously
@@ -105,5 +163,6 @@ public class BoardPanel extends GraphicsPanel {
             }
         }
     }
+
 
 }

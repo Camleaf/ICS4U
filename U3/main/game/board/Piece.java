@@ -18,7 +18,7 @@ public class Piece {
 
 
     public int x;
-    public int y;
+    public  int y;
     private Type type;
     private Colour colour;
     private Boolean hasMoved;
