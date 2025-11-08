@@ -221,6 +221,7 @@ public class Board extends BoardPanel {
                                 }
 
                                 // dont put en passant here put it as a different check in the valid move function
+                                // Actually no put en passant here as a move option and *also* add a check on the handlemove function to remove the other piece if it detects en passant
                             }
                         }
 
