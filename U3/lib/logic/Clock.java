@@ -45,7 +45,7 @@ public class Clock {
     public void tick(){
         savedTime += delayMs;
         long delayTime = savedTime - System.currentTimeMillis();
-        if (savedTime > 0){
+        if (delayTime > 0){
             try{
                 Thread.sleep(delayTime);
             }catch(Exception e){e.printStackTrace();}

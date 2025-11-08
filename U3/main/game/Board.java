@@ -107,6 +107,14 @@ public class Board extends BoardPanel {
         }
     }
 
+    /**
+     * Given a coordinate, x and y, determines if it is in the bounds of the board arr
+     * @param x the x index to see if it is in the board arr
+     * @param y the y index to see if it is in the board arr
+     */
+    private boolean pieceInBounds(int x, int y){
+        return 0 <= x && x < 8 && 0 <= y && y < 8;
+    }
 
 
     /**
@@ -195,7 +203,7 @@ public class Board extends BoardPanel {
                 switch (piece.getType()){
                     case PAWN: // Note: will need to add en passant checking to here but I don't have the infrastructure to do that yet
                         int colourAdjust = (piece.getColour().equals(WHITE)) ? -1:1;
-                        if (!piece.hasMoved()){ // Add double move forward
+                        if (!piece.hasMoved()&&board[row+colourAdjust][col].getType().equals(EMPTY)&&board[row+(2*colourAdjust)][col].getType().equals(EMPTY)){ // Add double move forward
                             validMoves.add(
                                 new Point(col,row + (2*colourAdjust))
                             );
@@ -211,28 +219,85 @@ public class Board extends BoardPanel {
                                 if (board[row+colourAdjust][col+i].getType()!=EMPTY){
                                     validMoves.add(new Point(col+i,row+colourAdjust));
                                 }
+
+                                // dont put en passant here put it as a different check in the valid move function
                             }
                         }
 
                         break;
                     case KNIGHT:
+                        for (int[] pos : new int[][]{{2,1},{-2,1},{2,-1},{-2,-1},{1,2},{-1,2},{1,-2},{-1,-2}}){
+                            if (!pieceInBounds(pos[0]+col,pos[1]+row)) continue; // If outside the board
 
+                            validMoves.add(new Point(col+pos[0],row+pos[1]));
+
+
+                        }
                         break;
                     case BISHOP:
+                        for (int[] pos : new int[][]{{1,1},{1,-1},{-1,1},{-1,-1}}){
+                            int idx = 1;
+                            while (true){
+                                int newX = pos[0]*idx + col;
+                                int newY = pos[1]*idx + row;
+                                if (!pieceInBounds(newX, newY)) break;
 
+                                validMoves.add(new Point(newX, newY));
+
+                                if (board[newY][newX].getType()!=EMPTY)break;
+
+                                idx++;
+                            }
+                        }
                         break;
                     case ROOK:
+                        for (int[] pos : new int[][]{{1,0},{-1,0},{0,1},{0,-1}}){
+                            int idx = 1;
+                            while (true){
+                                int newX = pos[0]*idx + col;
+                                int newY = pos[1]*idx + row;
+                                if (!pieceInBounds(newX, newY)) break;
 
+                                validMoves.add(new Point(newX, newY));
+
+                                if (board[newY][newX].getType()!=EMPTY)break;
+
+                                idx++;
+                            }
+                        }
                         break;
-                    case QUEEN:
-                    
+
+                    case QUEEN: //basically just the same as the rook and bishop combined
+                        for (int[] pos : new int[][]{{1,0},{-1,0},{0,1},{0,-1},{1,1},{1,-1},{-1,1},{-1,-1}}){
+                            int idx = 1;
+                            while (true){
+                                int newX = pos[0]*idx + col;
+                                int newY = pos[1]*idx + row;
+                                if (!pieceInBounds(newX, newY)) break;
+
+                                validMoves.add(new Point(newX, newY));
+
+                                if (board[newY][newX].getType()!=EMPTY)break;
+
+                                idx++;
+                            }
+                        }
                         break;
-                    case KING:
+                    case KING: 
+                    // Will have to figure out how check works. Might move the white and black kings allowed moves to be calculated after everything else's
+                    // I also have to figure out how all the legal moves work here instead of on click if i want to be able to feed this information to a bot
                         break;
                     default:
                         break;
                 }
-                legalMoves.put(new Point(col,row), validMoves.toArray(new Point[validMoves.size()]));
+                // Filter for moving onto same colour
+
+                ArrayList<Point> filteredValidMoves = new ArrayList<Point>();
+                for (Point pt : validMoves){
+                    if (board[pt.y][pt.x].getColour().equals(turn)){continue;}
+                    filteredValidMoves.add(pt);
+                }
+                legalMoves.put(new Point(col,row), filteredValidMoves.toArray(new Point[filteredValidMoves.size()]));
                 
             }
         }
