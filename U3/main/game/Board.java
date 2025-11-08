@@ -3,7 +3,6 @@ import main.game.board.Highlight;
 import main.game.board.Piece;
 import static main.game.board.Piece.Type.*;
 import static main.game.board.Piece.Colour.*;
-import main.window.Colours;
 import main.window.panels.BoardPanel;
 import java.awt.Point;
 import java.awt.Rectangle;
