@@ -135,6 +135,21 @@ public class Board extends BoardPanel {
             paintPiece(board[point.y][point.x],PIECE_PAINT_OVERWRITE);
         }
 
+        // Check for en passant and adjust board accordingly
+        Point[] prevMoves = prevMoveHighlight.getSquares();
+        if (!(prevMoves[0]==null || prevMoves[1]==null) && piece.getType()==PAWN && destinationPiece.getType()==EMPTY){
+
+            if (Math.abs(prevMoves[0].y-destinationPiece.getLocation().y) == 1 && Math.abs(prevMoves[1].y-destinationPiece.getLocation().y) == 1){
+                // this code is a mess it works though. Better just keep an eye to make sure it doesn't obliterate anything else
+                int adjust = (prevMoves[1].y-destinationPiece.getLocation().y > 0) ? 1:-1;
+                if (board[destinationPiece.y+adjust][destinationPiece.x].getType() == PAWN){
+                    board[destinationPiece.y+adjust][destinationPiece.x] = new Piece(destinationPiece.x,destinationPiece.y+adjust,EMPTY,NONE);
+                    paintEmpty(destinationPiece.x,destinationPiece.y+adjust);
+                }
+            }
+        }
+        //end en passant check
+
         // Now just overwrite the piece it lands on and let garbage collector clean it up. Then add a space where the piece used to be referenced
         // Overwrite old squares on display and set them to highlight
         prevMoveHighlight.set(new Point(piece.x,piece.y), new Point(destinationPiece.x,destinationPiece.y));
@@ -220,6 +235,15 @@ public class Board extends BoardPanel {
                                     validMoves.add(new Point(col+i,row+colourAdjust));
                                 }
 
+                                if (board[row][col+i].getType()==PAWN){
+                                    Point[] prevMoves = prevMoveHighlight.getSquares();
+                                    if (prevMoves[0]==null || prevMoves[1]==null){continue;}
+                                    
+                                    if (prevMoves[1].x == col+i && prevMoves[1].y == row && Math.abs(prevMoves[1].y-prevMoves[0].y) == 2){
+                                        validMoves.add(new Point(col+i,row+colourAdjust));
+                                    }
+
+                                }
                                 // dont put en passant here put it as a different check in the valid move function
                                 // Actually no put en passant here as a move option and *also* add a check on the handlemove function to remove the other piece if it detects en passant
                             }
