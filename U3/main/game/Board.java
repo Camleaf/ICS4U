@@ -235,6 +235,7 @@ public class Board extends BoardPanel {
                         }
                         break;
                     case BISHOP:
+                    // The idea here is that we have a movement vector x,y for every single direction it could go in. For each vector, we multiply x,y by the amount of iterations, and check if the current square is valid or not.
                         for (int[] pos : new int[][]{{1,1},{1,-1},{-1,1},{-1,-1}}){
                             int idx = 1;
                             while (true){
@@ -250,7 +251,7 @@ public class Board extends BoardPanel {
                             }
                         }
                         break;
-                    case ROOK:
+                    case ROOK: //same as bishop but with different vectors
                         for (int[] pos : new int[][]{{1,0},{-1,0},{0,1},{0,-1}}){
                             int idx = 1;
                             while (true){
