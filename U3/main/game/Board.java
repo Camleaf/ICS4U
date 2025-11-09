@@ -22,6 +22,8 @@ public class Board extends BoardPanel {
     private Piece.Colour turn = WHITE;
     private Highlight prevMoveHighlight = new Highlight();
     private LegalMoves legalMoves = new LegalMoves();
+    private ArrayList<Piece> whitePieces = new ArrayList<Piece>();
+    private ArrayList<Piece> blackPieces = new ArrayList<Piece>();
     // make a different legalmoves list for black and white and use that to determine
 
     public Board(int gridSize){
@@ -29,7 +31,18 @@ public class Board extends BoardPanel {
         board = generateDefaultBoard();
         paintBackground();
         drawCurrentBoard(board);
-        legalMoves.setLegalMoves(WHITE, calculateLegalMoves(WHITE,board));
+
+        for (Piece[] row : board){
+            for (Piece piece : row){
+                if (piece.getColour()==WHITE){
+                    whitePieces.add(piece);
+                } else if (piece.getColour() == BLACK){
+                    blackPieces.add(piece);
+                }
+            }
+        }
+
+        legalMoves.setLegalMoves(WHITE, calculateLegalMoves(WHITE));
     }
 
     /**
@@ -152,6 +165,9 @@ public class Board extends BoardPanel {
         }
         //end en passant check
 
+        if (blackPieces.contains(destinationPiece)){blackPieces.remove(destinationPiece);}
+        if (whitePieces.contains(destinationPiece)){whitePieces.remove(destinationPiece);}
+
         // Now just overwrite the piece it lands on and let garbage collector clean it up. Then add a space where the piece used to be referenced
         // Overwrite old squares on display and set them to highlight
         prevMoveHighlight.set(new Point(piece.x,piece.y), new Point(destinationPiece.x,destinationPiece.y));
@@ -172,11 +188,11 @@ public class Board extends BoardPanel {
         
         // Screw it i'm going the extremely inefficient route. I'm so happy that chess is a game that can afford massive overheads on functions
         // The idea for updating both the black and white legalmoves is that once one's turn ends, i can use (an albiet flawed) recalculation to at minimum see if there are any new threats to the king
-        legalMoves.setLegalMoves(turn, calculateLegalMoves(turn, board));
+        legalMoves.setLegalMoves(turn, calculateLegalMoves(turn));
 
         turn = (turn.equals(WHITE)) ? BLACK : WHITE;
 
-        legalMoves.setLegalMoves(turn, calculateLegalMoves(turn, board));
+        legalMoves.setLegalMoves(turn, calculateLegalMoves(turn));
         // Recalculate legal moves list AFTER turn has been changed
 
         return true;
@@ -211,12 +227,39 @@ public class Board extends BoardPanel {
     }
 
     /**
+     * Gets a Piece[] containing pieces alive of a specified type and colour
+     * @param t The Piece.Type required
+     * @param c The colour to filter by
+     * @return a Piece[] containing all pieces alive of the specifications
+     */
+    private Piece[] getPieceType(Piece.Type t, Piece.Colour c){
+        ArrayList<Piece> pieces = new ArrayList<Piece>();
+        switch (c){
+            case BLACK:
+                for (Piece piece : blackPieces){
+                    if (piece.getType()==t){
+                        pieces.add(piece);
+                    }
+                }
+                break;
+            case WHITE:
+                for (Piece piece : whitePieces){
+                    if (piece.getType()==t){
+                        pieces.add(piece);
+                    }
+                }
+                break;
+        }
+        return  pieces.toArray(new Piece[pieces.size()]);
+    }
+    /**
      * Calculates the legal moves of all pieces on the board and stores them on the board
      * This is a piece of crap function and i want it gone but i can't figure out for the life of me how to refactor it
      */
-    private HashMap<Point,Point[]> calculateLegalMoves(Piece.Colour colour, Piece[][] board ){
+    private HashMap<Point,Point[]> calculateLegalMoves(Piece.Colour colour){
         // make it so this function has a return value of an arr and a input of the colour i want to calculate the moves for so that I can make like possible moves
         HashMap<Point,Point[]> legalMoves = new HashMap<>();
+        Piece king = getPieceType(KING, colour)[0];
 
         for (int row = 0;row<8;row++){
             for (int col = 0;col<8;col++){
@@ -240,26 +283,36 @@ public class Board extends BoardPanel {
                         // document this later
                         if (row+colourAdjust >= 0 && row+colourAdjust <8){
                             if (getPieceFromBoard(col, row+colourAdjust).getType()==EMPTY){
+
+                                if (checkPin(king,piece,new Point(col, row+colourAdjust))){continue;} // If this move could lead to a pin skip it
+
                                 validMoves.add(new Point(col,row+colourAdjust));
                             }
                             for (int i : new int[]{-1,1}){
                                 if (col+i <0 || col+i > 7){ continue;}
 
                                 if (getPieceFromBoard(col+i, row+colourAdjust).getType()!=EMPTY){
+
+                                    if (checkPin(king,piece,new Point(col+i, row+colourAdjust))){continue;} // If this move could lead to a pin skip it
+
                                     validMoves.add(new Point(col+i,row+colourAdjust));
                                 }
 
-                                if (getPieceFromBoard(col+i, row).getType()==PAWN){
+
+                                // en passant code here
+                                if (getPieceFromBoard(col+i, row).getType()==PAWN){ 
                                     Point[] prevMoves = prevMoveHighlight.getSquares();
+                                    // If the previous move by the other team was a pawn jump next to the current pawn, allow en passant
                                     if (prevMoves[0]==null || prevMoves[1]==null){continue;}
                                     
                                     if (prevMoves[1].x == col+i && prevMoves[1].y == row && Math.abs(prevMoves[1].y-prevMoves[0].y) == 2){
+
+                                        if (checkPin(king,piece,new Point(col+i, row+colourAdjust))){continue;} // If this move could lead to a pin skip it
+
                                         validMoves.add(new Point(col+i,row+colourAdjust));
                                     }
 
                                 }
-                                // dont put en passant here put it as a different check in the valid move function
-                                // Actually no put en passant here as a move option and *also* add a check on the handlemove function to remove the other piece if it detects en passant
                             }
                         }
 
@@ -268,6 +321,7 @@ public class Board extends BoardPanel {
                         for (int[] pos : new int[][]{{2,1},{-2,1},{2,-1},{-2,-1},{1,2},{-1,2},{1,-2},{-1,-2}}){
                             if (!pieceInBounds(pos[0]+col,pos[1]+row)) continue; // If outside the board
 
+                            if (checkPin(king,piece,new Point(col+pos[0], row+pos[1]))){continue;} // If this move could lead to a pin skip it
                             validMoves.add(new Point(col+pos[0],row+pos[1]));
 
 
@@ -281,6 +335,8 @@ public class Board extends BoardPanel {
                                 int newX = pos[0]*idx + col;
                                 int newY = pos[1]*idx + row;
                                 if (!pieceInBounds(newX, newY)) break;
+
+                                if (checkPin(king,piece,new Point(newX, newY))){break;} // If this move could lead to a pin skip it
 
                                 validMoves.add(new Point(newX, newY));
 
@@ -297,6 +353,8 @@ public class Board extends BoardPanel {
                                 int newX = pos[0]*idx + col;
                                 int newY = pos[1]*idx + row;
                                 if (!pieceInBounds(newX, newY)) break;
+
+                                if (checkPin(king,piece,new Point(newX, newY))){break;} // If this move could lead to a pin skip it
 
                                 validMoves.add(new Point(newX, newY));
 
@@ -315,6 +373,8 @@ public class Board extends BoardPanel {
                                 int newY = pos[1]*idx + row;
                                 if (!pieceInBounds(newX, newY)) break;
 
+                                if (checkPin(king,piece,new Point(newX, newY))){break;} // If this move could lead to a pin skip it
+                                
                                 validMoves.add(new Point(newX, newY));
 
                                 if (getPieceFromBoard(newX, newY).getType()!=EMPTY)break;
@@ -346,4 +406,73 @@ public class Board extends BoardPanel {
 
     }
 
+    /**
+     * Returns a boolean value which represents whether moving a given piece to a given point will cause a pin by enemies on a given king.
+     * @param king the king for which the function checks for pins
+     * @param pieceToMove the piece for which the moves may cause a pin
+     * @param destPoint the point which the pieceToMove is moving
+     */
+    private boolean checkPin(Piece king, Piece pieceToMove, Point destPoint){
+        // See if the pin is even worth checking in the first place
+
+        int xDif = pieceToMove.x - king.x;
+        int yDif = pieceToMove.y - king.y;
+
+        // There is only a possibility of a pin if xdif==ydif, or xdif0=0 && ydif !=0, or xdif!=0 && ydif==0
+
+        if (!(Math.abs(xDif) == Math.abs(yDif) || (xDif==0&&yDif!=0) || (xDif!=0&&yDif==0))) return false;
+
+        // Based on the pin logic above, I can normalize the vectors like this and have it be accurate as we are in an edge case
+        if (xDif > 0){
+            xDif = 1;
+        } else if (xDif < 0){
+            xDif = -1;
+        }
+
+        if (yDif > 0){
+            yDif = 1;
+        } else if (yDif < 0){
+            yDif = -1;
+        }
+
+        Point vector = new Point(xDif,yDif);
+
+        int idx = 1;
+        while (true){
+            int newX = vector.x*idx + king.x;
+            int newY = vector.y*idx + king.y;
+            if (!pieceInBounds(newX, newY)) break; // If the ray reaches the edge of the board, there is no pin
+
+            if (newX == destPoint.x && newY == destPoint.y){ 
+                // If where the piece that is next to the king moves and the ray hits it first, it stayed on its line, therefore no pin can occur
+                break;
+            }
+
+            if (newX == pieceToMove.x && newY == pieceToMove.y){
+                idx++;
+                continue;
+            } // We want to skip the coordinate that the object is moving from
+
+            if (getPieceFromBoard(newX, newY).getType()!=EMPTY ){
+
+                if (getPieceFromBoard(newX, newY).getColour()==king.getColour()){ // this if statement is here for optimization. This project will need any it can get.
+                    // If we run into a piece the same colour as the king, then no pin
+                    break;
+                }
+
+                if (getPieceFromBoard(newX, newY).getType()==QUEEN){
+                    return true;
+                } else if (getPieceFromBoard(newX, newY).getType()==BISHOP || (Math.abs(vector.x) == 1 && Math.abs(vector.y)==1)){
+                    return true;
+                } else if (getPieceFromBoard(newX, newY).getType()==ROOK || (Math.abs(vector.x) == 0 && Math.abs(vector.y)==1) || (Math.abs(vector.x) == 1 && Math.abs(vector.y)==0)){
+                    return true;
+                }
+                break;
+            };
+
+            idx++;
+        }
+
+        return false;
+    }
 }
