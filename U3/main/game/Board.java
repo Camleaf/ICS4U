@@ -29,7 +29,7 @@ public class Board extends BoardPanel {
         board = generateDefaultBoard();
         paintBackground();
         drawCurrentBoard(board);
-        legalMoves.setLegalMoves(WHITE, calculateLegalMoves(WHITE));
+        legalMoves.setLegalMoves(WHITE, calculateLegalMoves(WHITE,board));
     }
 
     /**
@@ -172,11 +172,11 @@ public class Board extends BoardPanel {
         
         // Screw it i'm going the extremely inefficient route. I'm so happy that chess is a game that can afford massive overheads on functions
         // The idea for updating both the black and white legalmoves is that once one's turn ends, i can use (an albiet flawed) recalculation to at minimum see if there are any new threats to the king
-        legalMoves.setLegalMoves(turn, calculateLegalMoves(turn));
+        legalMoves.setLegalMoves(turn, calculateLegalMoves(turn, board));
 
         turn = (turn.equals(WHITE)) ? BLACK : WHITE;
 
-        legalMoves.setLegalMoves(turn, calculateLegalMoves(turn));
+        legalMoves.setLegalMoves(turn, calculateLegalMoves(turn, board));
         // Recalculate legal moves list AFTER turn has been changed
 
         return true;
@@ -214,7 +214,7 @@ public class Board extends BoardPanel {
      * Calculates the legal moves of all pieces on the board and stores them on the board
      * This is a piece of crap function and i want it gone but i can't figure out for the life of me how to refactor it
      */
-    private HashMap<Point,Point[]> calculateLegalMoves(Piece.Colour colour){
+    private HashMap<Point,Point[]> calculateLegalMoves(Piece.Colour colour, Piece[][] board ){
         // make it so this function has a return value of an arr and a input of the colour i want to calculate the moves for so that I can make like possible moves
         HashMap<Point,Point[]> legalMoves = new HashMap<>();
 
