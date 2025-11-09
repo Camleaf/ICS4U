@@ -46,4 +46,27 @@ public class LegalMoves {
                 return defaultRet;
         }
     }
+
+    public boolean contains(Piece.Colour colour, Point query){
+        switch (colour){
+            case WHITE:
+                for (Point key : whiteLegalMoves.keySet()){
+                    for (Point move : whiteLegalMoves.get(key)){
+                        if (move.equals(query)) return true;
+                    }
+                }
+                return false;
+
+            case BLACK:
+                for (Point key : blackLegalMoves.keySet()){
+                    for (Point move : blackLegalMoves.get(key)){
+                        if (move.equals(query)) return true;
+                    }
+                }
+                return false;
+
+            default:
+                return false;
+        }
+    }
 }

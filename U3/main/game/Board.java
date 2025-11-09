@@ -10,6 +10,7 @@ import java.awt.Rectangle;
 import java.util.HashMap;
 import lib.logic.Utils;
 import java.util.ArrayList;
+import main.game.board.Attacker;
 
 /**
  * Contains the data for the chess game, and all methods which can mutate that data
@@ -263,6 +264,8 @@ public class Board extends BoardPanel {
         HashMap<Point,Point[]> legalMoves = new HashMap<>();
         Piece king = getPieceType(KING, colour)[0];
 
+        Attacker[] kingAttackers = attackersToPoint(king.getLocation(), colour.getInverse());
+
         for (int row = 0;row<8;row++){
             for (int col = 0;col<8;col++){
                 Piece piece = board[row][col];
@@ -272,6 +275,8 @@ public class Board extends BoardPanel {
                 }
                 // Build pieces
                 ArrayList<Point> validMoves = new ArrayList<Point>();
+
+                if (kingAttackers.length > 1 && piece.getType()!=KING){ legalMoves.put(new Point(col,row), new Point[0]); continue;} // The idea here is that if there is a double check, nothing the other pieces can do can undo it, so only king can move
 
                 switch (piece.getType()){
                     case PAWN: // Note: will need to add en passant checking to here but I don't have the infrastructure to do that yet
@@ -284,12 +289,7 @@ public class Board extends BoardPanel {
                         }
                         // document this later
                         if (row+colourAdjust >= 0 && row+colourAdjust <8){
-                            if (getPieceFromBoard(col, row+colourAdjust).getType()==EMPTY){
-
-                                if (checkPin(king,piece,new Point(col, row+colourAdjust))){continue;} // If this move could lead to a pin skip it
-
-                                validMoves.add(new Point(col,row+colourAdjust));
-                            }
+    
                             for (int i : new int[]{-1,1}){
                                 if (col+i <0 || col+i > 7){ continue;}
 
@@ -314,6 +314,14 @@ public class Board extends BoardPanel {
                                         validMoves.add(new Point(col+i,row+colourAdjust));
                                     }
 
+                                }
+
+                                // move forward code
+                                if (getPieceFromBoard(col, row+colourAdjust).getType()==EMPTY){ // attacks
+
+                                    if (checkPin(king,piece,new Point(col, row+colourAdjust))){continue;} // If this move could lead to a pin skip it
+
+                                    validMoves.add(new Point(col,row+colourAdjust));
                                 }
                             }
                         }
@@ -386,21 +394,56 @@ public class Board extends BoardPanel {
                         }
                         break;
                     case KING: 
-                    // for checks i can make an attackersTo function, and if the king has more than 2 attackers, player can only move king, if 1 attacker, player can do any move which kills it or can move king.
-                    //                       If 0 attackers regular movement
-                    // use the fact that i can grab the other side legal moves from the end of last turn
+                        // The king logic is scattered around everywhere its a piece of crap i hate it so so so so much theres like 300 lines of code just for it
+                        for (int[] pos : new int[][]{{1,0},{-1,0},{0,1},{0,-1},{1,1},{1,-1},{-1,1},{-1,-1}}){
+                            int newX = pos[0] + piece.x;
+                            int newY = pos[1] + piece.y;
+
+                            if (!pieceInBounds(newX, newY)) continue;
+
+                            Piece testPc = getPieceFromBoard(newX, newY);
+
+                            if (testPc.getColour()!=colour && attackersToPoint(new Point(newX,newY), colour.getInverse()).length == 0){
+                                validMoves.add(new Point(newX,newY));
+                            } else {
+                                System.out.println(attackersToPoint(new Point(newX,newY), colour.getInverse()).length);
+                            }
+                        }
+
                         break;
                     default:
                         break;
                 }
                 // Filter for moving onto same colour
 
+                
+
                 ArrayList<Point> filteredValidMoves = new ArrayList<Point>();
                 for (Point pt : validMoves){
                     // The idea is that if the
                     if (getPieceFromBoard(pt.x, pt.y).getColour().equals(colour)){continue;}
+
+                    // The idea behind the king movements is that we can see if the given points defend the king or not. If not, we destroy them
+                    if (piece.getType()!=KING && kingAttackers.length==1){ // We don't want the king to lose moves based on if it can defend itself that defeats the point
+                        // If there is a kingattacker we only want moves which can fix it
+                        if (!pt.equals(kingAttackers[0].pc.getLocation())){
+
+                            if (kingAttackers[0].pc.getType()==KNIGHT)continue; // If its a knight you have to eat it
+                            // normalize the vector
+                            int xDif = pt.x - king.x;
+                            int yDif = pt.y - king.y;
+                            if (!(Math.abs(xDif) == Math.abs(yDif) || (xDif==0&&yDif!=0) || (xDif!=0&&yDif==0))) continue;
+
+                            if (Math.abs(pt.x) > kingAttackers[0].magnitude || Math.abs(pt.y)>kingAttackers[0].magnitude) continue;
+
+                        }
+                    }
+                    // End king move checking
+
+
                     filteredValidMoves.add(pt);
                 }
+                
                 legalMoves.put(new Point(col,row), filteredValidMoves.toArray(new Point[filteredValidMoves.size()]));
                 
             }
@@ -478,5 +521,92 @@ public class Board extends BoardPanel {
         }
 
         return false;
+    }
+
+
+
+
+    /**
+     * Returns an Attacker[] containing all the attackers to a specified point
+     * @param p the point to check
+     * @param c the colour of the attackers
+     */
+    private Attacker[] attackersToPoint(Point p, Piece.Colour c){
+
+        ArrayList<Attacker> pieces = new ArrayList<Attacker>();
+
+        for (int[] pos : new int[][]{{2,1},{-2,1},{2,-1},{-2,-1},{1,2},{-1,2},{1,-2},{-1,-2}}){ // check knight moves
+
+            if (!pieceInBounds(p.x+pos[0], p.y+pos[1])) continue ;
+
+            Piece pc = getPieceFromBoard(p.x+pos[0], p.y+pos[1]);
+            if (pc.getType()==KNIGHT && pc.getColour()==c){
+                pieces.add(new Attacker(pc, 1, new Point(pos[0],pos[1])));
+            }
+        }
+
+        for (int[] pos : new int[][]{{1,0},{-1,0},{0,1},{0,-1}}){ // check rook
+            int idx = 1;
+            while (true){
+                int newX = pos[0]*idx + p.x;
+                int newY = pos[1]*idx + p.y;
+                if (!pieceInBounds(newX, newY)) break;
+
+                Piece pc = getPieceFromBoard(newX, newY);
+
+                if (pc.getColour()==c.getInverse()){break;}
+
+
+
+                if (pc.getColour()==c){
+                    if (!(pc.getType()==ROOK || pc.getType()==QUEEN)) break;
+                    pieces.add(new Attacker(pc, idx, new Point(pos[0],pos[1])));
+                    break;
+                }
+
+                idx++;
+            }
+        }
+        for (int[] pos : new int[][]{{1,1},{1,-1},{-1,1},{-1,-1}}){ // check bishop
+            int idx = 1;
+            while (true){
+                int newX = pos[0]*idx + p.x;
+                int newY = pos[1]*idx + p.y;
+                if (!pieceInBounds(newX, newY)) break;
+
+                Piece pc = getPieceFromBoard(newX, newY);
+
+                if (pc.getColour()==c.getInverse()){break;}
+
+                if (pc.getColour()==c){
+                    if (!(pc.getType()==BISHOP || pc.getType()==QUEEN)) break;
+                    pieces.add(new Attacker(pc, idx, new Point(pos[0],pos[1])));
+                    break;
+                }
+
+                idx++;
+            }
+        }
+
+
+        // check pawn
+
+        int colourAdjust = (c.equals(BLACK)) ? -1:1; // adjusting for pawn movement in different directions due to colour
+
+        for (int i : new int[]{-1,1}){
+            if (!pieceInBounds(p.x+i, p.y + colourAdjust)) continue;
+            
+            Piece pc = getPieceFromBoard(p.x+i, p.y + colourAdjust);
+            if (pc.getType() == PAWN && pc.getColour()==c){
+                pieces.add(new Attacker(pc, 1, new Point(i,colourAdjust)));
+            }
+        }
+
+
+
+
+
+
+        return  pieces.toArray(new Attacker[pieces.size()]);
     }
 }

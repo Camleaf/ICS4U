@@ -15,6 +15,16 @@ public class Piece {
         NONE(-1), WHITE(0),BLACK(1);
         public int id;
         private Colour(int index){this.id = index;}
+        public Colour getInverse(){
+            switch (id){
+                case 0:
+                    return BLACK;
+                case 1:
+                    return WHITE;
+                default:
+                    return NONE;
+            }
+        }
     }
 
 
