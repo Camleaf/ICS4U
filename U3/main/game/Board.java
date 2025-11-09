@@ -16,6 +16,10 @@ import main.game.board.Attacker;
  * Contains the data for the chess game, and all methods which can mutate that data
  * <p>
  * I hate this class so much it is way too long and not clean enough for my liking
+ * <p>
+ * This is #1 on the refactoring and splitting into different files list
+ * <p>
+ * It may be too late for this file so I'll leave it be as long as it doesn't grow further
  * @author Camleaf
  */
 public class Board extends BoardPanel {
@@ -671,8 +675,6 @@ public class Board extends BoardPanel {
                 idx++;
             }
         }
-
-
         // check pawn
 
         int colourAdjust = (c.equals(BLACK)) ? -1:1; // adjusting for pawn movement in different directions due to colour
@@ -685,11 +687,6 @@ public class Board extends BoardPanel {
                 pieces.add(new Attacker(pc, 1, new Point(i,colourAdjust)));
             }
         }
-
-
-
-
-
 
         return  pieces.toArray(new Attacker[pieces.size()]);
     }
