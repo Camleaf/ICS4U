@@ -466,9 +466,9 @@ public class Board extends BoardPanel {
 
                 if (getPieceFromBoard(newX, newY).getType()==QUEEN){
                     return true;
-                } else if (getPieceFromBoard(newX, newY).getType()==BISHOP || (Math.abs(vector.x) == 1 && Math.abs(vector.y)==1)){
+                } else if (getPieceFromBoard(newX, newY).getType()==BISHOP && (Math.abs(vector.x) == 1 && Math.abs(vector.y)==1)){
                     return true;
-                } else if (getPieceFromBoard(newX, newY).getType()==ROOK || (Math.abs(vector.x) == 0 && Math.abs(vector.y)==1) || (Math.abs(vector.x) == 1 && Math.abs(vector.y)==0)){
+                } else if (getPieceFromBoard(newX, newY).getType()==ROOK && ((Math.abs(vector.x) == 0 && Math.abs(vector.y)==1) || (Math.abs(vector.x) == 1 && Math.abs(vector.y)==0))){
                     return true;
                 }
                 break;
