@@ -283,6 +283,7 @@ public class Board extends BoardPanel {
                         int colourAdjust = (colour.equals(WHITE)) ? -1:1;
 
                         if (!piece.hasMoved()&&getPieceFromBoard(col, row+colourAdjust).getType().equals(EMPTY)&&getPieceFromBoard(col, row+(2*colourAdjust)).getType().equals(EMPTY)){ // Add double move forward
+                            if (checkPin(king,piece,new Point(col, row+(colourAdjust*2)))){continue;}
                             validMoves.add(
                                 new Point(col,row + (2*colourAdjust))
                             );
@@ -404,9 +405,19 @@ public class Board extends BoardPanel {
                             Piece testPc = getPieceFromBoard(newX, newY);
 
                             if (testPc.getColour()!=colour && attackersToPoint(new Point(newX,newY), colour.getInverse()).length == 0){
-                                validMoves.add(new Point(newX,newY));
-                            } else {
-                                System.out.println(attackersToPoint(new Point(newX,newY), colour.getInverse()).length);
+                                boolean noOtherKing = true;
+                                for (int[] pos2 : new int[][]{{1,0},{-1,0},{0,1},{0,-1},{1,1},{1,-1},{-1,1},{-1,-1}}){ // check if this square is next to enemy king
+                                    if (!pieceInBounds(newX+pos2[0], newY+pos2[1])){continue;}
+
+                                    if (getPieceFromBoard(newX+pos2[0], newY+pos2[1]).getType() == KING && getPieceFromBoard(newX+pos2[0], newY+pos2[1]).getColour()==colour.getInverse()){
+                                        noOtherKing = false;
+                                        break;
+                                    }
+                                }
+                                if (noOtherKing){
+                                    validMoves.add(new Point(newX,newY));
+                                }
+                               
                             }
                         }
 
@@ -434,9 +445,31 @@ public class Board extends BoardPanel {
                             int yDif = pt.y - king.y;
                             if (!(Math.abs(xDif) == Math.abs(yDif) || (xDif==0&&yDif!=0) || (xDif!=0&&yDif==0))) continue;
 
-                            if (Math.abs(pt.x) > kingAttackers[0].magnitude || Math.abs(pt.y)>kingAttackers[0].magnitude) continue;
+                            System.out.print(piece.getType().toString());
+                            System.out.printf(": %d,%d\n",xDif,yDif);
+
+                            System.out.print("Attacker: ");
+                            System.out.print(kingAttackers[0].pc.getType().toString());
+                            System.out.printf(": %d,%d\n",kingAttackers[0].vector.x,kingAttackers[0].vector.y);
+
+                            if (!Utils.equivalentSign(xDif, kingAttackers[0].vector.x) || !Utils.equivalentSign(yDif, kingAttackers[0].vector.y)) continue;
+                            if (Math.abs(xDif) > kingAttackers[0].magnitude || Math.abs(yDif)>kingAttackers[0].magnitude) continue;
 
                         }
+                    } else if (piece.getType()==KING && kingAttackers.length != 0){
+                        // this makes sure that the king can't move in the same direction as an attacker's vector as they would still be in check. Except for pawns and knights ofc
+                        int xDif = pt.x - king.x;
+                        int yDif = pt.y - king.y;
+                        boolean moveIsAllowed = true;
+                        for (int i = 0; i<kingAttackers.length;i++){
+                            if (kingAttackers[i].pc.getType() == KNIGHT || kingAttackers[i].pc.getType() == PAWN) continue;
+
+                            if ((new Point(-xDif,-yDif)).equals(kingAttackers[i].vector)){
+                                moveIsAllowed = false;
+                                break;
+                            }
+                        }
+                        if (!moveIsAllowed) continue;
                     }
                     // End king move checking
 
@@ -595,7 +628,7 @@ public class Board extends BoardPanel {
 
         for (int i : new int[]{-1,1}){
             if (!pieceInBounds(p.x+i, p.y + colourAdjust)) continue;
-            
+
             Piece pc = getPieceFromBoard(p.x+i, p.y + colourAdjust);
             if (pc.getType() == PAWN && pc.getColour()==c){
                 pieces.add(new Attacker(pc, 1, new Point(i,colourAdjust)));
