@@ -13,6 +13,8 @@ import java.util.ArrayList;
 
 /**
  * Contains the data for the chess game, and all methods which can mutate that data
+ * <p>
+ * I hate this class so much it is way too long and not clean enough for my liking
  * @author Camleaf
  */
 public class Board extends BoardPanel {
@@ -384,6 +386,8 @@ public class Board extends BoardPanel {
                         }
                         break;
                     case KING: 
+                    // for checks i can make an attackersTo function, and if the king has more than 2 attackers, player can only move king, if 1 attacker, player can do any move which kills it or can move king.
+                    //                       If 0 attackers regular movement
                     // use the fact that i can grab the other side legal moves from the end of last turn
                         break;
                     default:
