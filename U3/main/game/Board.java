@@ -283,10 +283,11 @@ public class Board extends BoardPanel {
                         int colourAdjust = (colour.equals(WHITE)) ? -1:1;
 
                         if (!piece.hasMoved()&&getPieceFromBoard(col, row+colourAdjust).getType().equals(EMPTY)&&getPieceFromBoard(col, row+(2*colourAdjust)).getType().equals(EMPTY)){ // Add double move forward
-                            if (checkPin(king,piece,new Point(col, row+(colourAdjust*2)))){continue;}
-                            validMoves.add(
-                                new Point(col,row + (2*colourAdjust))
-                            );
+                            if (!checkPin(king,piece,new Point(col, row+(colourAdjust*2)))){
+                                validMoves.add(
+                                    new Point(col,row + (2*colourAdjust))
+                                );
+                            }
                         }
                         // document this later
                         if (row+colourAdjust >= 0 && row+colourAdjust <8){
@@ -296,11 +297,20 @@ public class Board extends BoardPanel {
 
                                 if (getPieceFromBoard(col+i, row+colourAdjust).getType()!=EMPTY){
 
-                                    if (checkPin(king,piece,new Point(col+i, row+colourAdjust))){continue;} // If this move could lead to a pin skip it
+                                    if (!checkPin(king,piece,new Point(col+i, row+colourAdjust))){
+                                        validMoves.add(new Point(col+i,row+colourAdjust));
+                                    } // If this move could lead to a pin skip it
 
-                                    validMoves.add(new Point(col+i,row+colourAdjust));
                                 }
 
+                                // move forward code
+                                if (getPieceFromBoard(col, row+colourAdjust).getType()==EMPTY){ // attacks
+
+                                    if (!checkPin(king,piece,new Point(col, row+colourAdjust))){
+                                        validMoves.add(new Point(col,row+colourAdjust));
+                                    } // If this move could lead to a pin skip it
+
+                                }
 
                                 // en passant code here
                                 if (getPieceFromBoard(col+i, row).getType()==PAWN){ 
@@ -310,19 +320,11 @@ public class Board extends BoardPanel {
                                     
                                     if (prevMoves[1].x == col+i && prevMoves[1].y == row && Math.abs(prevMoves[1].y-prevMoves[0].y) == 2){
 
-                                        if (checkPin(king,piece,new Point(col+i, row+colourAdjust))){continue;} // If this move could lead to a pin skip it
-
-                                        validMoves.add(new Point(col+i,row+colourAdjust));
+                                        if (!checkPin(king,piece,new Point(col+i, row+colourAdjust))){
+                                            validMoves.add(new Point(col+i,row+colourAdjust));
+                                        } // If this move could lead to a pin skip it
                                     }
 
-                                }
-
-                                // move forward code
-                                if (getPieceFromBoard(col, row+colourAdjust).getType()==EMPTY){ // attacks
-
-                                    if (checkPin(king,piece,new Point(col, row+colourAdjust))){continue;} // If this move could lead to a pin skip it
-
-                                    validMoves.add(new Point(col,row+colourAdjust));
                                 }
                             }
                         }
