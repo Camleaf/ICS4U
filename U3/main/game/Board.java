@@ -443,17 +443,12 @@ public class Board extends BoardPanel {
                             // normalize the vector
                             int xDif = pt.x - king.x;
                             int yDif = pt.y - king.y;
-                            if (!(Math.abs(xDif) == Math.abs(yDif) || (xDif==0&&yDif!=0) || (xDif!=0&&yDif==0))) continue;
 
-                            System.out.print(piece.getType().toString());
-                            System.out.printf(": %d,%d\n",xDif,yDif);
+                            if (!(Math.abs(xDif) == Math.abs(yDif) || (xDif==0&&yDif!=0) || (xDif!=0&&yDif==0))) continue; // Defends that arent takes can only happen along the 8 axis
 
-                            System.out.print("Attacker: ");
-                            System.out.print(kingAttackers[0].pc.getType().toString());
-                            System.out.printf(": %d,%d\n",kingAttackers[0].vector.x,kingAttackers[0].vector.y);
 
-                            if (!Utils.equivalentSign(xDif, kingAttackers[0].vector.x) || !Utils.equivalentSign(yDif, kingAttackers[0].vector.y)) continue;
-                            if (Math.abs(xDif) > kingAttackers[0].magnitude || Math.abs(yDif)>kingAttackers[0].magnitude) continue;
+                            if (!Utils.equivalentSign(xDif, kingAttackers[0].vector.x) || !Utils.equivalentSign(yDif, kingAttackers[0].vector.y)) continue; // Must be on right side of king
+                            if (Math.abs(xDif) > kingAttackers[0].magnitude || Math.abs(yDif)>kingAttackers[0].magnitude) continue; // Must be inbetween king and attacker
 
                         }
                     } else if (piece.getType()==KING && kingAttackers.length != 0){
@@ -462,9 +457,10 @@ public class Board extends BoardPanel {
                         int yDif = pt.y - king.y;
                         boolean moveIsAllowed = true;
                         for (int i = 0; i<kingAttackers.length;i++){
+
                             if (kingAttackers[i].pc.getType() == KNIGHT || kingAttackers[i].pc.getType() == PAWN) continue;
 
-                            if ((new Point(-xDif,-yDif)).equals(kingAttackers[i].vector)){
+                            if ((new Point(-xDif,-yDif)).equals(kingAttackers[i].vector)){ // i don't remember why xdif and ydif are negative it kinda just worked
                                 moveIsAllowed = false;
                                 break;
                             }
