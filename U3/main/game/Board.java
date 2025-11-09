@@ -1,5 +1,6 @@
 package main.game;
 import main.game.board.Highlight;
+import main.game.board.LegalMoves;
 import main.game.board.Piece;
 import static main.game.board.Piece.Type.*;
 import static main.game.board.Piece.Colour.*;
@@ -20,14 +21,15 @@ public class Board extends BoardPanel {
     private Point selectedPoint = new Point(-1,-1);
     private Piece.Colour turn = WHITE;
     private Highlight prevMoveHighlight = new Highlight();
-    private HashMap<Point,Point[]> legalMoves = new HashMap<>();
+    private LegalMoves legalMoves = new LegalMoves();
+    // make a different legalmoves list for black and white and use that to determine
 
     public Board(int gridSize){
         super(gridSize);
         board = generateDefaultBoard();
         paintBackground();
         drawCurrentBoard(board);
-        calculateLegalMoves();
+        legalMoves.setLegalMoves(WHITE, calculateLegalMoves(WHITE));
     }
 
     /**
@@ -166,11 +168,16 @@ public class Board extends BoardPanel {
         paintPiece(piece.getType(),piece.getColour(),piece.x,piece.y);
         piece.setMoved(true);
         // Modify the prevMoveHighlight
+
         
+        // Screw it i'm going the extremely inefficient route. I'm so happy that chess is a game that can afford massive overheads on functions
+        // The idea for updating both the black and white legalmoves is that once one's turn ends, i can use (an albiet flawed) recalculation to at minimum see if there are any new threats to the king
+        legalMoves.setLegalMoves(turn, calculateLegalMoves(turn));
 
         turn = (turn.equals(WHITE)) ? BLACK : WHITE;
 
-        calculateLegalMoves(); // Recalculate legal moves list AFTER turn has been changed
+        legalMoves.setLegalMoves(turn, calculateLegalMoves(turn));
+        // Recalculate legal moves list AFTER turn has been changed
 
         return true;
     }
@@ -192,24 +199,30 @@ public class Board extends BoardPanel {
         }
 
         // checks against the current legalmoves list if the move is possible
-        if (!Utils.contains( legalMoves.getOrDefault( piece.getLocation(), new Point[0] ),destinationPiece.getLocation())){
+        if (!Utils.contains( legalMoves.getOrDefault(turn, piece.getLocation(), new Point[0] ),destinationPiece.getLocation())){
             return false;
         }
     
         return true;
     }
 
+    private Piece getPieceFromBoard(int x, int y){
+        return board[y][x];
+    }
+
     /**
      * Calculates the legal moves of all pieces on the board and stores them on the board
+     * This is a piece of crap function and i want it gone but i can't figure out for the life of me how to refactor it
      */
-    private void calculateLegalMoves(){
-        legalMoves.clear(); //empty the arr so moves don't randomly keep stacking up
+    private HashMap<Point,Point[]> calculateLegalMoves(Piece.Colour colour){
+        // make it so this function has a return value of an arr and a input of the colour i want to calculate the moves for so that I can make like possible moves
+        HashMap<Point,Point[]> legalMoves = new HashMap<>();
 
         for (int row = 0;row<8;row++){
             for (int col = 0;col<8;col++){
                 Piece piece = board[row][col];
 
-                if (!piece.getColour().equals(turn)){ // Since this happens after turn change we want to get legal moves for current turn pieces only. This will also filter out the empties
+                if (!piece.getColour().equals(colour)){
                     continue;
                 }
                 // Build pieces
@@ -217,25 +230,26 @@ public class Board extends BoardPanel {
 
                 switch (piece.getType()){
                     case PAWN: // Note: will need to add en passant checking to here but I don't have the infrastructure to do that yet
-                        int colourAdjust = (piece.getColour().equals(WHITE)) ? -1:1;
-                        if (!piece.hasMoved()&&board[row+colourAdjust][col].getType().equals(EMPTY)&&board[row+(2*colourAdjust)][col].getType().equals(EMPTY)){ // Add double move forward
+                        int colourAdjust = (colour.equals(WHITE)) ? -1:1;
+
+                        if (!piece.hasMoved()&&getPieceFromBoard(col, row+colourAdjust).getType().equals(EMPTY)&&getPieceFromBoard(col, row+(2*colourAdjust)).getType().equals(EMPTY)){ // Add double move forward
                             validMoves.add(
                                 new Point(col,row + (2*colourAdjust))
                             );
                         }
                         // document this later
                         if (row+colourAdjust >= 0 && row+colourAdjust <8){
-                            if (board[row+colourAdjust][col].getType()==EMPTY){
+                            if (getPieceFromBoard(col, row+colourAdjust).getType()==EMPTY){
                                 validMoves.add(new Point(col,row+colourAdjust));
                             }
                             for (int i : new int[]{-1,1}){
                                 if (col+i <0 || col+i > 7){ continue;}
 
-                                if (board[row+colourAdjust][col+i].getType()!=EMPTY){
+                                if (getPieceFromBoard(col+i, row+colourAdjust).getType()!=EMPTY){
                                     validMoves.add(new Point(col+i,row+colourAdjust));
                                 }
 
-                                if (board[row][col+i].getType()==PAWN){
+                                if (getPieceFromBoard(col+i, row).getType()==PAWN){
                                     Point[] prevMoves = prevMoveHighlight.getSquares();
                                     if (prevMoves[0]==null || prevMoves[1]==null){continue;}
                                     
@@ -270,7 +284,7 @@ public class Board extends BoardPanel {
 
                                 validMoves.add(new Point(newX, newY));
 
-                                if (board[newY][newX].getType()!=EMPTY)break;
+                                if (getPieceFromBoard(newX, newY).getType()!=EMPTY)break;
 
                                 idx++;
                             }
@@ -286,7 +300,7 @@ public class Board extends BoardPanel {
 
                                 validMoves.add(new Point(newX, newY));
 
-                                if (board[newY][newX].getType()!=EMPTY)break;
+                                if (getPieceFromBoard(newX, newY).getType()!=EMPTY)break;
 
                                 idx++;
                             }
@@ -303,15 +317,14 @@ public class Board extends BoardPanel {
 
                                 validMoves.add(new Point(newX, newY));
 
-                                if (board[newY][newX].getType()!=EMPTY)break;
+                                if (getPieceFromBoard(newX, newY).getType()!=EMPTY)break;
 
                                 idx++;
                             }
                         }
                         break;
                     case KING: 
-                    // Will have to figure out how check works. Might move the white and black kings allowed moves to be calculated after everything else's
-                    // I also have to figure out how all the legal moves work here instead of on click if i want to be able to feed this information to a bot
+                    // use the fact that i can grab the other side legal moves from the end of last turn
                         break;
                     default:
                         break;
@@ -320,14 +333,15 @@ public class Board extends BoardPanel {
 
                 ArrayList<Point> filteredValidMoves = new ArrayList<Point>();
                 for (Point pt : validMoves){
-                    if (board[pt.y][pt.x].getColour().equals(turn)){continue;}
+                    // The idea is that if the
+                    if (getPieceFromBoard(pt.x, pt.y).getColour().equals(colour)){continue;}
                     filteredValidMoves.add(pt);
                 }
                 legalMoves.put(new Point(col,row), filteredValidMoves.toArray(new Point[filteredValidMoves.size()]));
                 
             }
         }
-
+        return legalMoves;
 
 
     }
