@@ -168,6 +168,33 @@ public class Board extends BoardPanel {
         }
         //end en passant check
 
+
+        // Castling check
+
+        if (piece.getType() == KING && Math.abs(destinationPiece.x-piece.x) == 2){ //king can only move 2 on a castle
+            Piece rook;
+            if (destinationPiece.x > piece.x){ // castling to the right
+                rook = getPieceFromBoard(7, piece.y);
+                paintEmpty(rook.x, rook.y);
+
+                board[destinationPiece.y][destinationPiece.x-1] = rook;
+                board[rook.y][rook.x] = new Piece(piece.x,piece.y,EMPTY,NONE);
+                rook.setLocation(destinationPiece.x-1, destinationPiece.y);
+                paintPiece(rook);
+            } else {
+                rook = getPieceFromBoard(0, piece.y);
+                paintEmpty(rook.x, rook.y);
+
+                board[rook.y][rook.x] = new Piece(piece.x,piece.y,EMPTY,NONE);
+                board[destinationPiece.y][destinationPiece.x+1] = rook;
+                rook.setLocation(destinationPiece.x+1, destinationPiece.y);
+                paintPiece(rook);
+            }
+
+        }
+
+        //
+
         if (blackPieces.contains(destinationPiece)){blackPieces.remove(destinationPiece);}
         if (whitePieces.contains(destinationPiece)){whitePieces.remove(destinationPiece);}
 
@@ -421,6 +448,32 @@ public class Board extends BoardPanel {
                                 }
                                
                             }
+                        }
+
+
+                        // castling logic. Other side handled on the actual move
+                        if (!piece.hasMoved() && !getPieceFromBoard(0, piece.y).hasMoved()){
+                            Boolean castleAllowed = true;
+                            for (int ix = 1;ix<=3;ix++){ // we want to check 3 towards this dir
+                                if (getPieceFromBoard(piece.x - ix, piece.y).getType()!=EMPTY){
+                                    castleAllowed = false;
+                                    break;
+                                }
+                            }
+                
+                            if (castleAllowed) validMoves.add(new Point(piece.x-2,piece.y));
+                        }
+
+                        if (!piece.hasMoved() && !getPieceFromBoard(7, piece.y).hasMoved()){
+                            Boolean castleAllowed = true;
+                            for (int ix = 1;ix<=2;ix++){ // we want to check 3 towards this dir
+                                if (getPieceFromBoard(piece.x + ix, piece.y).getType()!=EMPTY){
+                                    castleAllowed = false;
+                                    break;
+                                }
+                            }
+                
+                            if (castleAllowed) validMoves.add(new Point(piece.x+2,piece.y));
                         }
 
                         break;
