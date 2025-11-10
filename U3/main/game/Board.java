@@ -470,6 +470,7 @@ public class Board {
                     if (piece.getType()!=KING && kingAttackers.length==1){ // We don't want the king to lose moves based on if it can defend itself that defeats the point
                         // If there is a kingattacker we only want moves which can fix it
                         if (!pt.equals(kingAttackers[0].pc.getLocation())){
+                            // this code broke
 
                             if (kingAttackers[0].pc.getType()==KNIGHT)continue; // If its a knight you have to eat it
                             // normalize the vector
@@ -477,7 +478,6 @@ public class Board {
                             int yDif = pt.y - king.y;
 
                             if (!(Math.abs(xDif) == Math.abs(yDif) || (xDif==0&&yDif!=0) || (xDif!=0&&yDif==0))) continue; // Defends that arent takes can only happen along the 8 axis
-
 
                             if (!Utils.equivalentSign(xDif, kingAttackers[0].vector.x) || !Utils.equivalentSign(yDif, kingAttackers[0].vector.y)) continue; // Must be on right side of king
                             if (Math.abs(xDif) > kingAttackers[0].magnitude || Math.abs(yDif)>kingAttackers[0].magnitude) continue; // Must be inbetween king and attacker

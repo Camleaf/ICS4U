@@ -16,7 +16,9 @@ public class Utils {
     public static boolean equivalentSign(int x, int y){
         if (x < 0 && y < 0){
             return true;
-        } else if (x >0 && y >= 0){
+        } else if (x==0 && y == 0){
+            return true;
+        }else if (x >0 && y > 0){
             return true;
         }
         return false;
