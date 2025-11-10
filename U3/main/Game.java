@@ -1,5 +1,5 @@
 package main;
-import main.game.Board;
+import main.game.BoardDisplay;
 import lib.Window;
 import lib.interactions.Keyboard;
 import lib.interactions.Mouse;
@@ -11,13 +11,13 @@ import java.awt.Point;
 public class Game {
     // No interfacing with swing should be done from this class
     public Window window;
-    private Board board;
+    private BoardDisplay board;
     private Keyboard keyboard;
     private Mouse mouse;
 
     public Game(){
         window = new Window("Chess", 800,640);
-        board = new Board(512);
+        board = new BoardDisplay(512);
         window.add(board);
         /*
          * Screen will be 800 x 800

@@ -1,72 +1,34 @@
 package main.game;
-import main.game.board.Highlight;
+import main.game.board.StoredPosition;
 import main.game.board.LegalMoves;
 import main.game.board.Piece;
 import static main.game.board.Piece.Type.*;
 import static main.game.board.Piece.Colour.*;
-import main.window.panels.BoardPanel;
+import static main.window.panels.BoardPanel.*;
 import java.awt.Point;
-import java.awt.Rectangle;
 import java.util.HashMap;
 import lib.logic.Utils;
 import java.util.ArrayList;
 import main.game.board.Attacker;
-
+import main.game.board.PaintData;
 /**
- * Contains the data for the chess game, and all methods which can mutate that data
- * <p>
- * I hate this class so much it is way too long and not clean enough for my liking
- * <p>
- * This is #1 on the refactoring and splitting into different files list
- * <p>
- * It may be too late for this file so I'll leave it be as long as it doesn't grow further
- * @author Camleaf
+ * A class which is very work in progress which i aim to have much better organization than the current system, be shorter, and easier to follow
+ * This specific class is an individual board object
  */
-public class Board extends BoardPanel {
-
+public class Board {
     private Piece[][] board;
-    private Point selectedPoint = new Point(-1,-1);
-    private Piece.Colour turn = WHITE;
-    private Highlight prevMoveHighlight = new Highlight();
+    private Piece.Colour turn;
+    private ArrayList<Piece> whitePieces;
+    private ArrayList<Piece> blackPieces;
+    private StoredPosition prevMove = new StoredPosition();
+
     private LegalMoves legalMoves = new LegalMoves();
-    private ArrayList<Piece> whitePieces = new ArrayList<Piece>();
-    private ArrayList<Piece> blackPieces = new ArrayList<Piece>();
-    // make a different legalmoves list for black and white and use that to determine
 
-    public Board(int gridSize){
-        super(gridSize);
-        board = generateDefaultBoard();
-        paintBackground();
-        drawCurrentBoard(board);
-
-        for (Piece[] row : board){
-            for (Piece piece : row){
-                if (piece.getColour()==WHITE){
-                    whitePieces.add(piece);
-                } else if (piece.getColour() == BLACK){
-                    blackPieces.add(piece);
-                }
-            }
-        }
-
+    public Board(){
+        generateDefaultBoard();
+        fillPiecesLists();
+        turn = WHITE;
         legalMoves.setLegalMoves(WHITE, calculateLegalMoves(WHITE));
-    }
-
-    /**
-     * Generates a default board
-     * @return a Piece[][] containing a standard chess board with black on the top and white on the bottom.
-     */
-    private Piece[][] generateDefaultBoard(){
-
-        Piece[][] board = new Piece[8][8];
-        board[0] = generatePieceLine(new Piece.Type[]{ROOK,KNIGHT,BISHOP,QUEEN,KING,BISHOP,KNIGHT,ROOK}, 0, BLACK);
-        board[1] = generatePieceLine(new Piece.Type[]{PAWN,PAWN,PAWN,PAWN,PAWN,PAWN,PAWN,PAWN}, 1, BLACK);
-        for (int idx = 2;idx<6;idx++){
-            board[idx] = generatePieceLine(new Piece.Type[]{EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,EMPTY}, idx, NONE);
-        }
-        board[6] = generatePieceLine(new Piece.Type[]{PAWN,PAWN,PAWN,PAWN,PAWN,PAWN,PAWN,PAWN}, 6, WHITE);
-        board[7] = generatePieceLine(new Piece.Type[]{ROOK,KNIGHT,BISHOP,QUEEN,KING,BISHOP,KNIGHT,ROOK}, 7, WHITE);
-        return board;
     }
 
     /**
@@ -77,7 +39,6 @@ public class Board extends BoardPanel {
      * @return a Piece[] of length 8 containing all the pieces given in indexes
      */
     private Piece[] generatePieceLine(Piece.Type[] indexes, int row, Piece.Colour colour){
-        if (indexes.length != 8){return new Piece[0];};
         Piece[] line = new Piece[8];
         for (int idx=0;idx<8;idx++){
             line[idx] = new Piece(idx, row, indexes[idx], colour);
@@ -86,153 +47,52 @@ public class Board extends BoardPanel {
     }
 
     /**
-     * Handles a click at a given java.awt.Point on the board.
-     * <p>
-     * @return the acceptance status of the click
+     * Generates a default chess board
      */
-    public void handleMouseClick(Point clickPos){
-        Rectangle bounds = this.getBounds();
-        if (bounds.contains(clickPos)){
+    private void generateDefaultBoard(){
 
-            Point clickedSquare = new Point(
-                (int) Math.round( Math.floor( ( (double)clickPos.x ) / squareSize )), 
-                (int) Math.round( Math.floor( ( (double)clickPos.y ) / squareSize ))
-            ); // squareSize was intialized in the super() call to BoardPanel
-            
-            
-            Piece interactedPiece = board[clickedSquare.y][clickedSquare.x];
-
-            if (this.selectedPoint.x == -1 || this.selectedPoint.y == -1){ // If the previously clicked square isn't defined
-                if (interactedPiece.getType().equals(EMPTY) || !interactedPiece.getColour().equals(turn)){return;} // If the clicked point is an empty we don't want to define that as a clicked piece
-                selectedPoint.setLocation(interactedPiece.x,interactedPiece.y);
-                paintPiece(interactedPiece,PIECE_PAINT_HIGHLIGHT_SELECT);
-                // Will eventually add highlighting here
-            } else { // if it is that means there is a piece there
-                Piece prevPiece = board[selectedPoint.y][selectedPoint.x];
-                boolean accepted = handleMove(prevPiece, interactedPiece);
-
-                if (!accepted){
-                    // If the move wasn't accepted that means that either the move wasn't valid (haven't implemented yet) or they tried to click on a friendly piece
-                    // Both edge cases are handled inside the move function
-                    return;
-                }
-
-                this.selectedPoint.setLocation(-1, -1);
-
-            }
-
-
-        } else { // If the click is out of bounds of the board we want to reset the selectedPoint
-            if (selectedPoint.x > 0 && selectedPoint.y != 0) paintPiece(board[selectedPoint.y][selectedPoint.x],PIECE_PAINT_OVERWRITE);
-
-            this.selectedPoint.setLocation(-1,-1);
+        board = new Piece[8][8];
+        board[0] = generatePieceLine(new Piece.Type[]{ROOK,KNIGHT,BISHOP,QUEEN,KING,BISHOP,KNIGHT,ROOK}, 0, BLACK);
+        board[1] = generatePieceLine(new Piece.Type[]{PAWN,PAWN,PAWN,PAWN,PAWN,PAWN,PAWN,PAWN}, 1, BLACK);
+        for (int idx = 2;idx<6;idx++){
+            board[idx] = generatePieceLine(new Piece.Type[]{EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,EMPTY}, idx, NONE);
         }
+        board[6] = generatePieceLine(new Piece.Type[]{PAWN,PAWN,PAWN,PAWN,PAWN,PAWN,PAWN,PAWN}, 6, WHITE);
+        board[7] = generatePieceLine(new Piece.Type[]{ROOK,KNIGHT,BISHOP,QUEEN,KING,BISHOP,KNIGHT,ROOK}, 7, WHITE);
     }
 
     /**
-     * Given a coordinate, x and y, determines if it is in the bounds of the board arr
-     * @param x the x index to see if it is in the board arr
-     * @param y the y index to see if it is in the board arr
+     * Fills the pieces list with what is currently on the board
      */
-    private boolean pieceInBounds(int x, int y){
-        return 0 <= x && x < 8 && 0 <= y && y < 8;
-    }
-
-
-    /**
-     * Handles the act of moving a piece, which includes switching the coords, and painting over parts of the board
-     * @param piece the piece being moved
-     * @param destinationPiece the piece or empty which is the destination
-     */
-    private boolean handleMove(Piece piece, Piece destinationPiece){
-
-        if (!isValidMove(piece, destinationPiece)){
-            return false;
-        }
-
-        //Remove old movement highlighted squares
-
-        for (Point point : prevMoveHighlight.getSquares()){
-            if (point == null){continue;}
-            paintPiece(board[point.y][point.x],PIECE_PAINT_OVERWRITE);
-        }
-
-        // Check for en passant and adjust board accordingly
-        Point[] prevMoves = prevMoveHighlight.getSquares();
-        if (!(prevMoves[0]==null || prevMoves[1]==null) && piece.getType()==PAWN && destinationPiece.getType()==EMPTY){
-
-            if (Math.abs(prevMoves[0].y-destinationPiece.getLocation().y) == 1 && Math.abs(prevMoves[1].y-destinationPiece.getLocation().y) == 1){
-                // this code is a mess it works though. Better just keep an eye to make sure it doesn't obliterate anything else
-                int adjust = (prevMoves[1].y-destinationPiece.getLocation().y > 0) ? 1:-1;
-                if (board[destinationPiece.y+adjust][destinationPiece.x].getType() == PAWN){
-                    board[destinationPiece.y+adjust][destinationPiece.x] = new Piece(destinationPiece.x,destinationPiece.y+adjust,EMPTY,NONE);
-                    paintEmpty(destinationPiece.x,destinationPiece.y+adjust);
+    private void fillPiecesLists(){
+        whitePieces = new ArrayList<Piece>();
+        blackPieces = new ArrayList<Piece>();
+        for (Piece[] row : board){
+            for (Piece piece : row){
+                if (piece.getColour()==WHITE){
+                    whitePieces.add(piece);
+                } else if (piece.getColour() == BLACK){
+                    blackPieces.add(piece);
                 }
             }
         }
-        //end en passant check
-
-
-        // Castling check
-
-        if (piece.getType() == KING && Math.abs(destinationPiece.x-piece.x) == 2){ //king can only move 2 on a castle
-            Piece rook;
-            if (destinationPiece.x > piece.x){ // castling to the right
-                rook = getPieceFromBoard(7, piece.y);
-                paintEmpty(rook.x, rook.y);
-
-                board[destinationPiece.y][destinationPiece.x-1] = rook;
-                board[rook.y][rook.x] = new Piece(piece.x,piece.y,EMPTY,NONE);
-                rook.setLocation(destinationPiece.x-1, destinationPiece.y);
-                paintPiece(rook);
-            } else {
-                rook = getPieceFromBoard(0, piece.y);
-                paintEmpty(rook.x, rook.y);
-
-                board[rook.y][rook.x] = new Piece(piece.x,piece.y,EMPTY,NONE);
-                board[destinationPiece.y][destinationPiece.x+1] = rook;
-                rook.setLocation(destinationPiece.x+1, destinationPiece.y);
-                paintPiece(rook);
-            }
-
-        }
-
-        //
-
-        if (blackPieces.contains(destinationPiece)){blackPieces.remove(destinationPiece);}
-        if (whitePieces.contains(destinationPiece)){whitePieces.remove(destinationPiece);}
-
-        // Now just overwrite the piece it lands on and let garbage collector clean it up. Then add a space where the piece used to be referenced
-        // Overwrite old squares on display and set them to highlight
-        prevMoveHighlight.set(new Point(piece.x,piece.y), new Point(destinationPiece.x,destinationPiece.y));
-        paintHighlight(destinationPiece.x,destinationPiece.y);
-        paintHighlight(piece.x,piece.y);
-        
-        // Give desination location and coordinates to moving piece then overwrite it's original spot
-
-        board[destinationPiece.y][destinationPiece.x] = piece;
-        board[piece.y][piece.x] = new Piece(piece.x,piece.y,EMPTY,NONE);
-        piece.setLocation(destinationPiece.x,destinationPiece.y);
-
-        // Paint piece in new spot
-        paintPiece(piece.getType(),piece.getColour(),piece.x,piece.y);
-        piece.setMoved(true);
-        // Modify the prevMoveHighlight
-
-        
-        // Screw it i'm going the extremely inefficient route. I'm so happy that chess is a game that can afford massive overheads on functions
-        // The idea for updating both the black and white legalmoves is that once one's turn ends, i can use (an albiet flawed) recalculation to at minimum see if there are any new threats to the king
-        legalMoves.setLegalMoves(turn, calculateLegalMoves(turn));
-
-        turn = (turn.equals(WHITE)) ? BLACK : WHITE;
-
-        legalMoves.setLegalMoves(turn, calculateLegalMoves(turn));
-        // Recalculate legal moves list AFTER turn has been changed
-
-        return true;
     }
 
+    public Piece[][] getRawBoard(){
+        return board;
+    }
 
+    public Piece.Colour getTurn(){
+        return turn;
+    }
+
+    /**
+     * Given an x,y (0-7,0-7) point on the board, returns the object at that x,y
+     * @return the Piece object at the x,y
+     */
+    public Piece getPieceFromBoard(int x, int y){
+        return board[y][x];
+    }
 
 
     /** Given a piece and destination, determines if the move is valid, and follows Chess's rules.
@@ -240,13 +100,6 @@ public class Board extends BoardPanel {
      * @param destinationPiece the piece or empty which is the destination
      */
     private boolean isValidMove(Piece piece, Piece destinationPiece){
-        
-        if ( piece.getColour().equals( destinationPiece.getColour() )){ // If white attacks white, or black attacks black
-            paintPiece(piece,PIECE_PAINT_OVERWRITE);
-            this.selectedPoint.setLocation(destinationPiece.x,destinationPiece.y);
-            paintPiece(destinationPiece,PIECE_PAINT_HIGHLIGHT_SELECT);
-            return false;
-        }
 
         // checks against the current legalmoves list if the move is possible
         if (!Utils.contains( legalMoves.getOrDefault(turn, piece.getLocation(), new Point[0] ),destinationPiece.getLocation())){
@@ -256,9 +109,6 @@ public class Board extends BoardPanel {
         return true;
     }
 
-    private Piece getPieceFromBoard(int x, int y){
-        return board[y][x];
-    }
 
     /**
      * Gets a Piece[] containing pieces alive of a specified type and colour
@@ -286,7 +136,133 @@ public class Board extends BoardPanel {
         }
         return  pieces.toArray(new Piece[pieces.size()]);
     }
+
+    public StoredPosition getStoredMoves(){
+        return this.prevMove;
+    }
+
     /**
+     * Handles the act of moving a piece, which includes switching the coords, and painting over parts of the board
+     * @param piece the piece being moved
+     * @param destinationPiece the piece or empty which is the destination
+     */
+    public PaintData handleMove(Piece piece, Piece destinationPiece){
+
+        PaintData paintData = new PaintData();
+
+        if (!isValidMove(piece, destinationPiece)){
+            return null;
+        }
+
+        //Remove old movement highlighted squares
+
+        for (Point point : prevMove.getSquares()){
+            if (point == null){continue;}
+            paintData.add(board[point.y][point.x], PIECE_PAINT_OVERWRITE);
+        }
+
+        // Check for en passant and adjust board accordingly
+        Point[] prevMoves = prevMove.getSquares();
+        if (!(prevMoves[0]==null || prevMoves[1]==null) && piece.getType()==PAWN && destinationPiece.getType()==EMPTY){
+
+            if (Math.abs(prevMoves[0].y-destinationPiece.getLocation().y) == 1 && Math.abs(prevMoves[1].y-destinationPiece.getLocation().y) == 1){
+                // this code is a mess it works though. Better just keep an eye to make sure it doesn't obliterate anything else
+                int adjust = (prevMoves[1].y-destinationPiece.getLocation().y > 0) ? 1:-1;
+                if (board[destinationPiece.y+adjust][destinationPiece.x].getType() == PAWN){
+                    board[destinationPiece.y+adjust][destinationPiece.x] = new Piece(destinationPiece.x,destinationPiece.y+adjust,EMPTY,NONE);
+                    paintData.add(Piece.newEmpty(destinationPiece.x, destinationPiece.y+adjust),PIECE_PAINT_OVERWRITE);
+                }
+            }
+        }
+        //end en passant check
+
+
+        // Castling check
+
+        if (piece.getType() == KING && Math.abs(destinationPiece.x-piece.x) == 2){ //king can only move 2 on a castle
+            Piece rook;
+            if (destinationPiece.x > piece.x){ // castling to the right
+                rook = getPieceFromBoard(7, piece.y);
+                paintData.addEmpty(rook.getLocation());
+
+                board[destinationPiece.y][destinationPiece.x-1] = rook;
+                board[rook.y][rook.x] = new Piece(piece.x,piece.y,EMPTY,NONE);
+                rook.setLocation(destinationPiece.x-1, destinationPiece.y);
+                paintData.add(rook, PIECE_PAINT_DEFAULT);
+            } else {
+                rook = getPieceFromBoard(0, piece.y);
+                paintData.addEmpty(rook.getLocation());
+
+                board[rook.y][rook.x] = new Piece(piece.x,piece.y,EMPTY,NONE);
+                board[destinationPiece.y][destinationPiece.x+1] = rook;
+                rook.setLocation(destinationPiece.x+1, destinationPiece.y);
+                paintData.add(rook, PIECE_PAINT_DEFAULT);
+            }
+
+        }
+
+        //
+
+        if (blackPieces.contains(destinationPiece)){blackPieces.remove(destinationPiece);}
+        if (whitePieces.contains(destinationPiece)){whitePieces.remove(destinationPiece);}
+
+        // Now just overwrite the piece it lands on and let garbage collector clean it up. Then add a space where the piece used to be referenced
+        // Overwrite old squares on display and set them to highlight
+        prevMove.set(new Point(piece.x,piece.y), new Point(destinationPiece.x,destinationPiece.y));
+        paintData.add(Piece.newEmpty(piece.x, piece.y),PIECE_PAINT_HIGHLIGHT);
+        
+        // Give desination location and coordinates to moving piece then overwrite it's original spot
+
+        board[destinationPiece.y][destinationPiece.x] = piece;
+        board[piece.y][piece.x] = new Piece(piece.x,piece.y,EMPTY,NONE);
+        piece.setLocation(destinationPiece.x,destinationPiece.y);
+
+        // Paint piece in new spot
+        paintData.add(piece, PIECE_PAINT_HIGHLIGHT);
+        piece.setMoved(true);
+        // Modify the prevMoveHighlight
+
+        
+        // Screw it i'm going the extremely inefficient route. I'm so happy that chess is a game that can afford massive overheads on functions
+        // The idea for updating both the black and white legalmoves is that once one's turn ends, i can use (an albiet flawed) recalculation to at minimum see if there are any new threats to the king
+        legalMoves.setLegalMoves(turn, calculateLegalMoves(turn));
+
+        turn = (turn.equals(WHITE)) ? BLACK : WHITE;
+
+        legalMoves.setLegalMoves(turn, calculateLegalMoves(turn));
+        // Recalculate legal moves list AFTER turn has been changed
+
+        return paintData;
+    }
+
+    
+
+
+
+
+
+
+
+
+
+    /**
+     * Given a coordinate, x and y, determines if it is in the bounds of the board arr
+     * @param x the x index to see if it is in the board arr
+     * @param y the y index to see if it is in the board arr
+     */
+    private boolean pieceInBounds(int x, int y){
+        return 0 <= x && x < 8 && 0 <= y && y < 8;
+    }
+
+
+
+
+
+
+
+
+    /**
+     * Guess this thing gets to stay. yipee
      * Calculates the legal moves of all pieces on the board and stores them on the board
      * This is a piece of crap function and i want it gone but i can't figure out for the life of me how to refactor it
      */
@@ -345,7 +321,7 @@ public class Board extends BoardPanel {
 
                                 // en passant code here
                                 if (getPieceFromBoard(col+i, row).getType()==PAWN){ 
-                                    Point[] prevMoves = prevMoveHighlight.getSquares();
+                                    Point[] prevMoves = prevMove.getSquares();
                                     // If the previous move by the other team was a pawn jump next to the current pawn, allow en passant
                                     if (prevMoves[0]==null || prevMoves[1]==null){continue;}
                                     
@@ -541,6 +517,18 @@ public class Board extends BoardPanel {
 
     }
 
+
+
+
+
+
+
+
+
+
+
+
+
     /**
      * Returns a boolean value which represents whether moving a given piece to a given point will cause a pin by enemies on a given king.
      * @param king the king for which the function checks for pins
@@ -610,6 +598,12 @@ public class Board extends BoardPanel {
 
         return false;
     }
+
+
+
+
+
+
 
 
 
@@ -690,4 +684,5 @@ public class Board extends BoardPanel {
 
         return  pieces.toArray(new Attacker[pieces.size()]);
     }
+
 }

@@ -26,6 +26,10 @@ public class Piece {
             }
         }
     }
+    
+    public static Piece newEmpty(int x, int y){
+        return new Piece(x,y,Type.EMPTY,Colour.NONE);
+    }
 
 
     public int x;

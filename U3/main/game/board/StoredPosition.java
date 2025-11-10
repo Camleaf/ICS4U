@@ -5,7 +5,7 @@ import java.awt.Point;
  * Stores and modifies the information for the highlighted squares
  * @author Camleaf
  */
-public class Highlight {
+public class StoredPosition {
     private Point[] positions = new Point[2];
 
     public void setEmpty(){

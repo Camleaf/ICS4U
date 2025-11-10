@@ -4,6 +4,7 @@ import lib.window.Texture;
 import main.window.Colours;
 import main.game.board.Piece;
 import java.awt.Color;
+import java.awt.Point;
 /**
  * Class inheriting from GraphicsPanel and in turn JPanel. Meant to use the GraphicsPanel abstractions to provide all game-specific chessBoard functions. Doesn't contain critical game logic, just game-specific rendering
  * @author Camleaf
@@ -135,7 +136,6 @@ public class BoardPanel extends GraphicsPanel {
     public void paintPiece(Piece piece, int mode){
         paintPiece(piece.getType(),piece.getColour(),piece.x,piece.y,mode);
     }
-
     
 
     /**
@@ -149,6 +149,14 @@ public class BoardPanel extends GraphicsPanel {
         } else {
             drawRect(x*squareSize,y*squareSize,squareSize,squareSize,Colours.boardBlack);
         }
+    }
+
+    /**
+     * Paints an empty square at a given coordinate (x,y) overwriting what was there previously
+     * @param p a Java.awt.Point object representing coordinate (x,y)
+     */
+    public void paintEmpty(Point p){
+        paintEmpty(p.x, p.y);
     }
 
     /**
