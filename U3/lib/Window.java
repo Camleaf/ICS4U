@@ -1,7 +1,6 @@
 package lib;
 import javax.swing.JFrame;
 import javax.swing.JLayeredPane;
-import javax.swing.JLabel;
 /**
     * Is the interface between all custom panels and the main game.
     @author CamLeaf

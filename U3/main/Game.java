@@ -1,6 +1,5 @@
 package main;
 import main.game.BoardDisplay;
-import main.game.board.PromoteDisplay;
 import lib.Window;
 import lib.interactions.Keyboard;
 import lib.interactions.Mouse;

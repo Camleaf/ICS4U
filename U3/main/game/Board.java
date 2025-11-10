@@ -133,6 +133,8 @@ public class Board {
                     }
                 }
                 break;
+            default:
+                break;
         }
         return  pieces.toArray(new Piece[pieces.size()]);
     }

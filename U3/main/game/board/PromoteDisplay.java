@@ -1,7 +1,6 @@
 package main.game.board;
 import main.window.Colours;
 import main.window.panels.BoardPanel;
-import main.game.board.Piece;
 import static main.game.board.Piece.Type.*;
 import static main.game.board.Piece.Colour.*;
 import java.awt.Rectangle;

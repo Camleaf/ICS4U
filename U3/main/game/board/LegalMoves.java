@@ -1,8 +1,6 @@
 package main.game.board;
 import java.awt.Point;
 import java.util.HashMap;
-import main.game.board.Piece;
-import static main.game.board.Piece.Colour.*;
 /**
  * Container for legalmove related stuff. It somehow got complicated enough to warrant this
  */

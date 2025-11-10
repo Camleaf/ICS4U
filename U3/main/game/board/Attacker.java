@@ -1,5 +1,4 @@
 package main.game.board;
-import main.game.board.Piece;
 import java.awt.Point;
 
 public class Attacker {

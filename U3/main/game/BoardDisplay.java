@@ -4,7 +4,6 @@ import main.game.board.PromoteDisplay;
 import main.window.panels.BoardPanel;
 import static main.game.board.Piece.Type.*;
 import static main.game.board.Piece.Colour.*;
-import main.game.Board;
 import java.awt.Rectangle;
 import java.awt.Point;
 import main.game.board.PaintData;
