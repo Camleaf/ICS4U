@@ -58,6 +58,11 @@ public class BoardDisplay extends BoardPanel {
                     return;
                 }
 
+                for (Point point : board.getStoredMoves().getSquares()){
+                    if (point == null){continue;}
+                    paintPiece(board.getRawBoard()[point.y][point.x], PIECE_PAINT_OVERWRITE);
+                }
+
                 PaintData paintData = board.handleMove(prevPiece, interactedPiece);
 
                 if (paintData == null){

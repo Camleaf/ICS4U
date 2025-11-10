@@ -156,10 +156,7 @@ public class Board {
 
         //Remove old movement highlighted squares
 
-        for (Point point : prevMove.getSquares()){
-            if (point == null){continue;}
-            paintData.add(board[point.y][point.x], PIECE_PAINT_OVERWRITE);
-        }
+        
 
         // Check for en passant and adjust board accordingly
         Point[] prevMoves = prevMove.getSquares();
