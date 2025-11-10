@@ -6,5 +6,7 @@ public class Colours {
     public static Color boardWhite = new Color(235, 240, 216);
     public static Color selectHighlight = new Color(245, 246, 130);
     public static Color boardHighlight = new Color(207, 220, 142);
+    public static Color checkHighlight = new Color(250, 162, 55);
+    public static Color checkMateHighlight = new Color(250, 78, 55);
 }
 

@@ -12,6 +12,7 @@ import java.util.ArrayList;
 public class BoardDisplay extends BoardPanel {
     private Point selectedPoint = new Point(-1,-1);
     private Board board;
+    public boolean checkMate = false;
 
 
     public BoardDisplay(int gridSize){
@@ -27,6 +28,10 @@ public class BoardDisplay extends BoardPanel {
      * @return the acceptance status of the click
      */
     public void handleMouseClick(Point clickPos){
+
+        if (this.checkMate){
+            return;
+        }
         Rectangle bounds = this.getBounds();
         if (bounds.contains(clickPos)){
 
@@ -71,6 +76,13 @@ public class BoardDisplay extends BoardPanel {
                     return;
                 }
                 parsePaintData(paintData);
+
+                if (board.isCheckMate(board.getTurn())){
+                    Piece king = board.getPieceType(KING, board.getTurn())[0];
+                    this.checkMate = true;
+                    paintPiece(king,PIECE_PAINT_HIGHLIGHT_CHECKMATE);
+                }; // Board.getturn at this point is now the opposite of whatever piece we just moved.
+
 
                 this.selectedPoint.setLocation(-1, -1);
 

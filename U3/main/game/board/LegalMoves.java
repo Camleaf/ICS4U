@@ -47,26 +47,28 @@ public class LegalMoves {
         }
     }
 
-    public boolean contains(Piece.Colour colour, Point query){
+
+    public int getMovesLength(Piece.Colour colour){
+        int values = 0;
         switch (colour){
             case WHITE:
-                for (Point key : whiteLegalMoves.keySet()){
-                    for (Point move : whiteLegalMoves.get(key)){
-                        if (move.equals(query)) return true;
-                    }
+                values = 0;
+                for (Point[] pList : whiteLegalMoves.values()){
+                    values += pList.length;
                 }
-                return false;
+                return values;
 
             case BLACK:
-                for (Point key : blackLegalMoves.keySet()){
-                    for (Point move : blackLegalMoves.get(key)){
-                        if (move.equals(query)) return true;
-                    }
+                values = 0;
+                for (Point[] pList : blackLegalMoves.values()){
+                    values += pList.length;
                 }
-                return false;
+                return values;
 
             default:
-                return false;
+                return 0;
         }
     }
+
+    
 }

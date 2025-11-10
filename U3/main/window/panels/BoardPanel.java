@@ -86,6 +86,8 @@ public class BoardPanel extends GraphicsPanel {
     public static final int PIECE_PAINT_OVERWRITE = 1;
     public static final int PIECE_PAINT_HIGHLIGHT = 2;
     public static final int PIECE_PAINT_HIGHLIGHT_SELECT = 3;
+    public static final int PIECE_PAINT_HIGHLIGHT_CHECK = 4;
+    public static final int PIECE_PAINT_HIGHLIGHT_CHECKMATE = 5;
     /**
      * Paints a piece onto the board with the option to use a specific drawing mode
      * @param piece a class representing a piece from the enum Pieces from class board 
@@ -98,6 +100,8 @@ public class BoardPanel extends GraphicsPanel {
      * <li><b>1</b> overwrites background with regular board colour</li>
      * <li><b>2</b> overwrites background with highlight color of last move</li>
      * <li><b>3</b> overwrites background with highlight color of current selection</li>
+     * <li><b>4</b> overwrites background with highlight color of check/li>
+     * <li><b>5</b> overwrites background with highlight color of checkmate</li>
      */
     public void paintPiece(Piece.Type piece, Piece.Colour colour, int x, int y, int mode){
         switch (mode){
@@ -109,6 +113,12 @@ public class BoardPanel extends GraphicsPanel {
                 break;
             case (PIECE_PAINT_HIGHLIGHT_SELECT):
                 paintHighlight(x,y,Colours.selectHighlight);
+                break;
+            case (PIECE_PAINT_HIGHLIGHT_CHECK):
+                paintHighlight(x, y,Colours.checkHighlight);
+                break;
+            case (PIECE_PAINT_HIGHLIGHT_CHECKMATE):
+                paintHighlight(x, y,Colours.checkMateHighlight);
                 break;
         }   
 

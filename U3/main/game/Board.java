@@ -116,7 +116,7 @@ public class Board {
      * @param c The colour to filter by
      * @return a Piece[] containing all pieces alive of the specifications
      */
-    private Piece[] getPieceType(Piece.Type t, Piece.Colour c){
+    public Piece[] getPieceType(Piece.Type t, Piece.Colour c){
         ArrayList<Piece> pieces = new ArrayList<Piece>();
         switch (c){
             case BLACK:
@@ -239,8 +239,13 @@ public class Board {
 
 
 
-
-
+    /**
+     * Returns a boolean which corresponds to whether the board is in a state of checkmate
+     * @return True if checkmate, False otherwie
+     */
+    public boolean isCheckMate(Piece.Colour c){
+        return legalMoves.getMovesLength(c) == 0;
+    }
 
     /**
      * Given a coordinate, x and y, determines if it is in the bounds of the board arr
