@@ -57,6 +57,9 @@ public class Piece {
     public Type getType(){
         return this.type;
     }
+    public void setType(Type type){
+        this.type = type;
+    }
 
     public Colour getColour(){
         return this.colour;

@@ -1,5 +1,6 @@
 package main;
 import main.game.BoardDisplay;
+import main.game.board.PromoteDisplay;
 import lib.Window;
 import lib.interactions.Keyboard;
 import lib.interactions.Mouse;
@@ -18,7 +19,8 @@ public class Game {
     public Game(){
         window = new Window("Chess", 800,640);
         board = new BoardDisplay(512);
-        window.add(board);
+        window.add(board,Integer.valueOf(1));
+        window.add(board.pawnPromoteDisplay,Integer.valueOf(2));
         /*
          * Screen will be 800 x 800
          */

@@ -234,8 +234,13 @@ public class Board {
 
     
 
-
-
+    /**
+     * recalculates legal moves independant of handlemove func
+     */
+    public void restoreLegalMoves(){
+        legalMoves.setLegalMoves(BLACK, calculateLegalMoves(BLACK));
+        legalMoves.setLegalMoves(WHITE, calculateLegalMoves(WHITE));
+    }
 
 
 

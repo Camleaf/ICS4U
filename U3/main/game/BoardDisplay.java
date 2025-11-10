@@ -1,5 +1,6 @@
 package main.game;
 import main.game.board.Piece;
+import main.game.board.PromoteDisplay;
 import main.window.panels.BoardPanel;
 import static main.game.board.Piece.Type.*;
 import static main.game.board.Piece.Colour.*;
@@ -14,6 +15,7 @@ public class BoardDisplay extends BoardPanel {
     private Point selectedPoint = new Point(-1,-1);
     private Board board;
     public boolean checkMate = false;
+    public PromoteDisplay pawnPromoteDisplay = new PromoteDisplay();
 
 
     public BoardDisplay(int gridSize){
@@ -29,6 +31,12 @@ public class BoardDisplay extends BoardPanel {
      * @return the acceptance status of the click
      */
     public void handleMouseClick(Point clickPos){
+
+        // the pawn promotion menu must take priority
+        if (pawnPromoteDisplay.isVisible()){
+            handlePromoteDisplay(clickPos);
+            return;
+        }
 
         if (this.checkMate){
             return;
@@ -77,18 +85,23 @@ public class BoardDisplay extends BoardPanel {
                 PaintData paintData = board.handleMove(prevPiece, interactedPiece);
 
                 if (paintData == null){
-                    // If the move wasn't accepted that means that either the move wasn't valid (haven't implemented yet) or they tried to click on a friendly piece
+                    // If the move wasn't accepted that means that either the move wasn't valid 
                     // Both edge cases are handled inside the move function
                     return;
                 }
+        
                 parsePaintData(paintData);
 
-                if (board.isCheckMate(board.getTurn())){
-                    Piece king = board.getPieceType(KING, board.getTurn())[0];
-                    this.checkMate = true;
-                    paintPiece(king,PIECE_PAINT_HIGHLIGHT_CHECKMATE);
-                }; // Board.getturn at this point is now the opposite of whatever piece we just moved.
+                // Since paintdata isn't null we can check for checkmates and for pawn promotions
 
+                checkCheckMate();// Board.getturn at this point is now the opposite of whatever piece we just moved.
+
+                // if a pawn is on the last or first row it must be promoting
+                if (prevPiece.getType() == PAWN && (prevPiece.y==7 || prevPiece.y==0)){
+                    pawnPromoteDisplay.setMode(board.getTurn().getInverse());
+                    pawnPromoteDisplay.setPawnLoc(prevPiece.x, prevPiece.y);
+                    pawnPromoteDisplay.setVisible(true);
+                }
 
                 this.selectedPoint.setLocation(-1, -1);
 
@@ -123,4 +136,27 @@ public class BoardDisplay extends BoardPanel {
 
 
     }   
+
+
+    private void handlePromoteDisplay(Point clickPos){
+        Piece.Type pcT = pawnPromoteDisplay.handleClick(clickPos);
+        if (pcT == null) return;
+
+        Piece pawn = board.getRawBoard()[pawnPromoteDisplay.pawnLoc.y][pawnPromoteDisplay.pawnLoc.x];
+        pawn.setType(pcT);
+        paintPiece(pawn,PIECE_PAINT_OVERWRITE);
+        
+        board.restoreLegalMoves();
+        pawnPromoteDisplay.setVisible(false);
+        checkCheckMate();
+    }
+
+
+    private void checkCheckMate(){
+         if (board.isCheckMate(board.getTurn())){
+            Piece king = board.getPieceType(KING, board.getTurn())[0];
+            this.checkMate = true;
+            paintPiece(king,PIECE_PAINT_HIGHLIGHT_CHECKMATE);
+        };
+    }
 }

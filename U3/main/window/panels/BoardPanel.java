@@ -16,6 +16,8 @@ public class BoardPanel extends GraphicsPanel {
     public int gridSize; //preferably a multiple of 8
     public Piece.Colour orientation;
     public int squareSize;
+    public int width;
+    public int height;
     
     /**
      * @author Camleaf
@@ -25,8 +27,22 @@ public class BoardPanel extends GraphicsPanel {
         this.orientation = orientation;
         this.gridSize = gridSize;
         this.squareSize = this.gridSize/8;
-
+        this.width = gridSize/squareSize;
+        this.height = gridSize/squareSize;
         setBounds(0, 0, gridSize, gridSize);
+    }
+
+    /**
+     * @author Camleaf
+     */
+    public BoardPanel(int squareSize, int width, int height, Piece.Colour orientation){
+        super(width, height);
+        this.orientation = orientation;
+        this.squareSize = squareSize;
+        this.width = width;
+        this.height = height;
+
+        setBounds(0, 0, width, height);
     } 
     
     /**
@@ -34,8 +50,8 @@ public class BoardPanel extends GraphicsPanel {
      */
     public void paintBackground(){
         flushBuffer();
-        for (int row = 0; row < 8; row++){
-            for (int col = 0;col<8;col++){
+        for (int row = 0; row < height; row++){
+            for (int col = 0;col< width;col++){
                 if ((row%2 + col)%2==0){
                     drawRect(col*squareSize,row*squareSize,squareSize,squareSize,Colours.boardWhite);
                 } else {
@@ -54,7 +70,7 @@ public class BoardPanel extends GraphicsPanel {
             case WHITE:
                 return y;
             case BLACK:
-                return 7-y;
+                return height-y-1;
             default:
                 return 0;
         }  
@@ -190,14 +206,22 @@ public class BoardPanel extends GraphicsPanel {
         paintEmpty(p.x, p.y);
     }
 
+    public void fillBoard(Color c){
+        for (int row = 0; row < height; row++){
+            for (int col = 0; col < width; col++){
+                paintHighlight(col, row,c);
+            }
+        }
+    }
+
     /**
      * Draws the current stored board. Will not overwrite the background. 
      * <p>
      * Is inefficient and should only be used after a buffer clear and when loading a completely different board state. Smaller changes should use the  inherited paintPiece and paintEmpty functions directly
      */
     public void drawCurrentBoard(Piece[][] board){
-        for (int row = 0; row < 8; row++){
-            for (int col = 0; col < 8; col++){
+        for (int row = 0; row < height; row++){
+            for (int col = 0; col < width; col++){
                 
                 paintPiece(board[row][filterY(col)]);
             }
