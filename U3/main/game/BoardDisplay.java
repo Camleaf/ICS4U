@@ -2,6 +2,7 @@ package main.game;
 import main.game.board.Piece;
 import main.window.panels.BoardPanel;
 import static main.game.board.Piece.Type.*;
+import static main.game.board.Piece.Colour.*;
 import main.game.Board;
 import java.awt.Rectangle;
 import java.awt.Point;
@@ -16,7 +17,7 @@ public class BoardDisplay extends BoardPanel {
 
 
     public BoardDisplay(int gridSize){
-        super(gridSize);
+        super(gridSize,WHITE); // the colour passed is the orientation of the board, black or white
         board = new Board();
         paintBackground();
         drawCurrentBoard(board.getRawBoard());
@@ -32,6 +33,11 @@ public class BoardDisplay extends BoardPanel {
         if (this.checkMate){
             return;
         }
+
+        if (this.orientation == BLACK){
+            clickPos = new Point(clickPos.x,this.gridSize-clickPos.y);
+        }
+
         Rectangle bounds = this.getBounds();
         if (bounds.contains(clickPos)){
 
