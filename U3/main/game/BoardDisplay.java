@@ -1,6 +1,7 @@
 package main.game;
 import main.game.board.Piece;
 import main.game.board.PromoteDisplay;
+import main.game.board.StoredPosition;
 import main.window.panels.BoardPanel;
 import static main.game.board.Piece.Type.*;
 import static main.game.board.Piece.Colour.*;
@@ -85,17 +86,19 @@ public class BoardDisplay extends BoardPanel {
                     return;
                 }
 
-                for (Point point : board.getStoredMoves().getSquares()){
-                    if (point == null){continue;}
-                    paintPiece(board.getRawBoard()[point.y][point.x], PIECE_PAINT_OVERWRITE);
-                }
-
+                Point[] oldHighlightPos = board.getStoredMoves().getSquares().clone();
+                
                 PaintData paintData = board.handleMove(prevPiece, interactedPiece);
 
                 if (paintData == null){
                     // If the move wasn't accepted that means that either the move wasn't valid 
                     // Both edge cases are handled inside the move function
                     return;
+                }
+
+                for (Point point : oldHighlightPos){
+                    if (point == null){continue;}
+                    paintPiece(board.getRawBoard()[point.y][point.x], PIECE_PAINT_OVERWRITE);
                 }
         
                 parsePaintData(paintData);
