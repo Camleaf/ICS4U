@@ -3,7 +3,10 @@ import main.game.BoardDisplay;
 import lib.Window;
 import lib.interactions.Keyboard;
 import lib.interactions.Mouse;
+import lib.logic.Interval;
+
 import java.awt.Point;
+
 /**
     * Main intermediary for taking commands from mainloop and distributing to components
     @author CamLeaf
@@ -14,9 +17,11 @@ public class Game {
     private BoardDisplay board;
     private Keyboard keyboard;
     private Mouse mouse;
+    private Interval boardFlipInterval;
 
     public Game(){
-        window = new Window("Chess", 800,640);
+        boardFlipInterval = new Interval(250);
+        window = new Window("Chess", 800,560);
         board = new BoardDisplay(512);
         window.add(board,Integer.valueOf(1));
         window.add(board.pawnPromoteDisplay,Integer.valueOf(2));
@@ -46,6 +51,10 @@ public class Game {
         Point clickPoint = mouse.peekLastEvent();
         if (clickPoint != null){
             board.handleMouseClick(clickPoint);
+        }
+
+        if (keyboard.isKeyPressed(27) && boardFlipInterval.intervalPassed()){
+            board.switchOrientation();
         }
     }
 }

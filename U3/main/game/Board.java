@@ -21,7 +21,6 @@ public class Board {
     private ArrayList<Piece> whitePieces;
     private ArrayList<Piece> blackPieces;
     private StoredPosition prevMove = new StoredPosition();
-
     private LegalMoves legalMoves = new LegalMoves();
 
     public Board(){

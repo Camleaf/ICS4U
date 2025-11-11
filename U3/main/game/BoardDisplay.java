@@ -24,6 +24,15 @@ public class BoardDisplay extends BoardPanel {
         drawCurrentBoard(board.getRawBoard());
     }
 
+
+    public void switchOrientation(){
+        this.orientation = this.orientation.getInverse();
+        paintBackground();
+        drawCurrentBoard(board.getRawBoard());
+        this.selectedPoint.setLocation(-1,-1);
+    }
+
+
     /**
      * Handles a click at a given java.awt.Point on the board.
      * <p>
