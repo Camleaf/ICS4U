@@ -480,8 +480,8 @@ public class Board {
                     // The idea behind the king movements is that we can see if the given points defend the king or not. If not, we destroy them
                     if (piece.getType()!=KING && kingAttackers.length==1){ // We don't want the king to lose moves based on if it can defend itself that defeats the point
                         // If there is a kingattacker we only want moves which can fix it
+
                         if (!pt.equals(kingAttackers[0].pc.getLocation())){
-                            // this code broke
 
                             if (kingAttackers[0].pc.getType()==KNIGHT)continue; // If its a knight you have to eat it
                             // normalize the vector
@@ -565,11 +565,13 @@ public class Board {
         } else if (yDif < 0){
             yDif = -1;
         }
+        
 
         Point vector = new Point(xDif,yDif);
-
+        boolean foundPinnedPiece = false;
         int idx = 1;
         while (true){
+
             int newX = vector.x*idx + king.x;
             int newY = vector.y*idx + king.y;
             if (!pieceInBounds(newX, newY)) break; // If the ray reaches the edge of the board, there is no pin
@@ -580,14 +582,20 @@ public class Board {
             }
 
             if (newX == pieceToMove.x && newY == pieceToMove.y){
+                foundPinnedPiece = true; // to be pinned the piece must be in between the king and attacking piece. This ticks the box if that passes.
                 idx++;
                 continue;
             } // We want to skip the coordinate that the object is moving from
 
             if (getPieceFromBoard(newX, newY).getType()!=EMPTY ){
 
-                if (getPieceFromBoard(newX, newY).getColour()==king.getColour()){ // this if statement is here for optimization. This project will need any it can get.
+                if (getPieceFromBoard(newX, newY).getColour()==king.getColour()){ // this if statement is here and not outside the outer if statement for optimization. This project will need any it can get.
                     // If we run into a piece the same colour as the king, then no pin
+                    break;
+                }
+
+                if (!foundPinnedPiece){
+                    // If we find the piece but we haven't found the piece we are searching the pin for, then the piece is not liable for a pin
                     break;
                 }
 
@@ -596,6 +604,7 @@ public class Board {
                 } else if (getPieceFromBoard(newX, newY).getType()==BISHOP && (Math.abs(vector.x) == 1 && Math.abs(vector.y)==1)){
                     return true;
                 } else if (getPieceFromBoard(newX, newY).getType()==ROOK && ((Math.abs(vector.x) == 0 && Math.abs(vector.y)==1) || (Math.abs(vector.x) == 1 && Math.abs(vector.y)==0))){
+
                     return true;
                 }
                 break;
