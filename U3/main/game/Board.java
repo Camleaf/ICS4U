@@ -184,14 +184,14 @@ public class Board {
                 paintData.addEmpty(rook.getLocation());
 
                 board[destinationPiece.y][destinationPiece.x-1] = rook;
-                board[rook.y][rook.x] = new Piece(piece.x,piece.y,EMPTY,NONE);
+                board[rook.y][rook.x] = new Piece(rook.x,rook.y,EMPTY,NONE);
                 rook.setLocation(destinationPiece.x-1, destinationPiece.y);
                 paintData.add(rook, PIECE_PAINT_DEFAULT);
             } else {
                 rook = getPieceFromBoard(0, piece.y);
                 paintData.addEmpty(rook.getLocation());
 
-                board[rook.y][rook.x] = new Piece(piece.x,piece.y,EMPTY,NONE);
+                board[rook.y][rook.x] = new Piece(rook.x,rook.y,EMPTY,NONE);
                 board[destinationPiece.y][destinationPiece.x+1] = rook;
                 rook.setLocation(destinationPiece.x+1, destinationPiece.y);
                 paintData.add(rook, PIECE_PAINT_DEFAULT);
@@ -443,6 +443,9 @@ public class Board {
                         if (!piece.hasMoved() && !getPieceFromBoard(0, piece.y).hasMoved()){
                             Boolean castleAllowed = true;
                             for (int ix = 1;ix<=3;ix++){ // we want to check 3 towards this dir
+                                if (ix < 3){
+                                    if (attackersToPoint(new Point(piece.x - ix,piece.y), colour.getInverse()).length != 0){castleAllowed=false;break;}
+                                }
                                 if (getPieceFromBoard(piece.x - ix, piece.y).getType()!=EMPTY){
                                     castleAllowed = false;
                                     break;
@@ -455,6 +458,9 @@ public class Board {
                         if (!piece.hasMoved() && !getPieceFromBoard(7, piece.y).hasMoved()){
                             Boolean castleAllowed = true;
                             for (int ix = 1;ix<=2;ix++){ // we want to check 3 towards this dir
+                                if (ix < 2){
+                                    if (attackersToPoint(new Point(piece.x + ix,piece.y), colour.getInverse()).length != 0){castleAllowed=false;break;}
+                                }
                                 if (getPieceFromBoard(piece.x + ix, piece.y).getType()!=EMPTY){
                                     castleAllowed = false;
                                     break;
