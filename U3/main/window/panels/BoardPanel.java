@@ -1,6 +1,6 @@
 package main.window.panels;
-import lib.window.GraphicsPanel;
 import lib.window.Texture;
+import lib.window.GraphicsComponent;
 import main.window.Colours;
 import main.game.board.Piece;
 import java.awt.Color;
@@ -9,7 +9,7 @@ import java.awt.Point;
  * Class inheriting from GraphicsPanel and in turn JPanel. Meant to use the GraphicsPanel abstractions to provide all game-specific chessBoard functions. Doesn't contain critical game logic, just game-specific rendering
  * @author Camleaf
  */
-public class BoardPanel extends GraphicsPanel {
+public class BoardPanel extends GraphicsComponent {
     private final Texture spriteSheet = new Texture("src/piecesSpriteSheet.png", -1, -1);
     private final int spriteSize = 64;
     private final int spriteSheetSize = 256;

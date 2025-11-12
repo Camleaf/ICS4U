@@ -1,23 +1,24 @@
 package lib.window;
 import java.awt.Graphics;
+
+import javax.swing.JComponent;
 import javax.swing.JPanel;
 import java.awt.image.BufferedImage;
 import java.awt.image.DataBufferInt;
 import java.awt.Color;
 
 /**
-    * Individual graphics panel which abstracts modifying pixels individually into direct operations like bliting rasterized images and drawing geometric objects
+    * Individual graphics component which abstracts modifying pixels individually into direct operations like bliting rasterized images and drawing geometric objects
     * <p>
-    * Do not call the <b>paintComponent</b> method as swing will call it itself and is internal
     @author CamLeaf
 */
-public class GraphicsPanel extends JPanel{
+public class GraphicsComponent extends JPanel{
     private BufferedImage buffer;
     private int[] pixels;
-    private int width;
-    private int height;
+    protected int width;
+    protected int height;
     
-    public GraphicsPanel(int width, int height){
+    public GraphicsComponent(int width, int height){
         setLayout(null); 
         setSize(width,height);
         setIgnoreRepaint(true);
@@ -58,13 +59,13 @@ public class GraphicsPanel extends JPanel{
     /**
      * Flushes the buffer frame
      */     
-    public void flushBuffer(){
+    protected void flushBuffer(){
         Graphics g = buffer.getGraphics();
         g.setColor(Color.BLACK);
         g.fillRect(0, 0, this.width, this.height);
     }
 
-    public void drawText(String string, int x, int y){
+    protected void drawText(String string, int x, int y){
         /*
          * This function has inefficient usage of the graphics object's overhead so I may make one to draw multiple lines as well for optimization's sake
          */
@@ -80,7 +81,7 @@ public class GraphicsPanel extends JPanel{
      * @param y the y coordinate of the upper-left corner
      */
 
-    public void drawBufferedImage(BufferedImage image, int x, int y){
+    protected void drawBufferedImage(BufferedImage image, int x, int y){
         Graphics g = buffer.getGraphics();
         g.drawImage(image, x, y, null);
         g.dispose();
@@ -95,7 +96,7 @@ public class GraphicsPanel extends JPanel{
         * @param h  height of rect
         * @param colour Colour of the rect
     */
-    public void drawRect(int x, int y, int w, int h, Color colour){
+    protected void drawRect(int x, int y, int w, int h, Color colour){
         int colourInt = colour.getRGB(); 
         for (int col = x;col<x+w;col++){
             for (int row = y;row<y+h;row++){
@@ -112,7 +113,7 @@ public class GraphicsPanel extends JPanel{
         * @param h  height of rect
         * @param colour Colour of the rect
     */
-    public void drawRectBorder(int x, int y, int w, int h, Color colour){
+    protected void drawRectBorder(int x, int y, int w, int h, Color colour){
         Graphics g = buffer.getGraphics();
         g.setColor(colour);
         g.drawRect(x, y, w, h);
@@ -127,7 +128,7 @@ public class GraphicsPanel extends JPanel{
         * @param h Height of the ellipse and its bounding box
         * @param colour Colour of the ellipse
     */
-    public void drawEllipse(int x, int y, int w, int h, Color colour){
+    protected void drawEllipse(int x, int y, int w, int h, Color colour){
         Graphics g = buffer.getGraphics();
         g.setColor(colour);
         g.fillOval(x,y,w,h);
@@ -142,7 +143,7 @@ public class GraphicsPanel extends JPanel{
         * @param h Height of the ellipse and its bounding box
         * @param colour Colour of the ellipse border
     */
-    public void drawEllipseBorder(int x, int y, int w, int h, Color colour){
+    protected void drawEllipseBorder(int x, int y, int w, int h, Color colour){
         Graphics g = buffer.getGraphics();
         g.setColor(colour);
         g.drawOval(x,y,w,h);
@@ -158,7 +159,7 @@ public class GraphicsPanel extends JPanel{
         * @param colour Colour of the circle
     */
 
-    public void drawCircle(int x, int y, int r, Color colour){
+    protected void drawCircle(int x, int y, int r, Color colour){
         drawEllipse(x, y, r*2, r*2, colour);
     }
 
@@ -170,12 +171,12 @@ public class GraphicsPanel extends JPanel{
         * @param colour Colour of the circle
     */
 
-    public void drawCircleBorder(int x, int y, int r, Color colour){
+    protected void drawCircleBorder(int x, int y, int r, Color colour){
         drawEllipseBorder(x, y, r*2, r*2, colour);
     }
 
-    public int getWidth(){return this.width;};
+    public int getStoredWidth(){return this.width;};
 
-    public int getHeight(){return this.height;};
+    public int getStoredHeight(){return this.height;};
 
 }
