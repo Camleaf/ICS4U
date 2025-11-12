@@ -18,7 +18,7 @@ public class GraphicsContext{
     public GraphicsContext(int width, int height){
         this.width = width;
         this.height = height;
-        buffer = new BufferedImage(width, height,BufferedImage.TYPE_INT_RGB);
+        buffer = new BufferedImage(width, height,BufferedImage.TYPE_INT_ARGB);
         pixels = ((DataBufferInt) buffer.getRaster().getDataBuffer()).getData(); // From unit 2 project
         
     }
@@ -27,7 +27,6 @@ public class GraphicsContext{
      */
     public void paintComponent(Graphics g){
         g.drawImage(buffer,0,0,null);
-        g.dispose();
     }
     
     /*Public
@@ -104,6 +103,36 @@ public class GraphicsContext{
         g.dispose();
     }
 
+     /**
+        * Draws an rect with top-left corner (x,y) and dimensions (w,h), and corner arcs of width arcWidth, and height arcHeight
+        * @param x  integer x coordinate of top left corner of rect
+        * @param y  integer y coordinate of top left corner of rect
+        * @param w  width of rect
+        * @param h  height of rect
+        * @param arcWidth horizontal diametre of the arcs at the four corners
+        * @param arcHeight vertical diametre o the arcs at the four corners
+        * @param colour Colour of the rect
+    */
+    public void drawRect(int x, int y, int w, int h, int arcWidth, int arcHeight, Color colour){
+        Graphics g = buffer.getGraphics();
+        g.setColor(colour);
+        g.fillRoundRect(x,y,w,h,arcWidth,arcHeight);
+        g.dispose();
+    }
+
+     /**
+        * Draws an rect with top-left corner (x,y) and dimensions (w,h), width corners of radius cornerRadius
+        * @param x  integer x coordinate of top left corner of rect
+        * @param y  integer y coordinate of top left corner of rect
+        * @param w  width of rect
+        * @param h  height of rect
+        * @param cornerRadius the radius in pixels of the corners
+        * @param colour Colour of the rect
+    */
+    public void drawRect(int x, int y, int w, int h, int cornerRadius, Color colour){
+        drawRect(x, y, w, h, cornerRadius, cornerRadius, colour);
+    }
+
     /**
         * Draws an ellipse with centre {x-(w/2),y-(h/2)}, and dimensions w,h
         * @param x integer x coordinate of top left of bounding box of ellipse with sidelength w
@@ -157,6 +186,11 @@ public class GraphicsContext{
 
     public void drawCircleBorder(int x, int y, int r, Color colour){
         drawEllipseBorder(x, y, r*2, r*2, colour);
+    }
+
+
+    public void fill(Color colour){
+        drawRect(0, 0, this.width, this.height, colour);
     }
 
     public int getWidth(){return this.width;};

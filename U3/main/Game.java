@@ -4,7 +4,8 @@ import lib.Window;
 import lib.interactions.Keyboard;
 import lib.interactions.Mouse;
 import lib.logic.Interval;
-
+import main.menu.MenuPanel;
+import java.awt.Color;
 import java.awt.Point;
 
 /**
@@ -15,6 +16,7 @@ public class Game {
     // No interfacing with swing should be done from this class
     public Window window;
     private BoardDisplay board;
+    private MenuPanel menu;
     private Keyboard keyboard;
     private Mouse mouse;
     private Interval boardFlipInterval;
@@ -23,8 +25,14 @@ public class Game {
         boardFlipInterval = new Interval(250);
         window = new Window("Chess", 800,560);
         board = new BoardDisplay(512);
-        window.add(board,Integer.valueOf(1));
-        window.add(board.pawnPromoteDisplay,Integer.valueOf(2));
+        menu = new MenuPanel(288, 560, null);
+        menu.setLocation(512, 0);
+
+        window.add(menu,Integer.valueOf(1));
+        window.add(board,Integer.valueOf(2));
+        window.add(board.pawnPromoteDisplay,Integer.valueOf(3));
+        window.setBackground(Color.DARK_GRAY);
+        
         /*
          * Screen will be 800 x 800
          */
