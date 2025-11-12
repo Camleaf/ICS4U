@@ -1,6 +1,6 @@
 package main.window.panels;
 import lib.window.Texture;
-import lib.window.GraphicsComponent;
+import lib.window.stylized.StylizedComponent;
 import main.window.Colours;
 import main.game.board.Piece;
 import java.awt.Color;
@@ -9,7 +9,7 @@ import java.awt.Point;
  * Class inheriting from GraphicsPanel and in turn JPanel. Meant to use the GraphicsPanel abstractions to provide all game-specific chessBoard functions. Doesn't contain critical game logic, just game-specific rendering
  * @author Camleaf
  */
-public class BoardPanel extends GraphicsComponent {
+public class BoardPanel extends StylizedComponent {
     private final Texture spriteSheet = new Texture("src/piecesSpriteSheet.png", -1, -1);
     private final int spriteSize = 64;
     private final int spriteSheetSize = 256;
@@ -49,13 +49,13 @@ public class BoardPanel extends GraphicsComponent {
      * Paints the background of the grid in the classic checkerboard fashion. Will overwrite everything rendered to the board
      */
     public void paintBackground(){
-        flushBuffer();
+        gct.flushBuffer();
         for (int row = 0; row < height; row++){
             for (int col = 0;col< width;col++){
                 if ((row%2 + col)%2==0){
-                    drawRect(col*squareSize,row*squareSize,squareSize,squareSize,Colours.boardWhite);
+                    gct.drawRect(col*squareSize,row*squareSize,squareSize,squareSize,Colours.boardWhite);
                 } else {
-                    drawRect(col*squareSize,row*squareSize,squareSize,squareSize,Colours.boardBlack);
+                    gct.drawRect(col*squareSize,row*squareSize,squareSize,squareSize,Colours.boardBlack);
                 }
             }
         }
@@ -84,7 +84,7 @@ public class BoardPanel extends GraphicsComponent {
      */
     public void paintHighlight(int x, int y){
         y = filterY(y);
-        drawRect(x * squareSize, y*squareSize,squareSize,squareSize,Colours.boardHighlight);
+        gct.drawRect(x * squareSize, y*squareSize,squareSize,squareSize,Colours.boardHighlight);
     }
 
     /**
@@ -94,7 +94,7 @@ public class BoardPanel extends GraphicsComponent {
      */
     public void paintHighlight(int x, int y, Color colour){
         y = filterY(y);
-        drawRect(x * squareSize, y*squareSize,squareSize,squareSize,colour);
+        gct.drawRect(x * squareSize, y*squareSize,squareSize,squareSize,colour);
     }
 
     /**
@@ -114,7 +114,7 @@ public class BoardPanel extends GraphicsComponent {
             pieceY %= spriteSheetSize;
             pieceX += spriteSize;
         }
-        drawBufferedImage(spriteSheet.getSlice(pieceX,pieceY,spriteSize,spriteSize), x*squareSize, y*squareSize);
+        gct.drawBufferedImage(spriteSheet.getSlice(pieceX,pieceY,spriteSize,spriteSize), x*squareSize, y*squareSize);
     }
 
     // Variables for the variable paintPiece
@@ -192,9 +192,9 @@ public class BoardPanel extends GraphicsComponent {
     public void paintEmpty(int x, int y){
         y = filterY(y);
         if ((y%2 + x)%2==0){
-            drawRect(x*squareSize,y*squareSize,squareSize,squareSize,Colours.boardWhite);
+            gct.drawRect(x*squareSize,y*squareSize,squareSize,squareSize,Colours.boardWhite);
         } else {
-            drawRect(x*squareSize,y*squareSize,squareSize,squareSize,Colours.boardBlack);
+            gct.drawRect(x*squareSize,y*squareSize,squareSize,squareSize,Colours.boardBlack);
         }
     }
 

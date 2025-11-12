@@ -1,29 +1,21 @@
 package lib.window;
 import java.awt.Graphics;
-
-import javax.swing.JComponent;
-import javax.swing.JPanel;
 import java.awt.image.BufferedImage;
 import java.awt.image.DataBufferInt;
 import java.awt.Color;
 
 /**
-    * Individual graphics component which abstracts modifying pixels individually into direct operations like bliting rasterized images and drawing geometric objects
+    * Individual graphics context which abstracts modifying pixels individually into direct operations like bliting rasterized images and drawing geometric objects
     * <p>
     @author CamLeaf
 */
-public class GraphicsComponent extends JPanel{
+public class GraphicsContext{
     private BufferedImage buffer;
     private int[] pixels;
-    protected int width;
-    protected int height;
+    private int width;
+    private int height;
     
-    public GraphicsComponent(int width, int height){
-        setLayout(null); 
-        setSize(width,height);
-        setIgnoreRepaint(true);
-        setBackground(Color.BLACK);
-        setDoubleBuffered(true);
+    public GraphicsContext(int width, int height){
         this.width = width;
         this.height = height;
         buffer = new BufferedImage(width, height,BufferedImage.TYPE_INT_RGB);
@@ -31,14 +23,11 @@ public class GraphicsComponent extends JPanel{
         
     }
     /*Internal Methods
-     *  paintComponent: Overrides JPanel's paintComponent to paint objects using custom graphics
+     *  paintComponent: Used by classes using this context to draw the custom graphics to screen
      */
-    @Override
     public void paintComponent(Graphics g){
-        super.paintComponent(g);
         g.drawImage(buffer,0,0,null);
         g.dispose();
-        repaint();
     }
     
     /*Public
@@ -50,22 +39,17 @@ public class GraphicsComponent extends JPanel{
      *  getWidth   :     Returns the integer width of the panel
      *  getHeight  :     Returns the integer height of the panel
      */
-    
-
-    public void refresh(){
-        repaint();
-    }
 
     /**
      * Flushes the buffer frame
      */     
-    protected void flushBuffer(){
+    public void flushBuffer(){
         Graphics g = buffer.getGraphics();
         g.setColor(Color.BLACK);
         g.fillRect(0, 0, this.width, this.height);
     }
 
-    protected void drawText(String string, int x, int y){
+    public void drawText(String string, int x, int y){
         /*
          * This function has inefficient usage of the graphics object's overhead so I may make one to draw multiple lines as well for optimization's sake
          */
@@ -81,7 +65,7 @@ public class GraphicsComponent extends JPanel{
      * @param y the y coordinate of the upper-left corner
      */
 
-    protected void drawBufferedImage(BufferedImage image, int x, int y){
+    public void drawBufferedImage(BufferedImage image, int x, int y){
         Graphics g = buffer.getGraphics();
         g.drawImage(image, x, y, null);
         g.dispose();
@@ -96,7 +80,7 @@ public class GraphicsComponent extends JPanel{
         * @param h  height of rect
         * @param colour Colour of the rect
     */
-    protected void drawRect(int x, int y, int w, int h, Color colour){
+    public void drawRect(int x, int y, int w, int h, Color colour){
         int colourInt = colour.getRGB(); 
         for (int col = x;col<x+w;col++){
             for (int row = y;row<y+h;row++){
@@ -113,7 +97,7 @@ public class GraphicsComponent extends JPanel{
         * @param h  height of rect
         * @param colour Colour of the rect
     */
-    protected void drawRectBorder(int x, int y, int w, int h, Color colour){
+    public void drawRectBorder(int x, int y, int w, int h, Color colour){
         Graphics g = buffer.getGraphics();
         g.setColor(colour);
         g.drawRect(x, y, w, h);
@@ -128,7 +112,7 @@ public class GraphicsComponent extends JPanel{
         * @param h Height of the ellipse and its bounding box
         * @param colour Colour of the ellipse
     */
-    protected void drawEllipse(int x, int y, int w, int h, Color colour){
+    public void drawEllipse(int x, int y, int w, int h, Color colour){
         Graphics g = buffer.getGraphics();
         g.setColor(colour);
         g.fillOval(x,y,w,h);
@@ -143,7 +127,7 @@ public class GraphicsComponent extends JPanel{
         * @param h Height of the ellipse and its bounding box
         * @param colour Colour of the ellipse border
     */
-    protected void drawEllipseBorder(int x, int y, int w, int h, Color colour){
+    public void drawEllipseBorder(int x, int y, int w, int h, Color colour){
         Graphics g = buffer.getGraphics();
         g.setColor(colour);
         g.drawOval(x,y,w,h);
@@ -159,7 +143,7 @@ public class GraphicsComponent extends JPanel{
         * @param colour Colour of the circle
     */
 
-    protected void drawCircle(int x, int y, int r, Color colour){
+    public void drawCircle(int x, int y, int r, Color colour){
         drawEllipse(x, y, r*2, r*2, colour);
     }
 
@@ -171,12 +155,12 @@ public class GraphicsComponent extends JPanel{
         * @param colour Colour of the circle
     */
 
-    protected void drawCircleBorder(int x, int y, int r, Color colour){
+    public void drawCircleBorder(int x, int y, int r, Color colour){
         drawEllipseBorder(x, y, r*2, r*2, colour);
     }
 
-    public int getStoredWidth(){return this.width;};
+    public int getWidth(){return this.width;};
 
-    public int getStoredHeight(){return this.height;};
+    public int getHeight(){return this.height;};
 
 }
