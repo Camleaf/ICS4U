@@ -1,5 +1,7 @@
 package lib.window.base;
 import javax.swing.JButton;
+import javax.swing.JComponent;
+
 import lib.window.GraphicsContext;
 import java.awt.Graphics;
 import java.awt.event.MouseAdapter;
@@ -10,7 +12,8 @@ import java.awt.Color;
 /**
  * A wrapper for the graphicsContext. Overrides rendering from default jButton but doesn't reimplement the functions itself
  */
-public class EmptyButton extends JButton {
+public class EmptyButton extends JComponent {
+
     protected GraphicsContext gct;
     protected MouseAdapter mslr;
 
@@ -26,7 +29,8 @@ public class EmptyButton extends JButton {
 
     @Override
     protected void paintComponent(Graphics g){
-        g.clearRect(0, 0, getWidth(), getHeight());
+        // g.clearRect(0, 0, getWidth(), getHeight());
+        super.paintComponent(g);
         gct.paintComponent(g);
         g.dispose();
     };
@@ -46,6 +50,7 @@ public class EmptyButton extends JButton {
         addMouseListener(mslr);
     }
 
+    protected void drawBase(){};
     /**
      * Meant to be overrided. Trigged when mouse hovers over component
      */

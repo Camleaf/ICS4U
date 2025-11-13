@@ -1,5 +1,8 @@
 package lib.window;
 import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.RenderingHints;
+import java.awt.geom.RoundRectangle2D;
 import java.awt.image.BufferedImage;
 import java.awt.image.DataBufferInt;
 import java.awt.Color;
@@ -52,7 +55,7 @@ public class GraphicsContext{
         /*
          * This function has inefficient usage of the graphics object's overhead so I may make one to draw multiple lines as well for optimization's sake
          */
-        Graphics g = buffer.getGraphics();
+        Graphics2D g = buffer.createGraphics();
         g.drawString(string,x,y);
         g.dispose();
     }
@@ -65,7 +68,7 @@ public class GraphicsContext{
      */
 
     public void drawBufferedImage(BufferedImage image, int x, int y){
-        Graphics g = buffer.getGraphics();
+        Graphics2D g = buffer.createGraphics();
         g.drawImage(image, x, y, null);
         g.dispose();
     }
@@ -97,9 +100,26 @@ public class GraphicsContext{
         * @param colour Colour of the rect
     */
     public void drawRectBorder(int x, int y, int w, int h, Color colour){
-        Graphics g = buffer.getGraphics();
+        Graphics2D g = buffer.createGraphics();
         g.setColor(colour);
         g.drawRect(x, y, w, h);
+        g.dispose();
+    }
+
+    /**
+        * Draws a hollow rect with top-left corner (x,y) and dimensions (w,h), and corner arcs of width arcWidth, and height arcHeight
+        * @param x  integer x coordinate of top left corner of rect
+        * @param y  integer y coordinate of top left corner of rect
+        * @param w  width of rect
+        * @param h  height of rect
+        * @param arcWidth horizontal diametre of the arcs at the four corners
+        * @param arcHeight vertical diametre o the arcs at the four corners
+        * @param colour Colour of the rect
+    */
+    public void drawRectBorder(int x, int y, int w, int h, int arcWidth, int arcHeight, Color colour){
+        Graphics2D g = buffer.createGraphics();
+        g.setColor(colour);
+        g.drawRoundRect(x,y,w,h,arcWidth,arcHeight);
         g.dispose();
     }
 
@@ -113,10 +133,13 @@ public class GraphicsContext{
         * @param arcHeight vertical diametre o the arcs at the four corners
         * @param colour Colour of the rect
     */
-    public void drawRect(int x, int y, int w, int h, int arcWidth, int arcHeight, Color colour){
-        Graphics g = buffer.getGraphics();
+    public void drawRect(int x, int y, int w, int h, float arcWidth, float arcHeight, Color colour){
+        Graphics2D g = buffer.createGraphics();
         g.setColor(colour);
-        g.fillRoundRect(x,y,w,h,arcWidth,arcHeight);
+        g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+        //https://stackoverflow.com/questions/1094539/how-to-draw-a-decent-looking-circle-in-java
+        g.fill(new RoundRectangle2D.Float(x, y, w, h, arcWidth, arcHeight));
+        g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_OFF);
         g.dispose();
     }
 
@@ -142,7 +165,7 @@ public class GraphicsContext{
         * @param colour Colour of the ellipse
     */
     public void drawEllipse(int x, int y, int w, int h, Color colour){
-        Graphics g = buffer.getGraphics();
+        Graphics2D g = buffer.createGraphics();
         g.setColor(colour);
         g.fillOval(x,y,w,h);
         g.dispose();
@@ -157,7 +180,7 @@ public class GraphicsContext{
         * @param colour Colour of the ellipse border
     */
     public void drawEllipseBorder(int x, int y, int w, int h, Color colour){
-        Graphics g = buffer.getGraphics();
+        Graphics2D g = buffer.createGraphics();
         g.setColor(colour);
         g.drawOval(x,y,w,h);
         g.dispose();

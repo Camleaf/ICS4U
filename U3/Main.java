@@ -9,6 +9,8 @@ import java.lang.Thread;
 */
 public class Main {
     public static void main(String[] args) {
+        System.setProperty("sun.java2d.uiScale", "2.0"); // https://stackoverflow.com/questions/47613006/how-to-disable-scaling-the-ui-on-windows-for-java-9-applications
+
         SwingUtilities.invokeLater(new Runnable() { // Man i love the jswing and awt docs they make no sense but it works
             @Override
             public void run() {
