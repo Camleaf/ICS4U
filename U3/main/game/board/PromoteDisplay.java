@@ -55,14 +55,14 @@ public class PromoteDisplay extends BoardPanel {
 
     }   
 
-    public void setPawnLoc(int x, int y){
-
+    public void setPawnLoc(int x, int y, Piece.Colour orientation){
+        int displayY = (orientation == WHITE) ? y : 7-y;
         // it by default is int the first spot i want
-        if (x > 3 && y > 3){
+        if (x > 3 && displayY > 3){
             setLocation(512-width-32,512-height-32);
-        } else if (x > 3 && y <= 3){
+        } else if (x > 3 && displayY <= 3){
             setLocation(512-width-32,32);
-        } else if (x <= 3 && y > 3){
+        } else if (x <= 3 && displayY > 3){
             setLocation(32,512-height-32);
         }
 

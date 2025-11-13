@@ -34,6 +34,14 @@ public class EmptyButton extends JComponent {
         g.dispose();
     };
 
+    /**
+     * Will override current drawn buffer
+     */
+    protected void updateSize(int width, int height){
+        setSize(width, height);
+        gct.setSize(width, height);
+    }
+
 
     private void createMouseListener(){
         mslr = new MouseAdapter() {

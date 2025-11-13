@@ -27,6 +27,22 @@ public class StylizedButton extends EmptyButton {
         setBackground(new Color(0,0,0,0));
         drawBase();
     }
+    
+    /**
+     * Most likely used by the stylizedbuttonfactory class
+     */
+    public StylizedButton(int width, int height, int arcw, int arch, String val, Font font, int textMode, Point textLocation, Point location){
+        super(width,height);
+        this.arcHeight = arcw;
+        this.arcWidth = arch;
+        this.value = val;
+        this.font = font;
+        this.textMode = textMode;
+        this.textLocation = textLocation;
+        setLocation(location);
+        setBackground(new Color(0,0,0,0));
+        drawBase();
+    }
 
     public void setTextLocation(Point p){
         this.textLocation = p;
@@ -53,7 +69,7 @@ public class StylizedButton extends EmptyButton {
     }
 
     public void setDimensions(int width, int height, int arcw, int arch){
-        setSize(width,height);
+        updateSize(width,height);
         this.arcHeight = arch;
         this.arcWidth = arcw;
         drawBase();
@@ -73,7 +89,7 @@ public class StylizedButton extends EmptyButton {
 
 
     protected void drawText(){
-        gct.drawText(value,textLocation.x,textLocation.y, Color.BLACK,textMode);
+        gct.drawText(value,textLocation.x,textLocation.y, Color.BLACK,font, textMode);
     }
 
     @Override

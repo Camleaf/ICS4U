@@ -7,6 +7,7 @@ import lib.logic.Interval;
 import main.menu.MenuPanel;
 import java.awt.Color;
 import java.awt.Point;
+import static main.menu.MenuOption.*;
 
 /**
     * Main intermediary for taking commands from mainloop and distributing to components
@@ -61,8 +62,15 @@ public class Game {
             board.handleMouseClick(clickPoint);
         }
 
-        if (keyboard.isKeyPressed(27) && boardFlipInterval.intervalPassed()){
+        if ((keyboard.isKeyPressed(27) && boardFlipInterval.intervalPassed()) || menu.getOption(OPTIONS_BOARD_ORIENT)!=board.orientation.id){
             board.switchOrientation();
+            menu.setOption(OPTIONS_BOARD_ORIENT,board.orientation.id);
+        }
+
+
+        if (menu.getOption(TRIGGER_BOARD_RESET)==TRIGGER_TRUE){
+            board.reset();
+            menu.setOption(TRIGGER_BOARD_RESET,TRIGGER_FALSE);
         }
     }
 }

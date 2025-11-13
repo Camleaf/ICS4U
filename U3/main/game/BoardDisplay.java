@@ -26,6 +26,15 @@ public class BoardDisplay extends BoardPanel {
     }
 
 
+    public void reset(){
+        checkMate = false;
+        pawnPromoteDisplay.setVisible(false);
+        selectedPoint = new Point(-1,-1);
+        board = new Board();
+        paintBackground();
+        drawCurrentBoard(board.getRawBoard());
+    }
+
     public void switchOrientation(){
         this.orientation = this.orientation.getInverse();
         paintBackground();
@@ -110,7 +119,7 @@ public class BoardDisplay extends BoardPanel {
                 // if a pawn is on the last or first row it must be promoting
                 if (prevPiece.getType() == PAWN && (prevPiece.y==7 || prevPiece.y==0)){
                     pawnPromoteDisplay.setMode(board.getTurn().getInverse());
-                    pawnPromoteDisplay.setPawnLoc(prevPiece.x, prevPiece.y);
+                    pawnPromoteDisplay.setPawnLoc(prevPiece.x, prevPiece.y, orientation);
                     pawnPromoteDisplay.setVisible(true);
                 }
 

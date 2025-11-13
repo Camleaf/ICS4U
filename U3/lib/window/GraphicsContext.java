@@ -27,6 +27,18 @@ public class GraphicsContext{
         pixels = ((DataBufferInt) buffer.getRaster().getDataBuffer()).getData(); // From unit 2 project
         
     }
+
+    /**
+     * Completely flushes the buffer and transforms the size to the current amount
+     */
+    public void setSize(int width, int height){
+        flushBuffer();
+        buffer = new BufferedImage(width, height,BufferedImage.TYPE_INT_ARGB);
+        pixels = ((DataBufferInt) buffer.getRaster().getDataBuffer()).getData();
+        this.width = width;
+        this.height = height;
+    }
+
     /*Internal Methods
      *  paintComponent: Used by classes using this context to draw the custom graphics to screen
      */
@@ -91,6 +103,7 @@ public class GraphicsContext{
                     break;
                 case (TEXTMODE_CENTRE): // So that the given x is in the middle of the text
                     horizontalAdjust = -textWidth/2;
+                    y -= verticalAdjust/2;
                     break;
             }
 
