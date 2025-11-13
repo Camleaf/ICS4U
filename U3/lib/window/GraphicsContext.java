@@ -6,6 +6,8 @@ import java.awt.geom.RoundRectangle2D;
 import java.awt.image.BufferedImage;
 import java.awt.image.DataBufferInt;
 import java.awt.Color;
+import java.awt.Font;
+import java.awt.FontMetrics;
 
 /**
     * Individual graphics context which abstracts modifying pixels individually into direct operations like bliting rasterized images and drawing geometric objects
@@ -51,14 +53,78 @@ public class GraphicsContext{
         g.fillRect(0, 0, this.width, this.height);
     }
 
-    public void drawText(String string, int x, int y){
-        /*
-         * This function has inefficient usage of the graphics object's overhead so I may make one to draw multiple lines as well for optimization's sake
-         */
+
+    public static final int TEXTMODE_DEFAULT = 0;
+    public static final int TEXTMODE_CENTRE = 1;
+    public static final int TEXTMODE_RIGHT = 2;
+
+    /**
+     * Draws String string, seperated by newlines, at top-left coordinates x,y
+     * @param string The string to render
+     * @param x the x-value which the text renders at
+     * @param y the y-value which the text renders at
+     * @param colour The colour of the text
+     * @param font The Font object to use
+     * @param textMode Specific modes for how the text is aligned around the x coordinate
+     */
+    public void drawText(String string, int x, int y, Color colour, Font font, int textMode){
+        //https://stackoverflow.com/questions/29726351/fonts-how-to-position-top-left-corner-of-a-string
+        // Fonts work wierdly in that i observed them drawing from bottom left, the stackoverflow article helped me make the positioning from top-left
+
         Graphics2D g = buffer.createGraphics();
-        g.drawString(string,x,y);
+        g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+
+
+        FontMetrics metrics = g.getFontMetrics(font);
+        int verticalAdjust = metrics.getAscent(); // This gets the height of the font so that i can draw it from top-left instead of default which is bottom-left
+        g.setColor(colour);
+        g.setFont(font);
+
+        int idx = 1;
+        for (String str : string.split("\n")){
+            // This loop is to handle newlines
+            int textWidth = metrics.stringWidth(str);
+            int horizontalAdjust = 0;
+            switch (textMode){
+                case (TEXTMODE_RIGHT): // so that the given x is on the right of the text
+                    horizontalAdjust = -textWidth;
+                    break;
+                case (TEXTMODE_CENTRE): // So that the given x is in the middle of the text
+                    horizontalAdjust = -textWidth/2;
+                    break;
+            }
+
+            g.drawString(str,x+horizontalAdjust,y+(verticalAdjust*idx));
+            idx++;
+        }
         g.dispose();
     }
+
+    /**
+     * Draws String string, seperated by newlines, at top-left coordinates x,y
+     * @param string The string to render
+     * @param x the x-value which the text renders at
+     * @param y the y-value which the text renders at
+     * @param colour The colour of the text
+     * @param textMode Specific modes for how the text is aligned around the x coordinate
+     */
+    public void drawText(String string, int x, int y, Color colour,int textMode){
+        drawText(string, x, y, colour, new Font("Arial", Font.TRUETYPE_FONT, 24),textMode);
+    }
+
+
+    /**
+     * Draws String string, seperated by newlines, at top-left coordinates x,y
+     * @param string The string to render
+     * @param x the x-value which the text renders at
+     * @param y the y-value which the text renders at
+     * @param colour The colour of the text
+     */
+    public void drawText(String string, int x, int y, Color colour){
+        drawText(string, x, y, colour, TEXTMODE_DEFAULT);
+    }
+
+
 
     /**
      * Draws the given BufferedImage to the panel with upper-left corner (x,y)

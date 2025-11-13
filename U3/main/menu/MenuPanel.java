@@ -1,4 +1,5 @@
 package main.menu;
+import lib.window.GraphicsContext;
 import lib.window.base.BasePanel;
 import main.menu.stylized.StylizedButton;
 
@@ -20,8 +21,22 @@ public class MenuPanel extends BasePanel{
 
 
     private void createButtons(){
+        // This is just testing for now
         StylizedButton b = new StylizedButton(100, 100);
+        componentList.add(b);
         b.setCornerArcs(40, 40);
+        b.setText("Hello\nHi");
+        b.setTextMode(GraphicsContext.TEXTMODE_RIGHT);
+        b.setTextLocation(90, 20);
+
+        b.addActionListener(new Runnable(){
+            @Override
+            public void run(){
+                System.out.println(componentList.toString());
+            }
+        });
+
+
         add(b);
     }
     
