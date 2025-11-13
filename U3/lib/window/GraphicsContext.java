@@ -47,7 +47,7 @@ public class GraphicsContext{
      */     
     public void flushBuffer(){
         Graphics g = buffer.getGraphics();
-        g.setColor(Color.BLACK);
+        g.setColor(new Color(0,0,0,0));
         g.fillRect(0, 0, this.width, this.height);
     }
 
@@ -214,6 +214,10 @@ public class GraphicsContext{
 
     public void fill(Color colour){
         drawRect(0, 0, this.width, this.height, colour);
+    }
+
+    public void refresh(){
+        fill(new Color(0,0,0,0));
     }
 
     public int getWidth(){return this.width;};

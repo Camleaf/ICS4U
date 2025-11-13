@@ -21,6 +21,7 @@ public class MenuPanel extends BasePanel{
 
     private void createButtons(){
         StylizedButton b = new StylizedButton(100, 100);
+        b.setCornerArcs(40, 40);
         add(b);
     }
     

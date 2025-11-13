@@ -1,13 +1,10 @@
 package lib.window.base;
-import javax.swing.JButton;
 import javax.swing.JComponent;
 
 import lib.window.GraphicsContext;
 import java.awt.Graphics;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
-import java.awt.Color;
 
 /**
  * A wrapper for the graphicsContext. Overrides rendering from default jButton but doesn't reimplement the functions itself
