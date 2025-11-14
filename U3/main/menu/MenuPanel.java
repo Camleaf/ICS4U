@@ -6,8 +6,6 @@ import main.menu.stylized.StylizedButtonFactory;
 
 import java.awt.Color;
 import java.awt.Font;
-import java.awt.Menu;
-
 import javax.swing.JComponent;
 import java.util.ArrayList;
 import java.util.HashMap;

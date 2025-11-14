@@ -37,7 +37,7 @@ public class Texture {
         image = rescale(image,w,h);
         swingImage = makeSwingComponent();
     }
-
+    
     /* 
      * Internal methods
     */

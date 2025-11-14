@@ -22,7 +22,6 @@ public class Main {
                 Mouse mouse = new Mouse();
                 game.window.addMouseListener(mouse);
                 game.window.requestFocus();
-
                 game.addListeners(keyboard,mouse);
                 MainLoop main = new MainLoop(keyboard, game, mouse);
             }

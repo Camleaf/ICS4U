@@ -37,7 +37,8 @@ public class EmptyButton extends JComponent {
     /**
      * Will override current drawn buffer
      */
-    protected void updateSize(int width, int height){
+
+    public void updateSize(int width, int height){
         setSize(width, height);
         gct.setSize(width, height);
     }
