@@ -16,7 +16,7 @@ public class Game {
     private Mouse mouse;
 
     public Game(){
-        window = new Window("Chess", 800,560);
+        window = new Window("Template Window", 800,800);
         window.setBackground(Color.BLACK);
         
         /*
