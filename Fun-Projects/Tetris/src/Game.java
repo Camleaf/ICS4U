@@ -3,6 +3,8 @@ import lib.Window;
 import lib.interactions.Keyboard;
 import lib.interactions.Mouse;
 import lib.logic.Interval;
+import src.window.panels.PlayWindow;
+
 import java.awt.Color;
 
 /**
@@ -14,14 +16,14 @@ public class Game {
     public Window window;
     private Keyboard keyboard;
     private Mouse mouse;
+    private PlayWindow playWindow;
 
     public Game(){
         window = new Window("Tetris", 800,800);
-        window.setBackground(Color.BLACK);
+        window.setBackground(Color.WHITE);
+        playWindow = new PlayWindow(400, 800);
+        window.add(playWindow,Integer.valueOf(1));
         
-        /*
-         * Screen will be 800 x 800
-         */
     }
 
     public void show(){
@@ -45,5 +47,6 @@ public class Game {
         if (keyboard.isKeyPressed(27)){
             System.out.println("hello");
         };
+        refresh();
     }
 }
