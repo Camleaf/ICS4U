@@ -9,7 +9,7 @@ import java.lang.Thread;
 */
 public class Main {
     public static void main(String[] args) {
-        // System.setProperty("sun.java2d.uiScale", "1.0"); // https://stackoverflow.com/questions/47613006/how-to-disable-scaling-the-ui-on-windows-for-java-9-applications
+        System.setProperty("sun.java2d.uiScale", "1.0"); // https://stackoverflow.com/questions/47613006/how-to-disable-scaling-the-ui-on-windows-for-java-9-applications
 
         SwingUtilities.invokeLater(new Runnable() {
             @Override
