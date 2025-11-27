@@ -1,6 +1,8 @@
 package src.window.panels;
 import lib.window.Texture;
 import lib.window.base.BaseComponent;
+import src.main.board.Piece;
+import java.awt.Point;
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
@@ -50,6 +52,23 @@ public class PlayWindow extends BaseComponent {
 
     protected boolean inBounds(int sqX, int sqY){
         return 0 <= sqX && sqX < columns && 0 <= sqY && 0 <= sqY;
+    }
+
+    protected void wipePiece(Piece p){
+        Point ref = p.getReferencePoint();
+        Point[] localPosArr = p.getLocalPos();
+        for (Point locPt : localPosArr){
+            drawEmpty(locPt.x+ref.x, locPt.y+ref.y);
+        }
+    }
+
+    protected void displayPiece(Piece p){
+        Point ref = p.getReferencePoint();
+        Point[] localPosArr = p.getLocalPos();
+        for (Point locPt : localPosArr){
+            drawSquare(locPt.x+ref.x, locPt.y+ref.y,p.getType().reg);
+        }
+
     }
 
 

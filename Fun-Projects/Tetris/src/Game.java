@@ -4,7 +4,6 @@ import lib.interactions.Keyboard;
 import lib.interactions.Mouse;
 import lib.logic.Interval;
 import src.main.Board;
-
 import java.awt.Color;
 
 /**
@@ -47,6 +46,25 @@ public class Game {
         if (keyboard.isKeyPressed(27)){
             System.out.println("hello");
         };
+
+        if (keyboard.isKeyPressed(38)){ // up arrow pressed
+            playWindow.rotatePiece();
+        }
+
+        if (keyboard.isKeyPressed(37)){
+           //left
+           playWindow.movePiece(true);
+        }
+        if (keyboard.isKeyPressed(39)){
+            //right
+            playWindow.movePiece(false);
+        }
+        if (keyboard.isKeyPressed(40)){
+           //down
+        }
+        playWindow.runGravity();
+
+        
         refresh();
     }
 }

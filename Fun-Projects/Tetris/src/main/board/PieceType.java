@@ -16,8 +16,44 @@ public enum PieceType {
         "T",T,
         "Z",Z
     );
+    public Color reg;
+    public Color shadow;
+
     private PieceType(int id){
         this.id = id;
+        addColors();
+    }
+    private void addColors(){
+        switch (this){
+            case I:
+                this.reg = Color.CYAN;
+                this.shadow = Color.CYAN.darker().darker();
+                break;
+            case J:
+                this.reg = Color.BLUE;
+                this.shadow = Color.BLUE.darker().darker();
+                break;
+            case L:
+                this.reg = Color.ORANGE;
+                this.shadow = Color.ORANGE.darker().darker();
+                break;
+            case O:
+                this.reg = Color.YELLOW;
+                this.shadow = Color.YELLOW.darker().darker();
+                break;
+            case S:
+                this.reg = Color.RED;
+                this.shadow = Color.RED.darker().darker();
+                break;
+            case T:
+                this.reg = Color.MAGENTA;
+                this.shadow = Color.MAGENTA.darker().darker();
+                break;
+            case Z:
+                this.reg = Color.GREEN;
+                this.shadow = Color.GREEN.darker().darker();
+                break;
+        }
     }
 
 

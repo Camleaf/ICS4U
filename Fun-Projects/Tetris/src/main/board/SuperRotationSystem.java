@@ -44,7 +44,6 @@ public class SuperRotationSystem {
                             String val = rsp[j];
                             if (val.equals("1")){
                                 SRSline.add(new Point(j,r));
-                                System.out.println(new Point(j,r));
                             }
                         }
                         r++;
@@ -81,5 +80,12 @@ public class SuperRotationSystem {
         S = SRS_Map.get(PieceType.S);
         T = SRS_Map.get(PieceType.T);
         Z = SRS_Map.get(PieceType.Z);
+    }
+
+    public Point[] get(PieceType type, int rot){
+        if (type == PieceType.O){
+            return SRS_Map.get(type)[0];
+        }
+        return SRS_Map.get(type)[rot];
     }
 }
