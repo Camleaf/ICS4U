@@ -18,14 +18,18 @@ public class Board extends PlayWindow{
     private Interval gravityInterval;
     private GridSquare[][] grid;
     private SevenBag bag;
+    private final int gravityTime = 600;
+    private final int firstMoveTime = 200;
+    private final int consecutiveMoveTime = 20;
+    private Boolean previousMove = null;
 
     public Board(){
         super(400, 800);
         bag = new SevenBag();
         newPiece();
         rotateInterval = new Interval(200);
-        moveInterval = new Interval(150);
-        gravityInterval = new Interval(600);
+        moveInterval = new Interval(300);
+        gravityInterval = new Interval(gravityTime);
         displayPiece(currentPiece);
         emptyBoard();
     } 
@@ -85,6 +89,11 @@ public class Board extends PlayWindow{
     }
 
     public void movePiece(boolean left){
+        if (previousMove != null){
+            if (left == previousMove){
+                moveInterval.setInterval(consecutiveMoveTime);
+            }
+        }
         if (moveInterval.intervalPassed()){
             if (checkCollideHoriz((left)?-1:1)){
                 return;
@@ -92,9 +101,21 @@ public class Board extends PlayWindow{
             wipePiece(currentPiece);
             currentPiece.translateX((left)?-1:1);
             displayPiece(currentPiece);
+            previousMove = left;
         }
     }
 
+    public void resetMoveInterval(){
+        moveInterval.setInterval(firstMoveTime);
+    }
+
+    public void enableSoftDrop(){
+        gravityInterval.setInterval(50);
+    }
+
+    public void disableSoftDrop(){
+        gravityInterval.setInterval(gravityTime);
+    }
 
     public void runGravity(){
         if (gravityInterval.intervalPassed()){

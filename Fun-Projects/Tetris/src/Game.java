@@ -55,13 +55,19 @@ public class Game {
         if (keyboard.isKeyPressed(37)){
            //left
            playWindow.movePiece(true);
+        } else {
+            playWindow.resetMoveInterval();
         }
         if (keyboard.isKeyPressed(39)){
             //right
             playWindow.movePiece(false);
+        } else {
+            playWindow.resetMoveInterval();
         }
         if (keyboard.isKeyPressed(40)){
-           //down
+           playWindow.enableSoftDrop();
+        } else {
+            playWindow.disableSoftDrop();
         }
         playWindow.runGravity();
 
