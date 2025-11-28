@@ -43,7 +43,6 @@ public class Piece {
     }
 
     public void translateX(int mov){
-        System.out.println(referencePos.toString());
         referencePos.x += mov;
     }
 

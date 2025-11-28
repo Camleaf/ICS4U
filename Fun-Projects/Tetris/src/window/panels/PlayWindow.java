@@ -37,15 +37,15 @@ public class PlayWindow extends BaseComponent {
         }
     }
 
-    protected void fillBackground(){
+    protected void paintBackground(){
         gct.drawBufferedImage(background, 0, 0);
     }
 
-    protected void drawEmpty(int sqX, int sqY){
+    protected void paintEmpty(int sqX, int sqY){
         gct.drawBufferedImage(texture.getBufferedImage(), sqX*squareSize, sqY*squareSize);
     }
 
-    protected void drawSquare(int sqX, int sqY, Color c){
+    protected void paintSquare(int sqX, int sqY, Color c){
         gct.drawRect(sqX*squareSize,sqY*squareSize,squareSize,squareSize,c);
     }
 
@@ -58,7 +58,7 @@ public class PlayWindow extends BaseComponent {
         Point ref = p.getReferencePoint();
         Point[] localPosArr = p.getLocalPos();
         for (Point locPt : localPosArr){
-            drawEmpty(locPt.x+ref.x, locPt.y+ref.y);
+            paintEmpty(locPt.x+ref.x, locPt.y+ref.y);
         }
     }
 
@@ -66,7 +66,7 @@ public class PlayWindow extends BaseComponent {
         Point ref = p.getReferencePoint();
         Point[] localPosArr = p.getLocalPos();
         for (Point locPt : localPosArr){
-            drawSquare(locPt.x+ref.x, locPt.y+ref.y,p.getType().reg);
+            paintSquare(locPt.x+ref.x, locPt.y+ref.y,p.getType().reg);
         }
 
     }
