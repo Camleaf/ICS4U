@@ -25,6 +25,10 @@ public class Board extends PlayWindow{
     private boolean instantPlace = false;
     private boolean rotHold = false;
     private int rotPrev = -1;
+    public boolean gameOver = false;
+    public PieceType held;
+    private boolean holdEnabled = true;
+    public Queue queue = new Queue();
 
     public Board(){
         super(400, 800);
@@ -32,7 +36,7 @@ public class Board extends PlayWindow{
         newPiece();
         moveInterval = new Interval(firstMoveTime);
         gravityInterval = new Interval(gravityTime);
-        displayPiece(currentPiece);
+        paintPiece(currentPiece);
         emptyBoard();
     } 
 
@@ -46,9 +50,37 @@ public class Board extends PlayWindow{
         paintBackground();
     }
 
+    public void holdCurrent(){
+        if (!holdEnabled){return;}
+        wipePiece(currentPiece);
+        if (held==null){
+            held = currentPiece.getType();
+            newPiece();   
+        } else {
+            PieceType temp = currentPiece.getType();
+            currentPiece = new Piece(held, 3, -1);
+            held = temp;
+            
+        }
+        paintPiece(currentPiece);
+        holdEnabled = false;
+    }
+
+    public void restart(){
+        gameOver = false;
+        rotPrev = -1;
+        rotHold = false;
+        instantPlace = false;
+        held = null;
+        holdEnabled = true;
+        bag = new SevenBag();
+        emptyBoard();
+        newPiece();
+    }
 
     public void newPiece(){
-        currentPiece = new Piece(bag.pollNext(), 3, 0);
+        currentPiece = new Piece(bag.pollNext(), 3, -1);
+        queue.updateQueue(bag.getQueue());
     }
 
 
@@ -59,11 +91,16 @@ public class Board extends PlayWindow{
         for (Point localPos : localPosArr){
             int xpos = localPos.x + ref.x;
             int ypos = localPos.y + ref.y;
+            if (ypos < 0){
+                gameOver = true;
+                return;
+            }
             grid[ypos][xpos] = new GridSquare(true, currentPiece.getType().reg);
         }
         newPiece();
         gravityLocks.end();
         checkFullLines();
+        holdEnabled = true;
     }
 
 
@@ -89,7 +126,7 @@ public class Board extends PlayWindow{
             currentPiece.setReferencePoint(ref.x+kick.x, ref.y+kick.y);
             ref = currentPiece.getReferencePoint();
             currentPiece.rotate(rotMode);
-            displayPiece(currentPiece);
+            paintPiece(currentPiece);
             gravityLocks.resetLock(2);
             rotHold = true;
             rotPrev = rotMode;
@@ -113,7 +150,7 @@ public class Board extends PlayWindow{
 
             wipePiece(currentPiece);
             currentPiece.translateX((left)?-1:1);
-            displayPiece(currentPiece);
+            paintPiece(currentPiece);
         }
 
         
@@ -145,7 +182,7 @@ public class Board extends PlayWindow{
             }
             wipePiece(currentPiece);
             currentPiece.translateY();
-            displayPiece(currentPiece);
+            paintPiece(currentPiece);
         }
     }
 
@@ -163,7 +200,7 @@ public class Board extends PlayWindow{
         while(!checkCollideVert()){
             currentPiece.translateY();
         }
-        displayPiece(currentPiece);
+        paintPiece(currentPiece);
         placePiece();
         gravityLocks.end();
         hardDropHeld = true;
@@ -181,8 +218,13 @@ public class Board extends PlayWindow{
         for (Point p : localPosArr){ // Add checking for other squares once that happens
             int xpos = p.x + ref.x + mov;
             int ypos = p.y + ref.y;
-            if (!(0<= xpos && xpos < columns) ||isFilled(xpos, ypos)){
+            if (!(0<= xpos && xpos < columns)){
                 return true;
+            }
+            if (ypos >= 0){
+                if (isFilled(xpos, ypos)){
+                    return true;
+                }
             }
         }
         return false;
@@ -199,8 +241,10 @@ public class Board extends PlayWindow{
             if (ypos>=rows){
                 return true;
             }
-            if (isFilled(xpos, ypos)){
-                return true;
+            if (ypos >= 0){
+                if (isFilled(xpos, ypos)){
+                    return true;
+                }
             }
         }
         return false;
@@ -215,8 +259,13 @@ public class Board extends PlayWindow{
             int ypos = p.y + ref.y;
             int xpos = p.x + ref.x;
             
-            if (!(0<= ypos && ypos < rows)||!(0<= xpos && xpos < columns)||isFilled(xpos, ypos)){ // checking for borders. Still need to do other squares
+            if (!(ypos < rows)||!(0<= xpos && xpos < columns)){ // checking for borders. Still need to do other squares
                 return true;
+            }
+            if (ypos >= 0){
+                if (isFilled(xpos, ypos)){
+                    return true;
+                }
             }
         }
 
@@ -249,6 +298,7 @@ public class Board extends PlayWindow{
                 newGrid[jdx][l] = new GridSquare(false, null);
             }
         }
+
         grid = newGrid;
         paintFullGrid(grid);
     }

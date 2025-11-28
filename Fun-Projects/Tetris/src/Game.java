@@ -4,6 +4,8 @@ import lib.interactions.Keyboard;
 import lib.interactions.Mouse;
 import lib.logic.Interval;
 import src.main.Board;
+import src.main.HoldArea;
+
 import java.awt.Color;
 import src.main.board.SuperRotationSystem;
 
@@ -17,12 +19,22 @@ public class Game {
     private Keyboard keyboard;
     private Mouse mouse;
     private Board playWindow;
+    private HoldArea holdArea;
+    private Interval resetInterval;
 
     public Game(){
-        window = new Window("Tetris", 800,850);
-        window.setBackground(Color.WHITE);
+        window = new Window("Tetris", 1000,850);
+        window.setBackground(Color.BLACK);
+        resetInterval = new Interval(1000);
         playWindow = new Board();
+        playWindow.setLocation(300,0);
         window.add(playWindow,Integer.valueOf(1));
+        holdArea = new HoldArea();
+        holdArea.setLocation(80, 40);
+        window.add(holdArea, Integer.valueOf(2));
+        playWindow.queue.setLocation(780, 40);
+        window.add(playWindow.queue, Integer.valueOf(3));
+        
         
     }
 
@@ -41,53 +53,62 @@ public class Game {
 
 
     public void update(){
-        // Some example functions
-        mouse.peekEvent();
-
-        if (keyboard.isKeyPressed(16)){ // If shift pressed
-            // insert hold logic
-        }
-
-        if (keyboard.isKeyPressed(38)){ // up arrow pressed
-            playWindow.rotatePiece(SuperRotationSystem.ROT_CW); // 1 is cw, -1 is ccw, 2 is 180
-        } else if (keyboard.isKeyPressed(87)){ // If w pressed
-            playWindow.rotatePiece(SuperRotationSystem.ROT_CCW);
-        } else if (keyboard.isKeyPressed(65)){ // key a pressed
-            playWindow.rotatePiece(SuperRotationSystem.ROT_180);
-        } else {
-            playWindow.resetRotHold();
-        }
-
-        if (keyboard.isKeyPressed(37)){
-           //left
-           playWindow.movePiece(true);
-        }
 
 
-        if (keyboard.isKeyPressed(39)){
-            //right
-            playWindow.movePiece(false);
-        }
+        if (!playWindow.gameOver){
+            if (keyboard.isKeyPressed(16)){ // If shift pressed
+                playWindow.holdCurrent();
+                holdArea.changePiece(playWindow.held);
+            }
 
+            if (keyboard.isKeyPressed(38)){ // up arrow pressed
+                playWindow.rotatePiece(SuperRotationSystem.ROT_CW); // 1 is cw, -1 is ccw, 2 is 180
+            } else if (keyboard.isKeyPressed(87)){ // If w pressed
+                playWindow.rotatePiece(SuperRotationSystem.ROT_CCW);
+            } else if (keyboard.isKeyPressed(65)){ // key a pressed
+                playWindow.rotatePiece(SuperRotationSystem.ROT_180);
+            } else {
+                playWindow.resetRotHold();
+            }
+
+            if (keyboard.isKeyPressed(37)){
+            //left
+            playWindow.movePiece(true);
+            }
+
+
+            if (keyboard.isKeyPressed(39)){
+                //right
+                playWindow.movePiece(false);
+            }
         
-        if (keyboard.isKeyPressed(40)){
-           playWindow.enableSoftDrop();
-        } else {
-            playWindow.disableSoftDrop();
+            if (keyboard.isKeyPressed(40)){
+                playWindow.enableSoftDrop();
+            } else {
+                playWindow.disableSoftDrop();
+            }
+
+
+            if (keyboard.isKeyPressed(32)){
+                playWindow.hardDrop();
+            } else {
+                playWindow.resetHardDrop();
+            }
+
+
+
+            playWindow.runGravity();
+
         }
 
-
-        if (keyboard.isKeyPressed(32)){
-            playWindow.hardDrop();
-        } else {
-            playWindow.resetHardDrop();
+        if (keyboard.isKeyPressed(82)) { // r key pressed
+            if (resetInterval.intervalPassed()){
+                playWindow.restart();
+                holdArea.changePiece(null);
+            }
         }
-
-
-
-        playWindow.runGravity();
-
         
         refresh();
+        
     }
 }

@@ -14,7 +14,6 @@ public class Keyboard implements KeyListener {
 
         @Override public void keyPressed(KeyEvent e) {
             keys.put(e.getKeyCode(),true);
-            
         }
 
         @Override public void keyReleased(KeyEvent e) {

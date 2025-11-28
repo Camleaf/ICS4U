@@ -12,7 +12,7 @@ public class PlayWindow extends BaseComponent {
     public int gridSize; //preferably a multiple of 8
     public final int columns = 10;
     public final int rows = 20;
-    private final int squareSize = 40;
+    protected final int squareSize = 40;
     private Texture texture = new Texture("public/Square4.png", squareSize, squareSize);
     private BufferedImage background;
     public int width;
@@ -63,13 +63,17 @@ public class PlayWindow extends BaseComponent {
         }
     }
 
-    protected void displayPiece(Piece p){
+
+    protected void paintPiece(Piece p){
+        paintPiece(p, p.getType().reg);
+    }
+
+    protected void paintPiece(Piece p, Color c){
         Point ref = p.getReferencePoint();
         Point[] localPosArr = p.getLocalPos();
         for (Point locPt : localPosArr){
-            paintSquare(locPt.x+ref.x, locPt.y+ref.y,p.getType().reg);
+            paintSquare(locPt.x+ref.x, locPt.y+ref.y,c);
         }
-
     }
 
 
