@@ -14,10 +14,8 @@ import java.awt.Point;
 
 public class Board extends PlayWindow{
     private Piece currentPiece;
-    private Interval rotateInterval;
     private Interval moveInterval;
     private Interval gravityInterval;
-    private Interval hardDropInterval;
     private GridSquare[][] grid;
     private SevenBag bag;
     private final int gravityTime = 600;
@@ -25,14 +23,14 @@ public class Board extends PlayWindow{
     private boolean hardDropHeld = false;
     private Locks gravityLocks = new Locks();
     private boolean instantPlace = false;
+    private boolean rotHold = false;
+    private int rotPrev = -1;
 
     public Board(){
         super(400, 800);
         bag = new SevenBag();
         newPiece();
-        rotateInterval = new Interval(200);
         moveInterval = new Interval(firstMoveTime);
-        hardDropInterval = new Interval(100);
         gravityInterval = new Interval(gravityTime);
         displayPiece(currentPiece);
         emptyBoard();
@@ -70,28 +68,37 @@ public class Board extends PlayWindow{
 
     public void rotatePiece(int rotMode){ // 1 is cw, -1 is ccw, 2 is 180
         // Will need to handle kick tables later
-        
-        if (rotateInterval.intervalPassed()){
-            Point[] kickSet = currentPiece.getNewKickSet(rotMode);
-            Point ref = currentPiece.getReferencePoint();
-            // Now that i have the kickset we need to apply kicks
-            Point[] nextLocalPos = currentPiece.getLocalPos(rotMode); // the rotated local pos
-            for (Point kick : kickSet){
-                
-                if (checkCollide(new Point(ref.x+kick.x,ref.y+kick.y),nextLocalPos)){
-                    continue;
-                } 
-                // If kick found do rotation
-                 // get updated reference from kicksv
-                wipePiece(currentPiece);
-                currentPiece.setReferencePoint(ref.x+kick.x, ref.y+kick.y);
-                ref = currentPiece.getReferencePoint();
-                currentPiece.rotate(rotMode);
-                displayPiece(currentPiece);
-                gravityLocks.resetLock(2);
-                break;
+        if (rotPrev == rotMode){
+            if (rotHold){
+                return;
             }
         }
+        Point[] kickSet = currentPiece.getNewKickSet(rotMode);
+        Point ref = currentPiece.getReferencePoint();
+        // Now that i have the kickset we need to apply kicks
+        Point[] nextLocalPos = currentPiece.getLocalPos(rotMode); // the rotated local pos
+        for (Point kick : kickSet){
+            
+            if (checkCollide(new Point(ref.x+kick.x,ref.y+kick.y),nextLocalPos)){
+                continue;
+            } 
+            // If kick found do rotation
+                // get updated reference from kicksv
+            wipePiece(currentPiece);
+            currentPiece.setReferencePoint(ref.x+kick.x, ref.y+kick.y);
+            ref = currentPiece.getReferencePoint();
+            currentPiece.rotate(rotMode);
+            displayPiece(currentPiece);
+            gravityLocks.resetLock(2);
+            rotHold = true;
+            rotPrev = rotMode;
+            break;
+        }
+    }
+
+    public void resetRotHold(){
+        rotPrev = -1;
+        rotHold = false;
     }
 
     public void movePiece(boolean left){
@@ -151,17 +158,16 @@ public class Board extends PlayWindow{
 
     public void hardDrop(){
         if (hardDropHeld){return;}
-        if (hardDropInterval.intervalPassed()){
-            wipePiece(currentPiece);
-            while(!checkCollideVert()){
-                currentPiece.translateY();
-            }
-            displayPiece(currentPiece);
-            placePiece();
-            gravityLocks.end();
-            hardDropHeld = true;
+        wipePiece(currentPiece);
+        while(!checkCollideVert()){
+            currentPiece.translateY();
         }
+        displayPiece(currentPiece);
+        placePiece();
+        gravityLocks.end();
+        hardDropHeld = true;
     }
+
     public void resetHardDrop(){
         hardDropHeld = false;
     }

@@ -71,7 +71,7 @@ public class Piece {
                 if (rotation == 0){
                     newRotation = 3;
                 }
-                newRotation = rotation - 1;
+                else {newRotation = rotation - 1;}
                 break;
             case SuperRotationSystem.ROT_CW:
                 newRotation = rotation + 1;

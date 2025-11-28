@@ -44,12 +44,18 @@ public class Game {
         // Some example functions
         mouse.peekEvent();
 
-        if (keyboard.isKeyPressed(27)){
-            System.out.println("hello");
-        };
+        if (keyboard.isKeyPressed(16)){ // If shift pressed
+            // insert hold logic
+        }
 
         if (keyboard.isKeyPressed(38)){ // up arrow pressed
             playWindow.rotatePiece(SuperRotationSystem.ROT_CW); // 1 is cw, -1 is ccw, 2 is 180
+        } else if (keyboard.isKeyPressed(87)){ // If w pressed
+            playWindow.rotatePiece(SuperRotationSystem.ROT_CCW);
+        } else if (keyboard.isKeyPressed(65)){ // key a pressed
+            playWindow.rotatePiece(SuperRotationSystem.ROT_180);
+        } else {
+            playWindow.resetRotHold();
         }
 
         if (keyboard.isKeyPressed(37)){
@@ -76,6 +82,8 @@ public class Game {
         } else {
             playWindow.resetHardDrop();
         }
+
+
 
         playWindow.runGravity();
 
