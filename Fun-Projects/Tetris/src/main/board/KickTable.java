@@ -35,11 +35,10 @@ public class KickTable {
             keyTransform.get(to)
         ); // Probably don't need to do this integer wrapping but I've had issues in the past w/ this
 
-        Point[] kickTable;
+        Point[] kickTable = kickMap.getOrDefault(key, new Point[]{new Point(0,0)});
         if (type == PieceType.I){
             kickTable = tetrisKickMap.getOrDefault(key, new Point[]{new Point(0,0)});
         }
-        kickTable = kickMap.getOrDefault(key, new Point[]{new Point(0,0)});
 
         if (counterClockwise){ // On CCW rotation we inverse all signs
             kickTable = inverseTableSigns(kickTable);
@@ -109,6 +108,7 @@ public class KickTable {
             new Point(+1,0), 
             new Point(-2,-1), 
             new Point(+1,+2)
+            
         }); // rot 0 -> 1    1
 
         tetrisKickMap.put(3, new Point[]{ // rot 1 -> 2    3
@@ -116,7 +116,7 @@ public class KickTable {
             new Point(-1,0), 
             new Point(+2,0), 
             new Point(-1,+2), 
-            new Point(+2,-1)
+            new Point(+2,-1),
         }); 
 
         tetrisKickMap.put(6, new Point[]{ // 2 -> 3|4    6
@@ -132,7 +132,7 @@ public class KickTable {
             new Point(+1,0), 
             new Point(-2,0), 
             new Point(+1,-2), 
-            new Point(-2,+1)
+            new Point(-2,+1),
         }); 
         
 

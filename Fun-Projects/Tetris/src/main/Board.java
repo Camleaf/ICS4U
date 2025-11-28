@@ -32,14 +32,16 @@ public class Board extends PlayWindow{
             Point[] kickSet = currentPiece.getNewKickSet(rotMode);
             Point ref = currentPiece.getReferencePoint();
             // Now that i have the kickset we need to apply kicks
+            Point[] nextLocalPos = currentPiece.getLocalPos(rotMode); // the rotated local pos
             for (Point kick : kickSet){
-                if (checkCollide(new Point(ref.x+kick.x,ref.y+kick.y))){
+                
+                if (checkCollide(new Point(ref.x+kick.x,ref.y+kick.y),nextLocalPos)){
                     continue;
-                }
-                currentPiece.setReferencePoint(ref.x+kick.x, ref.y+kick.y);
+                } 
                 // If kick found do rotation
                  // get updated reference from kicksv
                 wipePiece(currentPiece);
+                currentPiece.setReferencePoint(ref.x+kick.x, ref.y+kick.y);
                 ref = currentPiece.getReferencePoint();
                 currentPiece.rotate(rotMode);
                 displayPiece(currentPiece);
@@ -100,17 +102,17 @@ public class Board extends PlayWindow{
     }
 
 
-    public boolean checkCollide(Point ref){ // pass in custom reference
-        Point[] localPosArr = currentPiece.getLocalPos();
-        System.out.println(ref.toString());
+    public boolean checkCollide(Point ref, Point[] localPosArr){ // pass in custom reference
         for (Point p : localPosArr){
-            System.out.println(p.y);
             int ypos = p.y + ref.y;
             int xpos = p.x + ref.x;
+            
             if (!(0<= ypos && ypos < rows)||!(0<= xpos && xpos < columns)){ // checking for borders. Still need to do other squares
                 return true;
             }
+
         }
+
         return false;
     }
 

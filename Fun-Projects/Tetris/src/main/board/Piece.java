@@ -63,6 +63,32 @@ public class Piece {
         return referencePos;
     }
 
+
+    public Point[] getLocalPos(int rotMode){
+        // gets local pos for a given rot
+        int newRotation;
+        switch (rotMode){
+            case SuperRotationSystem.ROT_CCW:
+                if (rotation == 0){
+                    newRotation = 3;
+                }
+                newRotation = rotation - 1;
+                break;
+            case SuperRotationSystem.ROT_CW:
+                newRotation = rotation + 1;
+                break;
+            case SuperRotationSystem.ROT_180:
+                newRotation = rotation + 2;
+                break;
+            default:
+                newRotation = rotation;
+        }
+        newRotation %= 4;
+
+        return srs.get(type,newRotation);
+    }
+
+
     public void setReferencePoint(int sqX,int sqY){
         this.referencePos = new Point(sqX, sqY);
     }

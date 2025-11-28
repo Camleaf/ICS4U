@@ -63,7 +63,7 @@ public class Game {
         if (keyboard.isKeyPressed(40)){
            //down
         }
-        // playWindow.runGravity();
+        playWindow.runGravity();
 
         
         refresh();
