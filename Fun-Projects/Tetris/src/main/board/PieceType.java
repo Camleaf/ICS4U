@@ -6,7 +6,11 @@ import java.util.Map;
 public enum PieceType {
     I(0),J(1),L(2),O(3),S(4),T(5),Z(6);
 
+    
     public int id;
+    public static PieceType[] types = new PieceType[]{
+        I,J,L,O,S,T,Z
+    };
     public static Map<String,PieceType> StringMap = Map.of(
         "I",I,
         "J",J,

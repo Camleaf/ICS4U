@@ -62,24 +62,9 @@ public class SuperRotationSystem {
     }
 
     public HashMap<PieceType,Point[][]> SRS_Map;
-    public Point[][] I;
-    public Point[][] J;
-    public Point[][] L;
-    public Point[][] O;
-    public Point[][] S;
-    public Point[][] T;
-    public Point[][] Z;
-
 
     public SuperRotationSystem(){
         SRS_Map = load_SRS();
-        I = SRS_Map.get(PieceType.I);
-        J = SRS_Map.get(PieceType.J);
-        L = SRS_Map.get(PieceType.L);
-        O = SRS_Map.get(PieceType.O);
-        S = SRS_Map.get(PieceType.S);
-        T = SRS_Map.get(PieceType.T);
-        Z = SRS_Map.get(PieceType.Z);
     }
 
     public Point[] get(PieceType type, int rot){
