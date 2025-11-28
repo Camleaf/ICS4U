@@ -5,6 +5,7 @@ import lib.interactions.Mouse;
 import lib.logic.Interval;
 import src.main.Board;
 import java.awt.Color;
+import src.main.board.SuperRotationSystem;
 
 /**
     * Main intermediary for taking commands from mainloop and distributing to components
@@ -48,7 +49,7 @@ public class Game {
         };
 
         if (keyboard.isKeyPressed(38)){ // up arrow pressed
-            playWindow.rotatePiece();
+            playWindow.rotatePiece(SuperRotationSystem.ROT_CW); // 1 is cw, -1 is ccw, 2 is 180
         }
 
         if (keyboard.isKeyPressed(37)){
@@ -62,7 +63,7 @@ public class Game {
         if (keyboard.isKeyPressed(40)){
            //down
         }
-        playWindow.runGravity();
+        // playWindow.runGravity();
 
         
         refresh();

@@ -16,22 +16,35 @@ public class Board extends PlayWindow{
 
     public Board(){
         super(400, 800);
-        currentPiece = new Piece(PieceType.S,3,0);
+        currentPiece = new Piece(PieceType.I,3,0);
         rotateInterval = new Interval(200);
         moveInterval = new Interval(150);
         gravityInterval = new Interval(600);
         fillBackground();
         displayPiece(currentPiece);
-    }
+    } //PIECES ARE RENDERING BACKWARDS WHY
 
 
-    public void rotatePiece(){
+    public void rotatePiece(int rotMode){ // 1 is cw, -1 is ccw, 2 is 180
         // Will need to handle kick tables later
         
         if (rotateInterval.intervalPassed()){
-            wipePiece(currentPiece);
-            currentPiece.rotateCW();
-            displayPiece(currentPiece);
+            Point[] kickSet = currentPiece.getNewKickSet(rotMode);
+            Point ref = currentPiece.getReferencePoint();
+            // Now that i have the kickset we need to apply kicks
+            for (Point kick : kickSet){
+                if (checkCollide(new Point(ref.x+kick.x,ref.y+kick.y))){
+                    continue;
+                }
+                currentPiece.setReferencePoint(ref.x+kick.x, ref.y+kick.y);
+                // If kick found do rotation
+                 // get updated reference from kicksv
+                wipePiece(currentPiece);
+                ref = currentPiece.getReferencePoint();
+                currentPiece.rotate(rotMode);
+                displayPiece(currentPiece);
+                break;
+            }
         }
     }
 
@@ -87,7 +100,22 @@ public class Board extends PlayWindow{
     }
 
 
-    
+    public boolean checkCollide(Point ref){ // pass in custom reference
+        Point[] localPosArr = currentPiece.getLocalPos();
+        System.out.println(ref.toString());
+        for (Point p : localPosArr){
+            System.out.println(p.y);
+            int ypos = p.y + ref.y;
+            int xpos = p.x + ref.x;
+            if (!(0<= ypos && ypos < rows)||!(0<= xpos && xpos < columns)){ // checking for borders. Still need to do other squares
+                return true;
+            }
+        }
+        return false;
+    }
+
+
+
 
 
 }

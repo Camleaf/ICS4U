@@ -19,7 +19,9 @@ import src.main.board.PieceType;
  * Horrible code here but it should be fine as long as it works
  */
 public class SuperRotationSystem {
-
+    public static final int ROT_CW = 0;
+    public static final int ROT_CCW = 1;
+    public static final int ROT_180 = 2;
 
     public static HashMap<PieceType,Point[][]> load_SRS(){
         HashMap<PieceType,Point[][]> SRS_Map = new HashMap<PieceType,Point[][]>();
@@ -34,21 +36,23 @@ public class SuperRotationSystem {
                 Point[][] curSRS = new Point[(!type.equals("O"))?4:1][]; // Contains the stages of SRS
 
                 for (int i = 0;i<curSRS.length;i++){ // Grabs every stage from the srs.txt file
-                    ArrayList<Point> SRSline = new ArrayList<Point>();
+                    Point[] SRSline = new Point[4];
 
                     String[] line = scanner.nextLine().trim().split(" ");
                     int r = 0;
+                    int idx = 0;
                     for (String row : line){
                         String[] rsp = row.split("");
                         for (int j =0; j<rsp.length;j++){
                             String val = rsp[j];
                             if (val.equals("1")){
-                                SRSline.add(new Point(j,r));
+                                SRSline[idx] = new Point(j,r);
+                                idx++;
                             }
                         }
                         r++;
                     }
-                    curSRS[i] = SRSline.toArray(new Point[SRSline.size()]);
+                    curSRS[i] = SRSline;
                 }
                 SRS_Map.put(PieceType.StringMap.get(type),curSRS);
                 scanner.nextLine();
