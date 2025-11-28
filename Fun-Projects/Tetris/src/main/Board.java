@@ -223,7 +223,7 @@ public class Board extends PlayWindow{
 
 
     public void movePiece(boolean left){
-        if ((left && leftArrowHeld) ){
+        if ((left && leftArrowHeld) ){ // uses the ARR and DAS system
             if (!leftMoveTimer.enabled){
                 leftMoveTimer.startTimer();
                 return;
