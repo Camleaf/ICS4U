@@ -46,16 +46,16 @@ public enum PieceType {
                 this.shadow = Color.YELLOW.darker().darker();
                 break;
             case S:
-                this.reg = Color.RED;
-                this.shadow = Color.RED.darker().darker();
+                this.reg = Color.GREEN;
+                this.shadow = Color.GREEN.darker().darker();
                 break;
             case T:
                 this.reg = Color.MAGENTA;
                 this.shadow = Color.MAGENTA.darker().darker();
                 break;
             case Z:
-                this.reg = Color.GREEN;
-                this.shadow = Color.GREEN.darker().darker();
+                this.reg = Color.RED;
+                this.shadow = Color.RED.darker().darker();
                 break;
         }
     }
