@@ -9,6 +9,7 @@ public class Piece {
     private SuperRotationSystem srs;
     private KickTable kickTable;
     private Point referencePos;
+    private Point shadowReferencePos;
     private Point[] currentLocalPos; // The local position relative to the referencePos
     private int rotation = 0;
     private PieceType type;
@@ -60,6 +61,14 @@ public class Piece {
 
     public Point getReferencePoint(){
         return referencePos;
+    }
+
+    public Point getShadowReferencePoint(){
+        return shadowReferencePos;
+    }
+
+    public void setShadowReferencePoint(int sqX,int sqY){
+        this.shadowReferencePos = new Point(sqX, sqY);
     }
 
 

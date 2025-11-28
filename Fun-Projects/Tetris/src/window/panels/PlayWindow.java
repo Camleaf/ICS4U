@@ -57,19 +57,32 @@ public class PlayWindow extends BaseComponent {
 
     protected void wipePiece(Piece p){
         Point ref = p.getReferencePoint();
+        wipePiece(p, ref);
+    }
+
+    protected void wipePiece(Piece p, Point ref){
         Point[] localPosArr = p.getLocalPos();
         for (Point locPt : localPosArr){
             paintEmpty(locPt.x+ref.x, locPt.y+ref.y);
         }
     }
 
+    protected void paintPiece(Piece p, Point ref){
+        paintPiece(p, p.getType().reg,ref);
+    }
 
     protected void paintPiece(Piece p){
-        paintPiece(p, p.getType().reg);
+        Point ref = p.getReferencePoint();
+        paintPiece(p, p.getType().reg,ref);
     }
 
     protected void paintPiece(Piece p, Color c){
         Point ref = p.getReferencePoint();
+        paintPiece(p, c,ref);
+    }
+
+
+    protected void paintPiece(Piece p, Color c, Point ref){
         Point[] localPosArr = p.getLocalPos();
         for (Point locPt : localPosArr){
             paintSquare(locPt.x+ref.x, locPt.y+ref.y,c);

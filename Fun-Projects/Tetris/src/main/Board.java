@@ -20,6 +20,7 @@ public class Board extends PlayWindow{
     private SevenBag bag;
     private final int gravityTime = 600;
     private final int firstMoveTime = 133;
+    private final int softDropTime = 20;
     private boolean hardDropHeld = false;
     private Locks gravityLocks = new Locks();
     private boolean instantPlace = false;
@@ -33,11 +34,12 @@ public class Board extends PlayWindow{
     public Board(){
         super(400, 800);
         bag = new SevenBag();
+        emptyBoard();
         newPiece();
         moveInterval = new Interval(firstMoveTime);
         gravityInterval = new Interval(gravityTime);
         paintPiece(currentPiece);
-        emptyBoard();
+
     } 
 
     public void emptyBoard(){
@@ -52,6 +54,7 @@ public class Board extends PlayWindow{
 
     public void holdCurrent(){
         if (!holdEnabled){return;}
+        wipePiece(currentPiece, currentPiece.getShadowReferencePoint());
         wipePiece(currentPiece);
         if (held==null){
             held = currentPiece.getType();
@@ -62,6 +65,8 @@ public class Board extends PlayWindow{
             held = temp;
             
         }
+        calculateShadow();
+        paintPiece(currentPiece,currentPiece.getType().shadow,currentPiece.getShadowReferencePoint());
         paintPiece(currentPiece);
         holdEnabled = false;
     }
@@ -79,8 +84,13 @@ public class Board extends PlayWindow{
     }
 
     public void newPiece(){
+
         currentPiece = new Piece(bag.pollNext(), 3, -1);
         queue.updateQueue(bag.getQueue());
+        calculateShadow();
+        paintPiece(currentPiece,currentPiece.getType().shadow,currentPiece.getShadowReferencePoint());
+
+
     }
 
 
@@ -122,12 +132,20 @@ public class Board extends PlayWindow{
             } 
             // If kick found do rotation
                 // get updated reference from kicksv
+            //wipe
             wipePiece(currentPiece);
+            wipePiece(currentPiece,currentPiece.getShadowReferencePoint());
+            // switch up vars
             currentPiece.setReferencePoint(ref.x+kick.x, ref.y+kick.y);
             ref = currentPiece.getReferencePoint();
             currentPiece.rotate(rotMode);
+            // do new paints
+            calculateShadow();
+            paintPiece(currentPiece,currentPiece.getType().shadow,currentPiece.getShadowReferencePoint());
+
             paintPiece(currentPiece);
             gravityLocks.resetLock(2);
+            gravityLocks.resetLock(1);
             rotHold = true;
             rotPrev = rotMode;
             break;
@@ -137,6 +155,15 @@ public class Board extends PlayWindow{
     public void resetRotHold(){
         rotPrev = -1;
         rotHold = false;
+    }
+ 
+    //Finds the reference point for the current shadow to be at the ground level
+    public void calculateShadow(){
+        Point shadowPoint = new Point(currentPiece.getReferencePoint());
+        while(!checkCollideVert(shadowPoint)){
+            shadowPoint.y += 1;
+        }
+        currentPiece.setShadowReferencePoint(shadowPoint.x, shadowPoint.y);
     }
 
     public void movePiece(boolean left){
@@ -149,7 +176,12 @@ public class Board extends PlayWindow{
             gravityLocks.resetLock(1);
 
             wipePiece(currentPiece);
+            wipePiece(currentPiece,currentPiece.getShadowReferencePoint());
+
             currentPiece.translateX((left)?-1:1);
+
+            calculateShadow();
+            paintPiece(currentPiece,currentPiece.getType().shadow,currentPiece.getShadowReferencePoint());
             paintPiece(currentPiece);
         }
 
@@ -157,7 +189,7 @@ public class Board extends PlayWindow{
     }
 
     public void enableSoftDrop(){
-        gravityInterval.setInterval(50);
+        gravityInterval.setInterval(softDropTime);
     }
 
     public void disableSoftDrop(){
@@ -200,7 +232,6 @@ public class Board extends PlayWindow{
         while(!checkCollideVert()){
             currentPiece.translateY();
         }
-        paintPiece(currentPiece);
         placePiece();
         gravityLocks.end();
         hardDropHeld = true;
@@ -232,7 +263,10 @@ public class Board extends PlayWindow{
     
 
     public boolean checkCollideVert(){
-        Point ref = currentPiece.getReferencePoint();
+        return checkCollideVert(currentPiece.getReferencePoint());
+    }
+
+    public boolean checkCollideVert(Point ref){
         Point[] localPosArr = currentPiece.getLocalPos();
 
         for (Point p : localPosArr){ // Add checking for other squares once that happens
@@ -301,6 +335,9 @@ public class Board extends PlayWindow{
 
         grid = newGrid;
         paintFullGrid(grid);
+
+        calculateShadow();
+        paintPiece(currentPiece,currentPiece.getType().shadow,currentPiece.getShadowReferencePoint());
     }
 
 
