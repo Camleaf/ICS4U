@@ -63,6 +63,7 @@ public class Board extends PlayWindow{
         }
         newPiece();
         gravityLocks.end();
+        checkFullLines();
     }
 
 
@@ -223,6 +224,34 @@ public class Board extends PlayWindow{
     }
 
 
+
+    public void checkFullLines(){ // checks for and removes filled lines
+        int idx = 0;
+        GridSquare[][] newGrid = new GridSquare[rows][columns];
+
+        for (int p = 0;p<grid.length;p++){
+            GridSquare[] line = grid[grid.length-p-1];
+            int filled = 0;
+            for (GridSquare square :line){
+                if (square.filled)filled++;
+            }
+            if (filled != line.length){
+                newGrid[grid.length-idx-1] = line;
+                idx++;
+            }
+        }
+
+
+        for (int jdx = 0;jdx<newGrid.length-idx;jdx++){
+            
+            newGrid[jdx] = new GridSquare[columns];
+            for (int l = 0;l<newGrid[jdx].length;l++){
+                newGrid[jdx][l] = new GridSquare(false, null);
+            }
+        }
+        grid = newGrid;
+        paintFullGrid(grid);
+    }
 
 
 

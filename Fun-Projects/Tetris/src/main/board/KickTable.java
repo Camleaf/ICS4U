@@ -64,39 +64,40 @@ public class KickTable {
 
 
     private void buildKickTable(){ // kicktables from here https://harddrop.com/wiki/SRS
+        // Vertical kicks are inverted from the harddrop.com site to match my inverted coordinate system with the 2d arrs and stuff
         kickMap = new HashMap<>(); // define kickmaps
         tetrisKickMap = new HashMap<>();
         // All kick tables are only for clockwise rotations. On counter clockwise i will just invert the given kick
         kickMap.put(1, new Point[]{
             new Point(0,0), //Trial 1 - 5
             new Point(-1,0), 
-            new Point(-1,+1), 
-            new Point(0,-2), 
-            new Point(-1,-2)
+            new Point(-1,-1), 
+            new Point(0,+2), 
+            new Point(-1,+2)
         }); // rot 0 -> 1    1
 
         kickMap.put(3, new Point[]{ // rot 1 -> 2    3
             new Point(0,0),  //Trial 1 - 5
             new Point(+1,0), 
-            new Point(+1,-1), 
-            new Point(0,+2), 
-            new Point(+1,+2)
+            new Point(+1,+1), 
+            new Point(0,-2), 
+            new Point(+1,-2)
         }); 
 
         kickMap.put(6, new Point[]{ // 2 -> 3|4    6
             new Point(0,0),  //Trial 1 - 5
             new Point(+1,0), 
-            new Point(+1,+1), 
-            new Point(0,-2), 
-            new Point(+1,-2)
+            new Point(+1,-1), 
+            new Point(0,+2), 
+            new Point(+1,+2)
         });
 
         kickMap.put(4, new Point[]{ // 3|4 -> 0    4
             new Point(0,0),  //Trial 1 - 5
             new Point(-1,0), 
-            new Point(-1,-1), 
-            new Point(0,+2), 
-            new Point(-1,+2)
+            new Point(-1,+1), 
+            new Point(0,-2), 
+            new Point(-1,-2)
         }); 
 
 
@@ -106,8 +107,8 @@ public class KickTable {
             new Point(0,0), //Trial 1 - 5
             new Point(-2,0), 
             new Point(+1,0), 
-            new Point(-2,-1), 
-            new Point(+1,+2)
+            new Point(-2,+1), 
+            new Point(+1,-2)
             
         }); // rot 0 -> 1    1
 
@@ -115,24 +116,24 @@ public class KickTable {
             new Point(0,0),  //Trial 1 - 5
             new Point(-1,0), 
             new Point(+2,0), 
-            new Point(-1,+2), 
-            new Point(+2,-1),
+            new Point(-1,-2), 
+            new Point(+2,+1),
         }); 
 
         tetrisKickMap.put(6, new Point[]{ // 2 -> 3|4    6
             new Point(0,0),  //Trial 1 - 5
             new Point(+2,0), 
             new Point(-1,0), 
-            new Point(+2,+1), 
-            new Point(-1,-2)
+            new Point(+2,-1), 
+            new Point(-1,+2)
         });
 
         tetrisKickMap.put(4, new Point[]{ // 3|4 -> 0    4
             new Point(0,0),  //Trial 1 - 5
             new Point(+1,0), 
             new Point(-2,0), 
-            new Point(+1,-2), 
-            new Point(-2,+1),
+            new Point(+1,+2), 
+            new Point(-2,-1),
         }); 
         
 

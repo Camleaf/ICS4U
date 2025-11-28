@@ -1,6 +1,7 @@
 package src.window.panels;
 import lib.window.Texture;
 import lib.window.base.BaseComponent;
+import src.main.board.GridSquare;
 import src.main.board.Piece;
 import java.awt.Point;
 import java.awt.Color;
@@ -71,5 +72,16 @@ public class PlayWindow extends BaseComponent {
 
     }
 
+
+    protected void paintFullGrid(GridSquare[][] grid){ // draws the full grid and iterates over stuff
+        paintBackground();
+        for (int row  = 0; row<rows;row++){
+            for (int col = 0; col < columns; col++){
+                GridSquare square = grid[row][col];
+                if (!square.filled) continue;
+                paintSquare(col, row, square.color);
+            }
+        }
+    }
 
 }
