@@ -4,6 +4,7 @@ import src.window.Colours;
 import java.awt.Color;
 
 import lib.logic.Interval;
+import lib.logic.Timer;
 import src.main.board.GridSquare;
 import src.main.board.Locks;
 import src.main.board.Piece;
@@ -14,13 +15,16 @@ import java.awt.Point;
 
 public class Board extends PlayWindow{
     private Piece currentPiece;
-    private Interval moveInterval;
+    private Timer leftMoveTimer;
+    private Timer rightMoveTimer;
+    private Interval autoRepeatInterval;
     private Interval gravityInterval;
     private GridSquare[][] grid;
     private SevenBag bag;
-    private final int gravityTime = 600;
+    private final int gravityTime = 600; // All times are in milliseconds
     private final int firstMoveTime = 133;
     private final int softDropTime = 20;
+    private final int autoRepeatRate = 20;
     private boolean hardDropHeld = false;
     private Locks gravityLocks = new Locks();
     private boolean instantPlace = false;
@@ -30,17 +34,28 @@ public class Board extends PlayWindow{
     public PieceType held;
     private boolean holdEnabled = true;
     public Queue queue = new Queue();
+    private boolean leftArrowHeld = false;
+    private boolean rightArrowHeld = false;
 
+
+
+    
     public Board(){
         super(400, 800);
         bag = new SevenBag();
         emptyBoard();
         newPiece();
-        moveInterval = new Interval(firstMoveTime);
+        leftMoveTimer = new Timer(firstMoveTime);
+        rightMoveTimer = new Timer(firstMoveTime);
+        autoRepeatInterval = new Interval(autoRepeatRate);
         gravityInterval = new Interval(gravityTime);
         paintPiece(currentPiece);
 
     } 
+
+
+
+
 
     public void emptyBoard(){
         grid = new GridSquare[rows][columns];
@@ -51,6 +66,10 @@ public class Board extends PlayWindow{
         }
         paintBackground();
     }
+
+
+
+
 
     public void holdCurrent(){
         if (!holdEnabled){return;}
@@ -71,6 +90,10 @@ public class Board extends PlayWindow{
         holdEnabled = false;
     }
 
+
+
+
+
     public void restart(){
         gameOver = false;
         rotPrev = -1;
@@ -83,6 +106,11 @@ public class Board extends PlayWindow{
         newPiece();
     }
 
+
+
+
+
+
     public void newPiece(){
 
         currentPiece = new Piece(bag.pollNext(), 3, -1);
@@ -92,6 +120,12 @@ public class Board extends PlayWindow{
 
 
     }
+
+
+
+
+
+
 
 
     public void placePiece(){
@@ -112,6 +146,13 @@ public class Board extends PlayWindow{
         checkFullLines();
         holdEnabled = true;
     }
+
+
+
+
+
+
+
 
 
     public void rotatePiece(int rotMode){ // 1 is cw, -1 is ccw, 2 is 180
@@ -152,10 +193,20 @@ public class Board extends PlayWindow{
         }
     }
 
+
+
+
+
+
     public void resetRotHold(){
         rotPrev = -1;
         rotHold = false;
     }
+
+
+
+
+
  
     //Finds the reference point for the current shadow to be at the ground level
     public void calculateShadow(){
@@ -166,35 +217,79 @@ public class Board extends PlayWindow{
         currentPiece.setShadowReferencePoint(shadowPoint.x, shadowPoint.y);
     }
 
+
+
+
+
+
     public void movePiece(boolean left){
-
-        if (moveInterval.intervalPassed()){
-            
-            if (checkCollideHoriz((left)?-1:1)){
+        if ((left && leftArrowHeld) ){
+            if (!leftMoveTimer.enabled){
+                leftMoveTimer.startTimer();
                 return;
+            }else if (!leftMoveTimer.isEnded()){
+                return;
+            } else {
+                if (!autoRepeatInterval.intervalPassed()){
+                    return;
+                }
             }
-            gravityLocks.resetLock(1);
-
-            wipePiece(currentPiece);
-            wipePiece(currentPiece,currentPiece.getShadowReferencePoint());
-
-            currentPiece.translateX((left)?-1:1);
-
-            calculateShadow();
-            paintPiece(currentPiece,currentPiece.getType().shadow,currentPiece.getShadowReferencePoint());
-            paintPiece(currentPiece);
+        } else if ((!left)&&rightArrowHeld){
+            if (!rightMoveTimer.enabled){
+                rightMoveTimer.startTimer();
+                return;
+            } else if (!rightMoveTimer.isEnded()){
+                return;
+            } else {
+                if (!autoRepeatInterval.intervalPassed()){
+                    return;
+                }
+            }
         }
+ 
 
-        
+        if (checkCollideHoriz((left)?-1:1)){
+            return;
+        }
+        gravityLocks.resetLock(1);
+
+        wipePiece(currentPiece);
+        wipePiece(currentPiece,currentPiece.getShadowReferencePoint());
+
+        currentPiece.translateX((left)?-1:1);
+
+        calculateShadow();
+        paintPiece(currentPiece,currentPiece.getType().shadow,currentPiece.getShadowReferencePoint());
+        paintPiece(currentPiece);
+        if (left){
+            leftArrowHeld = true;
+        } else {
+            rightArrowHeld = true;
+        }
     }
+
+    public void resetHorizArrowHeld(boolean left){
+        if (left){
+            leftArrowHeld = false;
+            leftMoveTimer.end();
+        } else {
+            rightArrowHeld = false;
+            rightMoveTimer.end();
+        }
+    }
+
+
 
     public void enableSoftDrop(){
         gravityInterval.setInterval(softDropTime);
     }
 
+
+
     public void disableSoftDrop(){
         gravityInterval.setInterval(gravityTime);
     }
+
 
     public void runGravity(){
         if (gravityLocks.enabled){

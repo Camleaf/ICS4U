@@ -7,6 +7,7 @@ package lib.logic;
 public class Timer {
     private long savedTime;
     private int delayMs;
+    public boolean enabled = false;
 
     public Timer(int millis){
         savedTime = System.currentTimeMillis();
@@ -27,14 +28,20 @@ public class Timer {
 
     public void startTimer(){
         savedTime = System.currentTimeMillis();
+        enabled = true;
     }
 
     public long getTime(){
         return System.currentTimeMillis();
     }
 
+    public void end(){
+        this.enabled = false;
+    }
+
 
     public boolean isEnded(){
+        if (!enabled) return false;
         boolean passed = (getTime() - savedTime > delayMs);
         return passed;
     }

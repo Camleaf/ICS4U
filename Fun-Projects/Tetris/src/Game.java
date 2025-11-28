@@ -73,13 +73,16 @@ public class Game {
 
             if (keyboard.isKeyPressed(37)){
             //left
-            playWindow.movePiece(true);
+                playWindow.movePiece(true);
+            } else {
+                playWindow.resetHorizArrowHeld(true);
             }
-
 
             if (keyboard.isKeyPressed(39)){
                 //right
                 playWindow.movePiece(false);
+            } else {
+                playWindow.resetHorizArrowHeld(false);
             }
         
             if (keyboard.isKeyPressed(40)){
