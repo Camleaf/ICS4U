@@ -1,29 +1,31 @@
 package lib.logic;
 
 /**
- * Class to manage a non-blocking interval which can act as a delay on inputs
+ * Class to manage a non-blocking timer which can act as a delay on inputs
  * @author Camleaf
  */
-public class Interval {
+public class Timer {
     private long savedTime;
     private int delayMs;
 
-    public Interval(int millis){
+    public Timer(int millis){
         savedTime = System.currentTimeMillis();
-        setInterval(millis);
+        setDelay(millis);
     }
 
 
-    public void setInterval(int millis){
+    public void setDelay(int millis){
         this.delayMs = millis;
     }
 
 
-    public int getInterval(){
+    public int getDelay(){
         return this.delayMs;
     }
 
-    public void resetTime(){
+    
+
+    public void startTimer(){
         savedTime = System.currentTimeMillis();
     }
 
@@ -32,9 +34,8 @@ public class Interval {
     }
 
 
-    public boolean intervalPassed(){
+    public boolean isEnded(){
         boolean passed = (getTime() - savedTime > delayMs);
-        if (passed) resetTime();
         return passed;
     }
 }

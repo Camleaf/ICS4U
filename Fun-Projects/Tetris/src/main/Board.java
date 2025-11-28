@@ -5,6 +5,7 @@ import java.awt.Color;
 
 import lib.logic.Interval;
 import src.main.board.GridSquare;
+import src.main.board.Locks;
 import src.main.board.Piece;
 import src.main.board.PieceType;
 import src.main.board.SevenBag;
@@ -16,19 +17,22 @@ public class Board extends PlayWindow{
     private Interval rotateInterval;
     private Interval moveInterval;
     private Interval gravityInterval;
+    private Interval hardDropInterval;
     private GridSquare[][] grid;
     private SevenBag bag;
     private final int gravityTime = 600;
-    private final int firstMoveTime = 200;
-    private final int consecutiveMoveTime = 20;
-    private Boolean previousMove = null;
+    private final int firstMoveTime = 133;
+    private boolean hardDropHeld = false;
+    private Locks gravityLocks = new Locks();
+    private boolean instantPlace = false;
 
     public Board(){
         super(400, 800);
         bag = new SevenBag();
         newPiece();
         rotateInterval = new Interval(200);
-        moveInterval = new Interval(300);
+        moveInterval = new Interval(firstMoveTime);
+        hardDropInterval = new Interval(100);
         gravityInterval = new Interval(gravityTime);
         displayPiece(currentPiece);
         emptyBoard();
@@ -60,6 +64,7 @@ public class Board extends PlayWindow{
             grid[ypos][xpos] = new GridSquare(true, currentPiece.getType().reg);
         }
         newPiece();
+        gravityLocks.end();
     }
 
 
@@ -83,30 +88,27 @@ public class Board extends PlayWindow{
                 ref = currentPiece.getReferencePoint();
                 currentPiece.rotate(rotMode);
                 displayPiece(currentPiece);
+                gravityLocks.resetLock(2);
                 break;
             }
         }
     }
 
     public void movePiece(boolean left){
-        if (previousMove != null){
-            if (left == previousMove){
-                moveInterval.setInterval(consecutiveMoveTime);
-            }
-        }
+
         if (moveInterval.intervalPassed()){
+            
             if (checkCollideHoriz((left)?-1:1)){
                 return;
             }
+            gravityLocks.resetLock(1);
+
             wipePiece(currentPiece);
             currentPiece.translateX((left)?-1:1);
             displayPiece(currentPiece);
-            previousMove = left;
         }
-    }
 
-    public void resetMoveInterval(){
-        moveInterval.setInterval(firstMoveTime);
+        
     }
 
     public void enableSoftDrop(){
@@ -118,15 +120,50 @@ public class Board extends PlayWindow{
     }
 
     public void runGravity(){
+        if (gravityLocks.enabled){
+            checkLocks();
+        }
         if (gravityInterval.intervalPassed()){
             if (checkCollideVert()){
-                placePiece();
+                if (!gravityLocks.enabled){
+                    gravityLocks.start();
+                }
+                if (instantPlace){
+                    placePiece();
+                    gravityLocks.end();
+                    instantPlace = false;
+                }
                 return;
             }
             wipePiece(currentPiece);
             currentPiece.translateY();
             displayPiece(currentPiece);
         }
+    }
+
+    private void checkLocks(){
+        if (gravityLocks.isAnyPassed()){
+            instantPlace = true;
+            gravityLocks.end();
+        }
+    }
+
+
+    public void hardDrop(){
+        if (hardDropHeld){return;}
+        if (hardDropInterval.intervalPassed()){
+            wipePiece(currentPiece);
+            while(!checkCollideVert()){
+                currentPiece.translateY();
+            }
+            displayPiece(currentPiece);
+            placePiece();
+            gravityLocks.end();
+            hardDropHeld = true;
+        }
+    }
+    public void resetHardDrop(){
+        hardDropHeld = false;
     }
 
 
@@ -152,7 +189,10 @@ public class Board extends PlayWindow{
         for (Point p : localPosArr){ // Add checking for other squares once that happens
             int ypos = p.y + ref.y + 1;
             int xpos = p.x + ref.x;
-            if (!(ypos < rows)||isFilled(xpos, ypos)){
+            if (ypos>=rows){
+                return true;
+            }
+            if (isFilled(xpos, ypos)){
                 return true;
             }
         }
@@ -171,7 +211,6 @@ public class Board extends PlayWindow{
             if (!(0<= ypos && ypos < rows)||!(0<= xpos && xpos < columns)||isFilled(xpos, ypos)){ // checking for borders. Still need to do other squares
                 return true;
             }
-
         }
 
         return false;
