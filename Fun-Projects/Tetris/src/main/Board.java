@@ -1,8 +1,6 @@
 package src.main;
 import src.window.panels.PlayWindow;
-import src.window.Colours;
 import java.awt.Color;
-
 import lib.logic.Interval;
 import lib.logic.Timer;
 import src.main.board.GridSquare;
