@@ -21,7 +21,7 @@ public class Board extends PlayWindow{
     private SevenBag bag;
     private final int gravityTime = 600; // All times are in milliseconds
     private final int firstMoveTime = 133;
-    private final int softDropTime = 10;
+    private final int softDropTime = 5;
     private final int autoRepeatRate = 20;
     private boolean hardDropHeld = false;
     private Locks gravityLocks = new Locks();
