@@ -59,11 +59,11 @@ public class PromoteDisplay extends BoardPanel {
         int displayY = (orientation == WHITE) ? y : 7-y;
         // it by default is int the first spot i want
         if (x > 3 && displayY > 3){
-            setLocation(512-width-32,512-height-32);
+            setLocation(512-width-32+xOffset,512-height-32);
         } else if (x > 3 && displayY <= 3){
-            setLocation(512-width-32,32);
+            setLocation(512-width-32+xOffset,32);
         } else if (x <= 3 && displayY > 3){
-            setLocation(32,512-height-32);
+            setLocation(32+xOffset,512-height-32);
         }
 
         pawnLoc = new Point(x,y);

@@ -2,8 +2,6 @@ package main.menu.stylized;
 import java.awt.Font;
 import java.awt.Point;
 
-import main.window.Colours;
-
 public class StylizedButtonFactory {
     private int arcWidth;
     private int arcHeight;

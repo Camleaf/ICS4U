@@ -1,4 +1,5 @@
 package main.window.panels;
+import lib.window.GraphicsContext;
 import lib.window.Texture;
 import lib.window.base.BaseComponent;
 import main.window.Colours;
@@ -13,6 +14,7 @@ public class BoardPanel extends BaseComponent {
     private final Texture spriteSheet = new Texture("src/piecesSpriteSheet.png", -1, -1);
     private final int spriteSize = 64;
     private final int spriteSheetSize = 256;
+    protected final int xOffset = 32; // Offset for the actual board so that I can draw numbers
     public int gridSize; //preferably a multiple of 8
     public Piece.Colour orientation;
     public int squareSize;
@@ -23,13 +25,13 @@ public class BoardPanel extends BaseComponent {
      * @author Camleaf
      */
     public BoardPanel(int gridSize, Piece.Colour orientation){
-        super(gridSize, gridSize);
+        super(gridSize+32, gridSize+32); // IF CHANGE XOFFSET CHANGE THIS ASWELL
         this.orientation = orientation;
         this.gridSize = gridSize;
         this.squareSize = this.gridSize/8;
         this.width = gridSize/squareSize;
         this.height = gridSize/squareSize;
-        setBounds(0, 0, gridSize, gridSize);
+        setBounds(0, 0, gridSize+xOffset, gridSize+xOffset);
     }
 
     /**
@@ -50,14 +52,34 @@ public class BoardPanel extends BaseComponent {
      */
     public void paintBackground(){
         gct.flushBuffer();
+        gct.fill(new Color(0,0,0,0));
+        // Draw empty tiles
         for (int row = 0; row < height; row++){
             for (int col = 0;col< width;col++){
                 if ((row%2 + col)%2==0){
-                    gct.drawRect(col*squareSize,row*squareSize,squareSize,squareSize,Colours.boardWhite);
+                    gct.drawRect(col*squareSize+xOffset,row*squareSize,squareSize,squareSize,Colours.boardWhite);
                 } else {
-                    gct.drawRect(col*squareSize,row*squareSize,squareSize,squareSize,Colours.boardBlack);
+                    gct.drawRect(col*squareSize+xOffset,row*squareSize,squareSize,squareSize,Colours.boardBlack);
                 }
             }
+        }
+        // Draw letters at bottom
+        String[] letters = "abcdefgh".split("");
+        for (int index = 0;index<letters.length;index++){
+            String curLetter = letters[index];
+            int xpos = (index)*squareSize+(squareSize/2)+xOffset;
+            int ypos = squareSize*8+squareSize/6;
+            gct.drawText(curLetter,xpos,ypos,Colours.boardWhite,GraphicsContext.TEXTMODE_CENTRE);
+        }
+
+
+        int[] numbers = (orientation ==  Piece.Colour.WHITE) ? new int[]{1,2,3,4,5,6,7,8}:new int[]{8,7,6,5,4,3,2,1};
+        for (int index = 0; index<numbers.length;index++){
+       
+            String curNum = String.format("%d",numbers[index]);
+            int xpos = squareSize/4;
+            int ypos = (index)*squareSize+(squareSize/2);
+            gct.drawText(curNum,xpos,ypos,Colours.boardWhite,GraphicsContext.TEXTMODE_CENTRE);
         }
     }
 
@@ -84,7 +106,7 @@ public class BoardPanel extends BaseComponent {
      */
     protected void paintHighlight(int x, int y){
         y = filterY(y);
-        gct.drawRect(x * squareSize, y*squareSize,squareSize,squareSize,Colours.boardHighlight);
+        gct.drawRect(x * squareSize+xOffset, y*squareSize,squareSize,squareSize,Colours.boardHighlight);
     }
 
     /**
@@ -94,7 +116,7 @@ public class BoardPanel extends BaseComponent {
      */
     protected void paintHighlight(int x, int y, Color colour){
         y = filterY(y);
-        gct.drawRect(x * squareSize, y*squareSize,squareSize,squareSize,colour);
+        gct.drawRect(x * squareSize+xOffset, y*squareSize,squareSize,squareSize,colour);
     }
 
     /**
@@ -114,7 +136,7 @@ public class BoardPanel extends BaseComponent {
             pieceY %= spriteSheetSize;
             pieceX += spriteSize;
         }
-        gct.drawBufferedImage(spriteSheet.getSlice(pieceX,pieceY,spriteSize,spriteSize), x*squareSize, y*squareSize);
+        gct.drawBufferedImage(spriteSheet.getSlice(pieceX,pieceY,spriteSize,spriteSize), x*squareSize+xOffset, y*squareSize);
     }
 
     // Variables for the variable paintPiece
@@ -192,9 +214,9 @@ public class BoardPanel extends BaseComponent {
     protected void paintEmpty(int x, int y){
         y = filterY(y);
         if ((y%2 + x)%2==0){
-            gct.drawRect(x*squareSize,y*squareSize,squareSize,squareSize,Colours.boardWhite);
+            gct.drawRect(x*squareSize+xOffset,y*squareSize,squareSize,squareSize,Colours.boardWhite);
         } else {
-            gct.drawRect(x*squareSize,y*squareSize,squareSize,squareSize,Colours.boardBlack);
+            gct.drawRect(x*squareSize+xOffset,y*squareSize,squareSize,squareSize,Colours.boardBlack);
         }
     }
 

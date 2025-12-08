@@ -66,6 +66,7 @@ public class BoardDisplay extends BoardPanel {
 
         Rectangle bounds = this.getBounds();
         if (bounds.contains(clickPos)){
+            clickPos = new Point(clickPos.x-bounds.x - xOffset,clickPos.y-bounds.y);
 
             Point clickedSquare = new Point(
                 (int) Math.round( Math.floor( ( (double)clickPos.x ) / squareSize )), 

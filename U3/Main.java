@@ -11,7 +11,7 @@ public class Main {
     public static void main(String[] args) {
         System.setProperty("sun.java2d.uiScale", "1.0"); // https://stackoverflow.com/questions/47613006/how-to-disable-scaling-the-ui-on-windows-for-java-9-applications
 
-        SwingUtilities.invokeLater(new Runnable() { // Man i love the jswing and awt docs they make no sense but it works
+        SwingUtilities.invokeLater(new Runnable() {
             @Override
             public void run() {
                 // initialize globals stuff
