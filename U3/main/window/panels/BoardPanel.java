@@ -73,7 +73,7 @@ public class BoardPanel extends BaseComponent {
         }
 
 
-        int[] numbers = (orientation ==  Piece.Colour.WHITE) ? new int[]{1,2,3,4,5,6,7,8}:new int[]{8,7,6,5,4,3,2,1};
+        int[] numbers = (orientation ==  Piece.Colour.BLACK) ? new int[]{1,2,3,4,5,6,7,8}:new int[]{8,7,6,5,4,3,2,1};
         for (int index = 0; index<numbers.length;index++){
        
             String curNum = String.format("%d",numbers[index]);
