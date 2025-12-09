@@ -1,5 +1,6 @@
 package main.game;
 import main.game.board.Piece;
+import main.menu.MoveHistory;
 import main.game.board.PromoteDisplay;
 import main.game.board.StoredPosition;
 import main.window.panels.BoardPanel;
@@ -16,6 +17,7 @@ public class BoardDisplay extends BoardPanel {
     private Board board;
     public boolean checkMate = false;
     public PromoteDisplay pawnPromoteDisplay = new PromoteDisplay();
+    public MoveHistory moveHistory = new MoveHistory();
 
 
     public BoardDisplay(int gridSize){
@@ -30,6 +32,7 @@ public class BoardDisplay extends BoardPanel {
         checkMate = false;
         pawnPromoteDisplay.setVisible(false);
         selectedPoint = new Point(-1,-1);
+        moveHistory.resetHistory();
         board = new Board();
         paintBackground();
         drawCurrentBoard(board.getRawBoard());
@@ -85,9 +88,10 @@ public class BoardDisplay extends BoardPanel {
 
                 // Will eventually add highlighting here
             } else { // if it is that means there is a piece there
-
-
+                
                 Piece prevPiece = board.getPieceFromBoard(selectedPoint.x, selectedPoint.y);
+                
+                String moveHistTest = moveHistory.createMove(prevPiece,interactedPiece);
 
                 if ( prevPiece.getColour().equals( interactedPiece.getColour() )){ // If white attacks white, or black attacks black, change the highlight
                     paintPiece(prevPiece,PIECE_PAINT_OVERWRITE);
@@ -105,6 +109,8 @@ public class BoardDisplay extends BoardPanel {
                     // Both edge cases are handled inside the move function
                     return;
                 }
+                // past here move was accepted
+                moveHistory.addMove(moveHistTest);
 
                 for (Point point : oldHighlightPos){
                     if (point == null){continue;}

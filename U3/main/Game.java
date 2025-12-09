@@ -24,9 +24,10 @@ public class Game {
 
     public Game(){
         boardFlipInterval = new Interval(250);
-        window = new Window("Chess", 832,576);
+        window = new Window("Chess", 832,608);
         board = new BoardDisplay(512);
         menu = new MenuPanel(288, 560, null);
+        menu.add(board.moveHistory);
         menu.setLocation(544, 0);
 
         window.add(menu,Integer.valueOf(1));
