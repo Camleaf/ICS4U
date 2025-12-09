@@ -27,7 +27,7 @@ public class Game {
         window = new Window("Chess", 832,608);
         board = new BoardDisplay(512);
         menu = new MenuPanel(288, 560, null);
-        menu.add(board.moveHistory);
+        menu.add(board.moveHistory.scrollPane);
         menu.setLocation(544, 0);
 
         window.add(menu,Integer.valueOf(1));
