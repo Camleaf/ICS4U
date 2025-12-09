@@ -20,6 +20,8 @@ public class BoardPanel extends BaseComponent {
     public int squareSize;
     public int width;
     public int height;
+    public boolean whiteInCheck; // Some empty variables for the moment, use to put the kings in check or checkmate.
+    public boolean blackInCheck; // Some empty variables for the moment, use to put the kings in check or checkmate.
     
     /**
      * @author Camleaf
