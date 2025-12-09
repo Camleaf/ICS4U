@@ -5,6 +5,8 @@ import lib.interactions.Keyboard;
 import lib.interactions.Mouse;
 import lib.logic.Interval;
 import main.menu.MenuPanel;
+import main.menu.onLoad.Initial;
+
 import java.awt.Color;
 import java.awt.Point;
 import static main.menu.MenuOption.*;
@@ -21,23 +23,36 @@ public class Game {
     private Keyboard keyboard;
     private Mouse mouse;
     private Interval boardFlipInterval;
+    private boolean started = false;
+    private Initial initialScreen;
 
     public Game(){
         boardFlipInterval = new Interval(250);
         window = new Window("Chess", 832,608);
+
+        
+
         board = new BoardDisplay(512);
         menu = new MenuPanel(288, 560, null);
         menu.add(board.moveHistory.scrollPane);
         menu.setLocation(544, -35);
 
+
+        
         window.add(menu,Integer.valueOf(1));
         window.add(board,Integer.valueOf(2));
         window.add(board.pawnPromoteDisplay,Integer.valueOf(3));
         window.setBackground(Color.DARK_GRAY);
         
-        /*
-         * Screen will be 800 x 800
-         */
+
+
+        initialScreen = new Initial(window.getWidth(),window.getHeight(), new Runnable() {
+            public void run(){
+                started = true;
+                window.remove(initialScreen);
+            }
+        });
+        window.add(initialScreen,Integer.valueOf(4));
     }
 
     public void show(){
@@ -55,6 +70,8 @@ public class Game {
 
 
     public void updateBoard(){
+
+        if (!started) return;
 
         // Take the last input in the stored clicks as that is the most recent datapoint. 
         // Most humans can't even click fast enough consistently to get a double click in 60fps, much less with enough accuracy to intentionally move pieces around at that speed
