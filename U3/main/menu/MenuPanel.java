@@ -3,10 +3,16 @@ import lib.window.GraphicsContext;
 import lib.window.base.BasePanel;
 import main.menu.stylized.StylizedButton;
 import main.menu.stylized.StylizedButtonFactory;
+import main.window.Colours;
 
 import java.awt.Color;
 import java.awt.Font;
+import java.net.URI;
+
 import javax.swing.JComponent;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import java.awt.Desktop;
 import java.util.ArrayList;
 import java.util.HashMap;
 import static main.game.board.Piece.Colour.*;
@@ -27,7 +33,7 @@ public class MenuPanel extends BasePanel{
     private void createButtons(){
         // Button that changes orientation. A lot of boilerplate but it works
         StylizedButton orientationButton = new StylizedButtonFactory() // Ah factory methods. Probably was super overkill but I love it
-                    .setLocation(20,450)   .setDimensions(100, 40, 10, 15)
+                    .setLocation(20,500)   .setDimensions(100, 40, 10, 15)
                     .setText("Flip Board") .setFont(new Font("arial", Font.TRUETYPE_FONT, 20))
                     .setTextMode(GraphicsContext.TEXTMODE_CENTRE) .setTextLocation(50, 20)
                     .build();
@@ -43,7 +49,7 @@ public class MenuPanel extends BasePanel{
 
         // Reset Board
         StylizedButton resetButton = new StylizedButtonFactory() 
-                    .setLocation(130,450)   .setDimensions(120, 40, 10, 15)
+                    .setLocation(130,500)   .setDimensions(120, 40, 10, 15)
                     .setText("Reset Board") .setFont(new Font("arial", Font.TRUETYPE_FONT, 20))
                     .setTextMode(GraphicsContext.TEXTMODE_CENTRE) .setTextLocation(60, 20)
                     .build();
@@ -57,6 +63,32 @@ public class MenuPanel extends BasePanel{
         add(resetButton);
 
 
+
+        // https://www.chess.com/terms/chess-notation
+
+        StylizedButton chessNotation = new StylizedButtonFactory()
+            .setLocation(25, 115) . setDimensions(80, 20, 10, 15).setText("Learn More").setFont(new Font("arial", Font.TRUETYPE_FONT, 10))
+                    .setTextMode(GraphicsContext.TEXTMODE_CENTRE) .setTextLocation(40, 10).build();
+        componentList.add(chessNotation);
+        chessNotation.addActionListener(new Runnable() {
+            public void run(){
+                 try {
+                        Desktop.getDesktop().browse(new URI("https://www.chess.com/terms/chess-notation"));
+                    } catch (Exception ex) {
+                        ex.printStackTrace();
+                        JOptionPane.showMessageDialog(null, "Error opening link: " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+                    }
+            }
+        });
+        add(chessNotation);
+
+        JLabel textLabel = new JLabel();
+        textLabel.setText("Move history");
+        textLabel.setBounds(25,0,200,200);
+        textLabel.setFont(new Font("arial", Font.TRUETYPE_FONT, 20));
+        textLabel.setForeground(Colours.boardWhite);
+        componentList.add(textLabel);
+        add(textLabel);
     }
 
     private void intializeOptionsValues(){

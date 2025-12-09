@@ -28,7 +28,7 @@ public class Game {
         board = new BoardDisplay(512);
         menu = new MenuPanel(288, 560, null);
         menu.add(board.moveHistory.scrollPane);
-        menu.setLocation(544, 0);
+        menu.setLocation(544, -35);
 
         window.add(menu,Integer.valueOf(1));
         window.add(board,Integer.valueOf(2));

@@ -22,7 +22,7 @@ public class MoveHistory extends JTextPane {
         setFont(new Font("Monospaced", Font.TRUETYPE_FONT, 20));
         scrollPane = new JScrollPane(this);
         scrollPane.setSize(230,300);
-        scrollPane.setLocation(40,100);
+        scrollPane.setLocation(25,140);
         scrollPane.getVerticalScrollBar().setPreferredSize(new Dimension(0, 0));
 
 
