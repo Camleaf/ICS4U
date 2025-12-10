@@ -1,4 +1,5 @@
 package main.menu;
+import javax.swing.JScrollBar;
 import javax.swing.JScrollPane;
 import javax.swing.JTextPane;
 import java.awt.Font;
@@ -30,19 +31,22 @@ public class MoveHistory extends JTextPane {
     }
 
     public void addMove(String move){
-        if (move.length() == 2){move += "   ";}
-        if (move.length() == 3){move += "  ";}
-        if (move.length() == 4){move += " ";}
+        if (move.length() == 2){move += "    ";}
+        if (move.length() == 3){move += "   ";}
+        if (move.length() == 4){move += "  ";}
+        if (move.length() == 5){move += " ";} // longest length is 6 so just gotta scale everything to that
 
         if (turn == Piece.Colour.WHITE){
             txt += String.format(" %s",move);
         } else {
             moveCount += 1;
-            txt += String.format("  %s\n%d.",move,moveCount);
+            txt += String.format(" %s\n%d.",move,moveCount);
             
         }
         turn = turn.getInverse();
         setText(txt);
+        JScrollBar vertical = scrollPane.getVerticalScrollBar();
+        vertical.setValue( vertical.getMaximum() );
     }
 
 

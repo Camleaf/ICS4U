@@ -125,6 +125,9 @@ public class BoardDisplay extends BoardPanel {
                     return;
                 }
                 // past here move was accepted
+                if (board.isCheck(board.getTurn().getInverse())){
+                    moveHistTest += "+";
+                }
                 moveHistory.addMove(moveHistTest);
 
                 for (Point point : oldHighlightPos){
@@ -151,7 +154,15 @@ public class BoardDisplay extends BoardPanel {
 
 
         } else { // If the click is out of bounds of the board we want to reset the selectedPoint
-            if (selectedPoint.x >= 0 && selectedPoint.y >= 0) paintPiece(board.getPieceFromBoard(selectedPoint.x, selectedPoint.y),PIECE_PAINT_OVERWRITE);
+            // overwrite piece
+            if (selectedPoint.x >= 0 && selectedPoint.y >= 0) {
+                Piece piece = board.getPieceFromBoard(selectedPoint.x, selectedPoint.y);
+                if (piece.getType() == KING && board.isCheck(piece.getColour())){
+                        paintPiece(piece,PIECE_PAINT_HIGHLIGHT_CHECK);
+                    } else {
+                        paintPiece(piece,PIECE_PAINT_OVERWRITE);
+                    }
+            }
 
             this.selectedPoint.setLocation(-1,-1);
         }
