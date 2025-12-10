@@ -7,6 +7,7 @@ import static main.game.board.Piece.Colour.*;
 import static main.window.panels.BoardPanel.*;
 import java.awt.Point;
 import java.util.HashMap;
+import java.util.Map;
 import lib.logic.Utils;
 import java.util.ArrayList;
 import main.game.board.Attacker;
@@ -22,8 +23,11 @@ public class Board {
     private ArrayList<Piece> blackPieces;
     private StoredPosition prevMove = new StoredPosition();
     private LegalMoves legalMoves = new LegalMoves();
+    private HashMap<Piece.Colour,Boolean> checkStatus = new HashMap<Piece.Colour, Boolean>();
 
     public Board(){
+        checkStatus.put(WHITE,false);
+        checkStatus.put(BLACK,false);
         generateDefaultBoard();
         fillPiecesLists();
         turn = WHITE;
@@ -250,7 +254,23 @@ public class Board {
      * @return True if checkmate, False otherwie
      */
     public boolean isCheckMate(Piece.Colour c){
-        return legalMoves.getMovesLength(c) == 0;
+        return legalMoves.getMovesLength(c) == 0 && isCheck(c)==true;
+    }
+
+    /**
+     * Returns a boolean which corresponds to whether the board is in a state of stalemate
+     * @return True if stalemate, False otherwie
+     */
+    public boolean isStaleMate(Piece.Colour c){
+        return legalMoves.getMovesLength(c) == 0 && isCheck(c)==false;
+    }
+
+    /**
+     * Returns a boolean which corresponds to whether the team given colour c is in check
+     * @return True if check, False otherwie
+     */
+    public boolean isCheck(Piece.Colour c){
+        return checkStatus.get(c);
     }
 
     /**
@@ -280,6 +300,11 @@ public class Board {
         Piece king = getPieceType(KING, colour)[0];
 
         Attacker[] kingAttackers = attackersToPoint(king.getLocation(), colour.getInverse());
+        if (kingAttackers.length > 0){
+            checkStatus.put(colour,true);
+        } else {
+            checkStatus.put(colour,false);
+        }
 
         for (int row = 0;row<8;row++){
             for (int col = 0;col<8;col++){
@@ -525,6 +550,17 @@ public class Board {
                 legalMoves.put(new Point(col,row), filteredValidMoves.toArray(new Point[filteredValidMoves.size()]));
                 
             }
+        }
+        if (attackersToPoint(king.getLocation(), colour.getInverse()).length > 0){
+            checkStatus.put(colour,true);
+        } else {
+            checkStatus.put(colour,false);
+        }
+        Piece otherKing = getPieceType(KING, colour)[0];
+        if (attackersToPoint(otherKing.getLocation(), colour.getInverse()).length > 0){
+            checkStatus.put(colour.getInverse(),true);
+        } else {
+            checkStatus.put(colour.getInverse(),false);
         }
         return legalMoves;
 

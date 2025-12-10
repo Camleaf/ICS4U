@@ -23,6 +23,7 @@ public class Initial extends JLayeredPane{
         addComponents(width,height, gameStart);
     }
 
+
     private void addComponents(int width, int height, Runnable gameStart){
         StylizedButton resetButton = new StylizedButtonFactory() 
                     .setLocation(width/2-60,400)   .setDimensions(120, 40, 10, 15)
@@ -31,6 +32,8 @@ public class Initial extends JLayeredPane{
                     .build();
         resetButton.addActionListener(gameStart);
         add(resetButton,Integer.valueOf(1));
+
+
         repaint();
     }
 }
@@ -40,5 +43,6 @@ class Background extends BaseComponent{
         super(width,height);
         setOpaque(false);
         gct.fill(new Color(0,0,0,200));
+  
     }
 }

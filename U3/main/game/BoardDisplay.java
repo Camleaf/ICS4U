@@ -43,6 +43,14 @@ public class BoardDisplay extends BoardPanel {
         paintBackground();
         drawCurrentBoard(board.getRawBoard());
         this.selectedPoint.setLocation(-1,-1);
+        Point[] HighlightPos = board.getStoredMoves().getSquares().clone();
+
+        checkKingState();
+        for (Point point : HighlightPos){
+            if (point == null){continue;}
+            paintPiece(board.getRawBoard()[point.y][point.x], PIECE_PAINT_HIGHLIGHT);
+        }
+
     }
 
 
@@ -68,9 +76,8 @@ public class BoardDisplay extends BoardPanel {
         }
 
         Rectangle bounds = this.getBounds();
-        if (bounds.contains(clickPos)){
+        if (bounds.contains(clickPos) && clickPos.x-bounds.x-xOffset >= 0 && clickPos.y-bounds.y < bounds.height-xOffset){ // Some checking to make sure that it is indeed in bounds
             clickPos = new Point(clickPos.x-bounds.x - xOffset,clickPos.y-bounds.y);
-
             Point clickedSquare = new Point(
                 (int) Math.round( Math.floor( ( (double)clickPos.x ) / squareSize )), 
                 (int) Math.round( Math.floor( ( (double)clickPos.y ) / squareSize ))
@@ -93,8 +100,16 @@ public class BoardDisplay extends BoardPanel {
                 
                 String moveHistTest = moveHistory.createMove(prevPiece,interactedPiece);
 
+
+
                 if ( prevPiece.getColour().equals( interactedPiece.getColour() )){ // If white attacks white, or black attacks black, change the highlight
-                    paintPiece(prevPiece,PIECE_PAINT_OVERWRITE);
+                    // Handle exiting moving checked king
+                    if (prevPiece.getType() == KING && board.isCheck(prevPiece.getColour())){
+                        paintPiece(prevPiece,PIECE_PAINT_HIGHLIGHT_CHECK);
+                    } else {
+                        paintPiece(prevPiece,PIECE_PAINT_OVERWRITE);
+                    }
+                    // rest of handling
                     this.selectedPoint.setLocation(interactedPiece.getLocation());
                     paintPiece(interactedPiece,PIECE_PAINT_HIGHLIGHT_SELECT);
                     return;
@@ -116,12 +131,12 @@ public class BoardDisplay extends BoardPanel {
                     if (point == null){continue;}
                     paintPiece(board.getRawBoard()[point.y][point.x], PIECE_PAINT_OVERWRITE);
                 }
-        
+                checkKingState();
                 parsePaintData(paintData);
 
                 // Since paintdata isn't null we can check for checkmates and for pawn promotions
 
-                checkCheckMate();// Board.getturn at this point is now the opposite of whatever piece we just moved.
+                // Board.getturn at this point is now the opposite of whatever piece we just moved.
 
                 // if a pawn is on the last or first row it must be promoting
                 if (prevPiece.getType() == PAWN && (prevPiece.y==7 || prevPiece.y==0)){
@@ -136,7 +151,7 @@ public class BoardDisplay extends BoardPanel {
 
 
         } else { // If the click is out of bounds of the board we want to reset the selectedPoint
-            if (selectedPoint.x > 0 && selectedPoint.y != 0) paintPiece(board.getPieceFromBoard(selectedPoint.x, selectedPoint.y),PIECE_PAINT_OVERWRITE);
+            if (selectedPoint.x >= 0 && selectedPoint.y >= 0) paintPiece(board.getPieceFromBoard(selectedPoint.x, selectedPoint.y),PIECE_PAINT_OVERWRITE);
 
             this.selectedPoint.setLocation(-1,-1);
         }
@@ -175,15 +190,30 @@ public class BoardDisplay extends BoardPanel {
         
         board.restoreLegalMoves();
         pawnPromoteDisplay.setVisible(false);
-        checkCheckMate();
+        checkKingState();
     }
 
-
-    private void checkCheckMate(){
+    //**checks for and handles highlighting for checks, stalemates, and checkmates */
+    private void checkKingState(){
          if (board.isCheckMate(board.getTurn())){
             Piece king = board.getPieceType(KING, board.getTurn())[0];
             this.checkMate = true;
             paintPiece(king,PIECE_PAINT_HIGHLIGHT_CHECKMATE);
-        };
+        } else if (board.isStaleMate(board.getTurn())){
+            Piece king = board.getPieceType(KING, board.getTurn())[0];
+            this.checkMate = true;
+        } else if (board.isCheck(board.getTurn())){
+            Piece king = board.getPieceType(KING, board.getTurn())[0];
+            paintPiece(king,PIECE_PAINT_HIGHLIGHT_CHECK); // add stalemate colour
+        } else if (!board.isCheck(board.getTurn())){
+            Piece king = board.getPieceType(KING, board.getTurn())[0];
+            paintPiece(king,PIECE_PAINT_OVERWRITE);
+        } 
+
+        // isolated
+        if (!board.isCheck(board.getTurn().getInverse())){
+            Piece king = board.getPieceType(KING, board.getTurn().getInverse())[0];
+            paintPiece(king,PIECE_PAINT_OVERWRITE);
+        }
     }
 }
