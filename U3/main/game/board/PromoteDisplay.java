@@ -17,10 +17,10 @@ public class PromoteDisplay extends BoardPanel {
     public Point pawnLoc;
     
     public PromoteDisplay(){
-        super(64, width, height, WHITE);
+        super(64, width+32, height, WHITE);
         setMode(WHITE);
         repaint();
-        setBounds(32, 32, width, height); // So that it's not visible when i don't need it
+        setBounds(32, 32, width+32, height); // So that it's not visible when i don't need it
         setVisible(false);
     }
 
@@ -37,8 +37,12 @@ public class PromoteDisplay extends BoardPanel {
         Rectangle bounds = this.getBounds();
 
         if (!bounds.contains(clickPos)) return null; // null in this case means that the click didn't collide
+        if (clickPos.x-bounds.x-xOffset <0) {
+                return null;
+            }
 
-        int x = Math.floorDiv(clickPos.x - bounds.x,64);
+
+        int x = Math.floorDiv(clickPos.x - bounds.x-xOffset,64);
         
         switch (x){
             case 0:
