@@ -9,6 +9,7 @@ import javax.swing.JLabel;
 import javax.imageio.ImageIO;
 
 /**
+ * A general class to manage texture paths. Stores given texture in all needed formats, such as BufferedImage, ImageIcon, and JLabel. Also contains slicing functionality for spritesheet usage
  * @author Camleaf
  */
 public class Texture {

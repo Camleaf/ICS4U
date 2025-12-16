@@ -1,7 +1,9 @@
 package lib.logic;
 
 /**
- * Class to manage iterations of a loop per second, where a given Hz means that the loop runs in intervals of <code>1000ms / Hz</code>
+ * Class to manage iterations of a loop per second, where a given Hz means that the loop runs in ms intervals of <code>1000ms / Hz</code>
+ * <p>
+ * Best used for a top or close-to-top level loop which handles a given gameloop. Do not use multiple on the same thread.
  * @author Camleaf
  */
 public class Clock {

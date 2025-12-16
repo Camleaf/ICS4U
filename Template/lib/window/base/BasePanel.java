@@ -4,6 +4,8 @@ import java.awt.Color;
 
 /**
  * An empty panel with some settings that I like to use as default for all my panels
+ * <p>
+ * Use this instead of JPanels
  */
 public class BasePanel extends JPanel{
 

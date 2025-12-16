@@ -2,7 +2,6 @@ package src;
 import lib.Window;
 import lib.interactions.Keyboard;
 import lib.interactions.Mouse;
-import lib.logic.Interval;
 import java.awt.Color;
 
 /**
