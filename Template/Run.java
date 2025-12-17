@@ -1,21 +1,22 @@
 import javax.swing.SwingUtilities;
-import lib.interactions.Keyboard;
-import lib.interactions.Mouse;
-import lib.logic.Clock;
-import src.Game;
+
+import engine.interactions.Keyboard;
+import engine.interactions.Mouse;
+import engine.logic.Clock;
+import src.Main;
 import java.lang.Thread;
 /**
     @author CamLeaf
 */
-public class Main {
+public class Run {
     public static void main(String[] args) {
         System.setProperty("sun.java2d.uiScale", "1.0"); // https://stackoverflow.com/questions/47613006/how-to-disable-scaling-the-ui-on-windows-for-java-9-applications
 
-        SwingUtilities.invokeLater(new Runnable() { // Man i love the jswing and awt docs they make no sense but it works
+        SwingUtilities.invokeLater(new Runnable() {
             @Override
             public void run() {
                 // initialize globals stuff
-                Game game = new Game();
+                Main game = new Main();
                 game.show();
                 Keyboard keyboard = new Keyboard();
                 game.window.addKeyListener(keyboard);
@@ -35,11 +36,11 @@ class MainLoop implements Runnable{
     Thread thread;
     boolean running;
     Keyboard keyboard;
-    Game game;
+    Main game;
     Mouse mouse;
     Clock clock;
 
-    public MainLoop(Keyboard keyboard, Game game, Mouse mouse) {
+    public MainLoop(Keyboard keyboard, Main game, Mouse mouse) {
         thread = new Thread(this);
         thread.setDaemon(true);
         this.keyboard = keyboard;

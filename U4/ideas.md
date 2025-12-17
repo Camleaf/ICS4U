@@ -9,7 +9,7 @@ Wouldn't be hard to pull off, just would be very graphics-heavy and design-heavy
 File Structure: 
 
 # Graphics implementation
-lib/
+engine/
 ├── interactions
 │   ├── Keyboard.java
 │   └── Mouse.java

@@ -1,22 +1,23 @@
 package src;
-import lib.Window;
-import lib.interactions.Keyboard;
-import lib.interactions.Mouse;
 import java.awt.Color;
+
+import engine.Window;
+import engine.interactions.Keyboard;
+import engine.interactions.Mouse;
 
 /**
     * Main intermediary for taking commands from mainloop and distributing to components
     @author CamLeaf
 */
-public class Game {
+public class Main {
     // No interfacing with swing should be done from this class
     public Window window;
     private Keyboard keyboard;
     private Mouse mouse;
 
-    public Game(){
+    public Main(){
         window = new Window("Template Window", 800,800);
-        window.setBackground(Color.BLACK);
+        window.setBackground(Color.WHITE);
         
         /*
          * Screen will be 800 x 800

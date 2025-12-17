@@ -1,4 +1,4 @@
-package lib.interactions;
+package engine.interactions;
 import java.awt.event.KeyListener;
 import java.awt.event.KeyEvent;
 import java.util.HashMap;

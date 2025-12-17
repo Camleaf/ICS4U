@@ -1,4 +1,4 @@
-package lib.logic;
+package engine.logic;
 
 /**
  * Class to manage iterations of a loop per second, where a given Hz means that the loop runs in ms intervals of <code>1000ms / Hz</code>

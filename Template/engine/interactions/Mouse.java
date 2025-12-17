@@ -1,4 +1,4 @@
-package lib.interactions;
+package engine.interactions;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.ArrayDeque;

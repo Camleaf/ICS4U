@@ -1,4 +1,4 @@
-package lib.logic;
+package engine.logic;
 
 /**
  * Class to manage a non-blocking timer which can act as a delay on inputs

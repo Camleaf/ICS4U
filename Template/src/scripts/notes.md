@@ -1,0 +1,1 @@
+Classes, objects, and functions which are used for the backbone of the game's computation. Filetree depends on structure of game.

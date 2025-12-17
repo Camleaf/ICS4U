@@ -1,4 +1,4 @@
-package lib.logic;
+package engine.logic;
 import java.awt.Point;
 
 public class Utils {

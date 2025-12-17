@@ -1,4 +1,4 @@
-package lib.window.base;
+package engine.window;
 import javax.swing.JPanel;
 import java.awt.Color;
 

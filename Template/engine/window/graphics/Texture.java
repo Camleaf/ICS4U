@@ -1,4 +1,4 @@
-package lib.window;
+package engine.window.graphics;
 import java.io.File;
 import java.io.IOException;
 import java.awt.Image;

@@ -1,0 +1,1 @@
+Implementations of general structures outlined in header. Generally there will be more specific display implementations than headers
