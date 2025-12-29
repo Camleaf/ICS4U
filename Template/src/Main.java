@@ -1,9 +1,9 @@
 package src;
 import java.awt.Color;
 
-import engine.Window;
-import engine.interactions.Keyboard;
-import engine.interactions.Mouse;
+import lib.engine.Window;
+import lib.interactions.Keyboard;
+import lib.interactions.Mouse;
 
 /**
     * Main intermediary for taking commands from mainloop and distributing to components

@@ -1,4 +1,4 @@
-package engine.window.graphics;
+package lib.engine.graphics;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;

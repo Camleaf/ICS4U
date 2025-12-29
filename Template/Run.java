@@ -1,8 +1,8 @@
 import javax.swing.SwingUtilities;
 
-import engine.interactions.Keyboard;
-import engine.interactions.Mouse;
-import engine.logic.Clock;
+import lib.interactions.Keyboard;
+import lib.interactions.Mouse;
+import lib.logic.Clock;
 import src.Main;
 import java.lang.Thread;
 /**

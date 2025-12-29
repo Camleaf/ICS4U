@@ -1,4 +1,4 @@
-package engine.logic;
+package lib.logic;
 
 /**
  * Class to manage a non-blocking interval which can act as a delay on inputs

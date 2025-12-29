@@ -1,6 +1,6 @@
-package engine.window;
+package lib.engine;
 import javax.swing.JComponent;
-import engine.window.graphics.GraphicsContext;
+import lib.engine.graphics.GraphicsContext;
 import java.awt.Color;
 import java.awt.Graphics;
 

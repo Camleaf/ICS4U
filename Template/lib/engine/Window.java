@@ -1,4 +1,4 @@
-package engine;
+package lib.engine;
 import javax.swing.JFrame;
 import javax.swing.JLayeredPane;
 /**
