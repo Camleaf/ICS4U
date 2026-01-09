@@ -30,8 +30,9 @@ public class BoardDisplay extends BoardRenderer {
     public BoardDisplay(){
         // Width is 640 x 640 to start
         super(512,512);
-       
-        drawBackground(testingBoardGraphics, testingPath);    
+         
+        setBackgroundArray(testingBoardGraphics, testingPath);    
+        drawBackground();
     }
 
 
@@ -59,6 +60,7 @@ public class BoardDisplay extends BoardRenderer {
                             normalizedPosition.y
                         );
         // Add individual square highlighting and graphics stuff
+        
         
 
         

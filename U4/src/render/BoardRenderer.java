@@ -16,17 +16,27 @@ public class BoardRenderer extends GraphicsComponent {
     protected Texture texture = new Texture("public/Tile_Spritesheet.png",256,256);
     protected int squareSize = 64;
     protected int spriteSheetSquareSize = 64;
+    protected int[][] textureArray;
+    protected Point[] path;
     
     public BoardRenderer(int width, int height){
         super(width,height);
         gct.fill(Color.black);
     }   
+    
+
+    /**
+     * Sets the backgrund textures which the renderer uses.
+     */
+    protected void setBackgroundArray(int[][] textureArray, Point[] path){
+        this.textureArray = textureArray;
+        this.path = path;
+    } 
 
     /**
      * Draws the background based on a given textureArray made of integers. No real limit to the size of the background, but 8x8 is what this func will most likely be rendering
-     * @param textureArray An int[][] array where each int represents a texture on the spritesheet.
      */
-    public void drawBackground(int[][] textureArray, Point[] path){
+    protected void drawBackground(){
         for (int row  = 0;row<textureArray.length;row++){
             for (int col = 0;col<textureArray[row].length;col++){
                 // will be replaced with a gct.drawImage
@@ -59,9 +69,43 @@ public class BoardRenderer extends GraphicsComponent {
      * <p>
      * 0, 1, 2, 3 will be first row, 4, 5, 6, 7 wil lbe second, etc.
      */
-    public BufferedImage indexTexture(int textureIndex){
+    protected BufferedImage indexTexture(int textureIndex){
         int row = (int) Math.floor(textureIndex/4);
         int col = textureIndex%4;
         return texture.getSubImage(col*spriteSheetSquareSize,row*spriteSheetSquareSize,spriteSheetSquareSize,spriteSheetSquareSize);
     }
+
+
+    /**
+     * Returns true if given point is in the stored path, false otherwise
+     * @param p The point to check if is in path
+     */
+    protected boolean isInPath(Point p){
+        for (Point pathP : path){
+            if (p.x == pathP.x && p.y==pathP.y) return true;
+        }
+        return false;
+    }
+
+
+    /**
+     * Resets the square at the given point to it's starting game state
+     * @param p the square to reset
+     */
+    protected void drawEmpty(Point p){
+        gct.drawBufferedImage(
+            indexTexture(
+                (isInPath(p)) ? 2
+                : textureArray[p.y][p.x]
+            ),
+            p.x,
+            p.y
+        );
+    }
+
+
+
+
+
+
 }
