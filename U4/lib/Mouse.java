@@ -12,12 +12,13 @@ import java.awt.Point;
  */
 public class Mouse extends MouseAdapter {
     private Deque<Point> eventStack = new ArrayDeque<Point>();
-    
+    private int yOffset = -32; 
     
     @Override
     public void mousePressed(MouseEvent event) {
         if (event.getButton() == MouseEvent.BUTTON1){
             Point point = event.getPoint();
+            point.y += yOffset;
             eventStack.offer(point);
         }
     }

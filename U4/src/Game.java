@@ -50,6 +50,9 @@ public class Game {
     public void update(){
         
         Point event = mouse.pollEvent();
+        if (event != null){
+            boardDisplay.handleClick(event);
+        }
         // Run some code idk
         refresh();
     }

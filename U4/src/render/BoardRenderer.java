@@ -26,7 +26,7 @@ public class BoardRenderer extends GraphicsComponent {
      * Draws the background based on a given textureArray made of integers. No real limit to the size of the background, but 8x8 is what this func will most likely be rendering
      * @param textureArray An int[][] array where each int represents a texture on the spritesheet.
      */
-    public void drawBackground(int[][] textureArray){
+    public void drawBackground(int[][] textureArray, Point[] path){
         for (int row  = 0;row<textureArray.length;row++){
             for (int col = 0;col<textureArray[row].length;col++){
                 // will be replaced with a gct.drawImage
@@ -35,8 +35,17 @@ public class BoardRenderer extends GraphicsComponent {
                     col*squareSize,
                     row*squareSize
                 );
+
             }
         }
+
+        for (Point p : path){
+            gct.drawBufferedImage(
+                indexTexture(2),
+                p.x*squareSize,
+                p.y*squareSize
+            );
+        };
     }
 
     public static final int TEXTURE_BACKGROUND_0 = 0; // texture indicators

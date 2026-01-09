@@ -19,7 +19,6 @@ public class Main {
      */
      
     public static void main(String[] args) {
-        System.setProperty("sun.java2d.uiScale", "2");
         SwingUtilities.invokeLater(new Runnable(){
             @Override
             public void run() {
@@ -81,8 +80,6 @@ class MainLoop implements Runnable {
         }
     }
 }
-
-
 
 
 
