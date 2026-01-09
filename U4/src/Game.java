@@ -5,6 +5,7 @@ import lib.Window;
 import lib.Mouse;
 import lib.Keyboard;
 import src.display.BoardDisplay;
+import src.display.ShopDisplay;
 
 /**
  * @author SpencerM
@@ -15,12 +16,19 @@ public class Game {
     private Mouse mouse;
     private Keyboard keyboard;
     private BoardDisplay boardDisplay;
+    private ShopDisplay shopDisplay;
     
     public Game() {
-        window = new Window("Tower Defense", 640, 640);
+        window = new Window("Tower Defense", 832, 512);
         window.setBackground(Color.white);
+        
         boardDisplay = new BoardDisplay();
+        boardDisplay.setLocation(160,0);
         window.add(boardDisplay, Integer.valueOf(0));
+        
+        shopDisplay = new ShopDisplay(160,512);
+        window.add(shopDisplay);
+        
         
         refresh();
     }
