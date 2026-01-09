@@ -5,7 +5,9 @@ import lib.Window;
 import lib.Mouse;
 import lib.Keyboard;
 import src.display.BoardDisplay;
-import src.display.ShopDisplay;
+import src.display.MainMenuDisplay;
+
+// Alex note here: I feel that the shop should be handled in that if a player clicks an empty tile, it brings up a "would you like to buy a tower menu". It would be much easier to implement
 
 /**
  * @author SpencerM
@@ -16,18 +18,18 @@ public class Game {
     private Mouse mouse;
     private Keyboard keyboard;
     private BoardDisplay boardDisplay;
-    private ShopDisplay shopDisplay;
-    
+    private MainMenuDisplay mainMenuDisplay;
+
     public Game() {
-        window = new Window("Tower Defense", 832, 512);
+        window = new Window("Tower Defense", 832, 600);
         window.setBackground(Color.white);
         
         boardDisplay = new BoardDisplay();
         boardDisplay.setLocation(160,0);
         window.add(boardDisplay, Integer.valueOf(0));
         
-        shopDisplay = new ShopDisplay(160,512);
-        window.add(shopDisplay);
+        mainMenuDisplay = new MainMenuDisplay(160,512);
+        window.add(mainMenuDisplay);
         
         
         refresh();
