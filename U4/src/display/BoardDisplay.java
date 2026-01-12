@@ -35,8 +35,8 @@ public class BoardDisplay extends BoardRenderer {
          
         setBackgroundArray(testingBoardGraphics, testingPath);    
         drawBackground();
-        tileArray[0][0].setOccupier(new TowerTest());
-        drawTile(tileArray[0][0],1);
+        tileArray[2][0].setOccupier(new TowerTest());
+        drawTile(tileArray[2][0],0);
         
     }
 

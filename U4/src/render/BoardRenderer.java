@@ -26,6 +26,9 @@ public class BoardRenderer extends GraphicsComponent {
         gct.fill(Color.black); // gct is a Context object inherited from GraphicsComponent
     }   
     
+    public Tile[][] getTileArray(){
+        return this.tileArray;
+    };
 
     /**
      * Sets the backgrund textures which the renderer uses. And turns the data into tiles

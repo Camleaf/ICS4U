@@ -45,14 +45,14 @@ public class Game {
         this.mouse = mouse;
         this.keyboard = keyboard;
     }
-    
+     
     public void update(){
         
         Point event = mouse.pollEvent();
         if (event != null){
             // pass clickEvent and get if the board state was updated or not
             Point stateUpdate = boardDisplay.handleClick(event);
-            variableMenuDisplay.handleUpdate(stateUpdate);
+            variableMenuDisplay.handleUpdate(stateUpdate, boardDisplay.getTileArray());
             // Todo make variable menu Pass data to it to update the status there
             
         }

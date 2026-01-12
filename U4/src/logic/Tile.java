@@ -32,6 +32,10 @@ public class Tile {
         return this.type;
     }
     
+    public boolean hasOccupier(){
+        return this.occupier != null;
+    }
+
     /** Gets the tower placed on this square
      * @return the Tower object placed ont the square
      */
