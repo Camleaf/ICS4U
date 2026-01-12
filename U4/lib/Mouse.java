@@ -12,13 +12,15 @@ import java.awt.Point;
  */
 public class Mouse extends MouseAdapter {
     private Deque<Point> eventStack = new ArrayDeque<Point>();
-    private int yOffset = -32; 
+    private int yOffset = -64; // Change per machine. Not applicable on codehs
+    private int xOffset = -32;
     
     @Override
     public void mousePressed(MouseEvent event) {
         if (event.getButton() == MouseEvent.BUTTON1){
             Point point = event.getPoint();
             point.y += yOffset;
+            point.x += xOffset;
             eventStack.offer(point);
         }
     }

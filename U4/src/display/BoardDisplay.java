@@ -2,13 +2,15 @@ package src.display;
 import src.render.BoardRenderer;
 import java.awt.Point;
 import java.awt.Rectangle;
+import src.logic.Tile;
+import src.logic.towers.*;
 /** The function which handles instructions given from the gameloop and delegates rendering to BoardRenderer and calculations to BoardLogic
  * @author Alexcdw
  */
 public class BoardDisplay extends BoardRenderer {
         
     
-    private Point selectedPoint = new Point(-1,-1);
+    private Point selectedPoint = null;
     private int boardCells = 8;
 
     // A testing map I made to make sure that the graphics work
@@ -33,11 +35,16 @@ public class BoardDisplay extends BoardRenderer {
          
         setBackgroundArray(testingBoardGraphics, testingPath);    
         drawBackground();
+        tileArray[0][0].setOccupier(new TowerTest());
+        drawTile(tileArray[0][0],1);
+        
     }
 
 
-
-    public void handleClick(Point clickPos){
+    /** Handles click on board and delegates a variety of functions, but in general returns the coordinate of the point modified, or null 
+     * @return the coordinate of the point modified, or null 
+     */
+    public Point handleClick(Point clickPos){
         
 
         // We need to normalize position with reference to the board, as the click is global but we want in the board
@@ -49,21 +56,38 @@ public class BoardDisplay extends BoardRenderer {
             (clickPos.y-bounds.y)/squareSize
         );
         
-        if (normalizedPosition.x<0 || normalizedPosition.y <0 || normalizedPosition.x > boardCells || normalizedPosition.y > boardCells){
-            return;
-        }        
+        if (normalizedPosition.x<0 || normalizedPosition.y <0 || normalizedPosition.x >= boardCells || normalizedPosition.y >= boardCells){
+            // remove selected point from the board and set to null since we clicked off
+            if (selectedPoint != null) drawTile(tileArray[selectedPoint.y][selectedPoint.x]);
+            selectedPoint = null;
+            return null;
+        }
         
-        System.out.println(normalizedPosition); 
-
+        if (selectedPoint != null){
+            if (selectedPoint.x == normalizedPosition.x&& selectedPoint.y == normalizedPosition.y){
+                return selectedPoint;
+            };
+        };
+        // If clicked on road we discard the click
+        if (tileArray[normalizedPosition.y][normalizedPosition.x].getType() == Tile.Type.ROAD){
+            if (selectedPoint != null) drawTile(tileArray[selectedPoint.y][selectedPoint.x]);
+            selectedPoint = null;
+            return null;
+        }
+        // Remove old selected point and add new selected point
+        
+        if (selectedPoint != null) drawTile(tileArray[selectedPoint.y][selectedPoint.x]);
         selectedPoint = new Point(
                             normalizedPosition.x,
                             normalizedPosition.y
                         );
-        // Add individual square highlighting and graphics stuff
         
+        drawTile(tileArray[selectedPoint.y][selectedPoint.x],BoardRenderer.DRAW_TILE_HIGHLIGHT);
+                  
+        // Todo add handling for clicks too bring up menu
         
 
-        
+        return selectedPoint;
 
     }
 }

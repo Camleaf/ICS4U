@@ -4,14 +4,19 @@ import java.awt.Color;
 import java.awt.Font;
 import javax.swing.JLabel;
 import javax.swing.SwingConstants;
+import java.awt.Point;
 
-public class MainMenuDisplay extends BasePanel {
+/** Handles (or will handle) the menus that appear from clicking on a tile
+ * @author Alexcedw
+ */
+ 
+public class VariableMenuDisplay extends BasePanel {
     
-    public MainMenuDisplay(int width, int height){
+    public VariableMenuDisplay(int width, int height){
         super(width, height, Color.lightGray);
         
 
-        buildMenu();
+        buildMenu(); // testing func will override
     }
 
     public void buildMenu(){ 
@@ -23,5 +28,12 @@ public class MainMenuDisplay extends BasePanel {
         textLabel.setFont(new Font("arial", Font.TRUETYPE_FONT, 20));
         textLabel.setForeground(Color.BLACK);
         add(textLabel);
+    }
+    
+    
+    
+    public void handleUpdate(Point stateUpdate){
+        // todo handle update
+        
     }
 }

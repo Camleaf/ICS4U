@@ -5,7 +5,7 @@ import lib.Window;
 import lib.Mouse;
 import lib.Keyboard;
 import src.display.BoardDisplay;
-import src.display.MainMenuDisplay;
+import src.display.VariableMenuDisplay;
 
 // Alex note here: I feel that the shop should be handled in that if a player clicks an empty tile, it brings up a "would you like to buy a tower menu". It would be much easier to implement
 
@@ -18,21 +18,20 @@ public class Game {
     private Mouse mouse;
     private Keyboard keyboard;
     private BoardDisplay boardDisplay;
-    private MainMenuDisplay mainMenuDisplay;
+    private VariableMenuDisplay variableMenuDisplay;
 
     public Game() {
         window = new Window("Tower Defense", 832, 600);
         window.setBackground(Color.white);
         
         boardDisplay = new BoardDisplay();
-        boardDisplay.setLocation(160,0);
+        boardDisplay.setLocation(200,0);
         window.add(boardDisplay, Integer.valueOf(0));
         
-        mainMenuDisplay = new MainMenuDisplay(160,512);
-        window.add(mainMenuDisplay);
+        variableMenuDisplay = new VariableMenuDisplay(200,512);
+        window.add(variableMenuDisplay);
         
-        
-        refresh();
+           
     }
     public void show(){
         window.setVisible(true);
@@ -51,7 +50,11 @@ public class Game {
         
         Point event = mouse.pollEvent();
         if (event != null){
-            boardDisplay.handleClick(event);
+            // pass clickEvent and get if the board state was updated or not
+            Point stateUpdate = boardDisplay.handleClick(event);
+            variableMenuDisplay.handleUpdate(stateUpdate);
+            // Todo make variable menu Pass data to it to update the status there
+            
         }
         // Run some code idk
         refresh();
