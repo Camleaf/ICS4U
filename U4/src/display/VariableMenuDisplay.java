@@ -29,6 +29,7 @@ public class VariableMenuDisplay extends BasePanel {
     public void handleClick(Point pos){
         // Find a way to pass the tile data to here
         // pass to the submenus
+        // //this got lost in the codehs purge
     }
     
     public void handleUpdate(Point stateUpdate, Tile[][] tileArray){

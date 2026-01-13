@@ -11,6 +11,7 @@ public abstract class Enemy {
     public Type type;
     public int jumpDelay;
     public int damage; 
+    public int health;
     
     /**
      * finds the next tile the enemy will jump to
@@ -32,6 +33,10 @@ public abstract class Enemy {
      */
     public int getDamage() {
         return this.damage;
+    };
+    
+    public int getHealth() {
+        return this.health;
     };
     
 }

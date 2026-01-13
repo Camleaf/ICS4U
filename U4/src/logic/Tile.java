@@ -1,4 +1,3 @@
-
 package src.logic;
 import src.logic.Tower;
 import java.awt.Point;
@@ -35,7 +34,7 @@ public class Tile {
     public boolean hasOccupier(){
         return this.occupier != null;
     }
-
+    
     /** Gets the tower placed on this square
      * @return the Tower object placed ont the square
      */

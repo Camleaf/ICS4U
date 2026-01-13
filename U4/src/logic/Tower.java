@@ -1,6 +1,7 @@
 package src.logic;
 import src.logic.Enemy;
 import java.util.ArrayList;
+import src.logic.towers.*;
 
 /**Abstract class detailing implementation for the Towers
  * @author SpencerM
@@ -9,8 +10,10 @@ import java.util.ArrayList;
 public abstract class Tower {
     
     public static enum Type {
-        TEST;
+        TEST, SHOOTER, SLAM;
     };
+    
+    public static final Type[] types = new Type[]{Type.SHOOTER,Type.SLAM};
     
     public Type type;
     public int attackDelay; // In milliseconds. Time between each attack
@@ -41,4 +44,17 @@ public abstract class Tower {
         return this.attackDelay;
     };
     
+    
+    public static Tower getTowerFromType(Type type){
+        switch (type) {
+          case Type.SHOOTER:
+              return new TowerShooter();
+          
+          default:
+            return new TowerTest();
+        }
+    }
 }
+
+
+

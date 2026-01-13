@@ -10,7 +10,7 @@ import src.logic.towers.*;
 public class BoardDisplay extends BoardRenderer {
         
     
-    private Point selectedPoint = null;
+    public Point selectedPoint = null;
     private int boardCells = 8;
 
     // A testing map I made to make sure that the graphics work
@@ -56,12 +56,14 @@ public class BoardDisplay extends BoardRenderer {
             (clickPos.y-bounds.y)/squareSize
         );
         
-        if (normalizedPosition.x<0 || normalizedPosition.y <0 || normalizedPosition.x >= boardCells || normalizedPosition.y >= boardCells){
+        
+        if (normalizedPosition.y <0 || normalizedPosition.x >= boardCells || normalizedPosition.y >= boardCells){
             // remove selected point from the board and set to null since we clicked off
             if (selectedPoint != null) drawTile(tileArray[selectedPoint.y][selectedPoint.x]);
             selectedPoint = null;
             return null;
-        }
+        };
+        if (clickPos.x-bounds.x<0)return selectedPoint;
         
         if (selectedPoint != null){
             if (selectedPoint.x == normalizedPosition.x&& selectedPoint.y == normalizedPosition.y){
@@ -90,4 +92,28 @@ public class BoardDisplay extends BoardRenderer {
         return selectedPoint;
 
     }
+
+    public void refreshTile(Tile t){
+        drawTile(t);
+    }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
