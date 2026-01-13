@@ -52,8 +52,9 @@ public class Game {
         if (event != null){
             // pass clickEvent and get if the board state was updated or not
             Point stateUpdate = boardDisplay.handleClick(event);
-            variableMenuDisplay.handleUpdate(stateUpdate, boardDisplay.getTileArray());
+            variableMenuDisplay.handleUpdate(stateUpdate, boardDisplay.getTileArray(), boardDisplay);
             // Todo make variable menu Pass data to it to update the status there
+            variableMenuDisplay.handleClick(event,boardDisplay.getTileArray());
             
         }
         // Run some code idk

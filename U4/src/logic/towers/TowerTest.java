@@ -10,7 +10,7 @@ public class TowerTest extends Tower{
     public int attackDelay = 100; // In milliseconds. Time between each attack
     public int baseCost = 100; //the price of the tower
     public int damage = 1;
-    public int textureIndex = 15;
+    public int textureIndex = 14;
     
     
     public TowerTest(){
