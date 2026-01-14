@@ -1,9 +1,6 @@
 package src.display;
 import lib.graphics.BasePanel;
 import java.awt.Color;
-import java.awt.Font;
-import javax.swing.JLabel;
-import javax.swing.SwingConstants;
 import src.logic.Tile;
 import java.awt.Point;
 import src.display.menu.*;
@@ -15,7 +12,7 @@ import src.display.BoardDisplay;
 public class VariableMenuDisplay extends BasePanel {
     private TowerMenu towerMenu;
     private EmptyMenu emptyMenu;
-    private Point currentStored = null;
+    public Point currentStored = null;
 
     public VariableMenuDisplay(int width, int height){
         super(width, height, Color.lightGray);
@@ -51,8 +48,9 @@ public class VariableMenuDisplay extends BasePanel {
         removeAll(); // we want to clear
         towerMenu.removeAll();
         emptyMenu.removeAll();
+        
         if (tileArray[stateUpdate.y][stateUpdate.x].hasOccupier()){
-            towerMenu.buildContent(stateUpdate,tileArray);
+            towerMenu.buildContent(stateUpdate,tileArray, board, this);
             add(towerMenu); // will still need to add stuff to customize to the square but this is good start
         } else {
             emptyMenu.buildContent(currentStored,tileArray,board,this);

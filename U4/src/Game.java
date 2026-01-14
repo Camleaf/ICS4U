@@ -30,8 +30,6 @@ public class Game {
         
         variableMenuDisplay = new VariableMenuDisplay(200,512);
         window.add(variableMenuDisplay);
-        
-           
     }
     public void show(){
         window.setVisible(true);
@@ -57,6 +55,7 @@ public class Game {
             variableMenuDisplay.handleClick(event,boardDisplay.getTileArray());
             
         }
+        boardDisplay.update();
         // Run some code idk
         refresh();
     }

@@ -117,7 +117,7 @@ public class BoardRenderer extends GraphicsComponent {
         Tower tower = t.getOccupier();
         if (tower != null){
             gct.drawBufferedImage(
-                indexTexture(tower.getTextureIndex()),
+                indexTexture(tower.getTextureIndex()+tower.getUpgradeLevel()),
                 t.getX() * squareSize,
                 t.getY() * squareSize
             );

@@ -12,6 +12,7 @@ import java.awt.Rectangle;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import src.display.BoardDisplay;
+import javax.swing.JTextPane;
 import src.display.VariableMenuDisplay;
 
 
@@ -20,7 +21,7 @@ import src.display.VariableMenuDisplay;
  */
 public class EmptyMenu extends BasePanel {
     private TowerSelector towerSelector;
-
+    private JTextPane infoText;
     public EmptyMenu(int width, int height){
         super(width,height, Color.darkGray); // will be another color just placeholder for
 
@@ -36,6 +37,7 @@ public class EmptyMenu extends BasePanel {
         );
         if (bounds.contains(clickPos)){
             towerSelector.handleClick(normalizedPosition, tileArray);
+            buildTowerData();
         }
         
     };
@@ -60,7 +62,7 @@ public class EmptyMenu extends BasePanel {
         confirmButton.setForeground(Color.white);
         add(confirmButton);
         
-        towerSelector = new TowerSelector(64*2,64*3);
+        towerSelector = new TowerSelector(64*2,64*2);
         towerSelector.setLocation(20,40);
         towerSelector.generateOptionsScreen();
         add(towerSelector);
@@ -68,6 +70,7 @@ public class EmptyMenu extends BasePanel {
         // Add confirm button
         confirmButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
+                // Run action on buy. If successful revert to default menu state and execute rerender
                 if (towerSelector.selectedPoint == null) return;
                 int towerIndex = towerSelector.selectedPoint.y*2 + towerSelector.selectedPoint.x;
                 Tile temp = tileArray[click.y][click.x];
@@ -78,7 +81,39 @@ public class EmptyMenu extends BasePanel {
             }
         });
         
+        infoText = new JTextPane();
+        infoText.setSize(140,180);
+        infoText.setLocation(20,180);
+        infoText.setFont(new Font("Monospaced", Font.TRUETYPE_FONT, 12));
+        infoText.setEditable(false);
+        infoText.setBackground(Color.lightGray);
+        add(infoText, Integer.valueOf(1));
+        infoText.setText(new StringBuilder("Click on a tower to see stats and cost")
+            .toString()
+        );
     };
+    
+
+    private void buildTowerData(){
+        if (towerSelector.selectedPoint == null) { // if null reset
+            infoText.setText(new StringBuilder("Click on a tower to see stats and cost")
+                .toString()
+            );
+            return;
+        }
+        // If not null get the tower and data for it
+        int towerIndex = towerSelector.selectedPoint.y*2 + towerSelector.selectedPoint.x;
+        Tower tower = Tower.getTowerFromType(Tower.types[towerIndex]);
+        infoText.setText(new StringBuilder("")
+            .append(String.format("Name: %s\n",tower.getName()))
+            .append(String.format("Damage: %s\n", tower.getDamage()))
+            .append(String.format("Attacks/s: %.2f\n",1000.0/tower.getAttackDelay()))
+            .append(String.format("Max targets: %d\n",tower.getMaxTargets()))
+            .append(String.format("Range: %d\n", tower.getRange()))
+            .toString()
+        );
+    
+    }
 }
 
 
@@ -111,7 +146,7 @@ class TowerSelector extends BoardRenderer {
         // If clicked on a not implemented spot reset
         if (towerIndex >= Tower.types.length){
             selectedPoint = null;
-            generateOptionsScreen();;
+            generateOptionsScreen();
             return;
         }
         
@@ -123,6 +158,7 @@ class TowerSelector extends BoardRenderer {
     
     
     public void generateOptionsScreen(){
+        
         int position = 0;
         for (Tower.Type type : Tower.types){
             Point tempPoint = new Point(position%2,position/2);

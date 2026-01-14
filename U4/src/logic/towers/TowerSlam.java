@@ -1,24 +1,32 @@
+
 package src.logic.towers;
 import src.logic.Tower;
 import src.logic.Enemy;
 import java.util.ArrayList;
 
 
-public class TowerTest extends Tower{
+/** A lot of implementation still needed
+ * 
+ */
+public class TowerSlam extends Tower{
     
-    public Type type = Type.TEST;
-    public int attackDelay = 110; // In milliseconds. Time between each attack
-    public int baseCost = 1234; //the price of the tower
-    public int damage = 198;
+    public Type type = Type.SLAM;
+    public int attackDelay = 1500; // In milliseconds. Time between each attack
+    public int baseCost = 100; //the price of the tower
+    public int damage = 2;
+    public int range = 1;
+    public int maxTargets = 1000;
+    public int textureIndex = 7;
     public int upgradeLevel = 0;
-    public int textureIndex = 11;
-    public static String name = "Tester";
+    public static String name = "Slam";
     
-    public TowerTest(){
+    
+    public TowerSlam(){
          
     }
+    
     //default public Tower(Type t, int a, int b, int d, int i);
-     /**
+    /**
      *Finds the closest enemy/enemies to target
      * @param ArrayList of all the enemies on the board
      */
@@ -28,11 +36,11 @@ public class TowerTest extends Tower{
      * upgrades the towers stats
      */
     public void upgrade() {
-        
-        if (upgradeLevel > 1)  return;
-        this.damage += 1;
-        this.range += 1;
-        this.upgradeLevel += 1;
+    
+    if (upgradeLevel > 1)  return;
+    this.damage += 1;
+    this.range += 1;
+    this.upgradeLevel += 1;
     };
     
     public String getName(){

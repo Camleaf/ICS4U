@@ -4,6 +4,7 @@ import java.awt.Point;
 import java.awt.Rectangle;
 import src.logic.Tile;
 import src.logic.towers.*;
+import src.logic.BoardLogic;
 /** The function which handles instructions given from the gameloop and delegates rendering to BoardRenderer and calculations to BoardLogic
  * @author Alexcdw
  */
@@ -12,6 +13,7 @@ public class BoardDisplay extends BoardRenderer {
     
     public Point selectedPoint = null;
     private int boardCells = 8;
+    public BoardLogic logic;
 
     // A testing map I made to make sure that the graphics work
     public static int[][] testingBoardGraphics = {
@@ -32,14 +34,18 @@ public class BoardDisplay extends BoardRenderer {
     public BoardDisplay(){
         // Width is 640 x 640 to start
         super(512,512);
-         
+        
         setBackgroundArray(testingBoardGraphics, testingPath);    
         drawBackground();
-        tileArray[2][0].setOccupier(new TowerTest());
-        drawTile(tileArray[2][0],0);
+        
+        logic = new BoardLogic();
         
     }
 
+
+    public void update(){
+        logic.update(testingPath);
+    }
 
     /** Handles click on board and delegates a variety of functions, but in general returns the coordinate of the point modified, or null 
      * @return the coordinate of the point modified, or null 
