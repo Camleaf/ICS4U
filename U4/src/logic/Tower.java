@@ -66,23 +66,33 @@ public abstract class Tower {
         }
         
     }
+    public abstract String getName(); 
     
-    public abstract String getName();
+    public int getBaseCost(){
+        return this.baseCost;
+    };
+    public int getTextureIndex(){
+        return this.textureIndex;
+    };
     
-    public abstract int getBaseCost();
+    public int getDamage() {
+        return this.damage;
+    };
     
-    public abstract int getTextureIndex();
-
+    public int getRange() {
+        return this.range;
+    };
     
-    public abstract int getDamage();
+    public int getMaxTargets() {
+        return this.maxTargets;
+    };
     
-    public abstract int getRange();
-    
-    public abstract int getMaxTargets();
-    
-    public abstract int getAttackDelay();
-    
-    public abstract int getUpgradeLevel();
+    public int getAttackDelay(){
+        return this.attackDelay;
+    };
+    public int getUpgradeLevel(){
+        return this.upgradeLevel;
+    }
     
     
 }

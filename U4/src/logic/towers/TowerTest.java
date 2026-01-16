@@ -6,16 +6,16 @@ import java.util.ArrayList;
 
 public class TowerTest extends Tower{
     
-    public Type type = Type.TEST;
-    public int attackDelay = 110; // In milliseconds. Time between each attack
-    public int baseCost = 1234; //the price of the tower
-    public int damage = 198;
-    public int upgradeLevel = 0;
-    public int textureIndex = 11;
     public static String name = "Tester";
     
     public TowerTest(){
-         
+        super(); 
+        type = Type.TEST;
+        attackDelay = 110; // In milliseconds. Time between each attack
+        baseCost = 1234; //the price of the tower
+        damage = 198;
+        upgradeLevel = 0;
+        textureIndex = 11;   
     }
     //default public Tower(Type t, int a, int b, int d, int i);
      /**
@@ -34,34 +34,10 @@ public class TowerTest extends Tower{
         this.range += 1;
         this.upgradeLevel += 1;
     };
-    
+
+
     public String getName(){
         return this.name;
     }
     
-    public int getBaseCost(){
-        return this.baseCost;
-    };
-    public int getTextureIndex(){
-        return this.textureIndex;
-    };
-    
-    public int getDamage() {
-        return this.damage;
-    };
-    
-    public int getRange() {
-        return this.range;
-    };
-    
-    public int getMaxTargets() {
-        return this.maxTargets;
-    };
-    
-    public int getAttackDelay(){
-        return this.attackDelay;
-    };
-    public int getUpgradeLevel(){
-        return this.upgradeLevel;
-    }
 }
