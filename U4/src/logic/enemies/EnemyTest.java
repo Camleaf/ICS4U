@@ -9,9 +9,10 @@ public class EnemyTest extends Enemy{
     
     public EnemyTest(Point[] path){
         super(path);
-        jumpDelay = 200;
+        jumpDelay = 900;
         damage = 1;
-        health = 1;
-
+        health = 3;
+        jumpInterval.setInterval(jumpDelay);
+        
     } 
 }

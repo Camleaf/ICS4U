@@ -11,7 +11,7 @@ import src.logic.Tower;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import src.display.BoardDisplay;
-import src.display.VariableMenuDisplay;
+import src.display.menu.VariableMenuDisplay;
 
 // Could move these to new file if gets too long but should be fine for now
 /**Submenu that appears when clicking on a tower and contains pertaining options

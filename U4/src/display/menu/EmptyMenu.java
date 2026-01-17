@@ -13,7 +13,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import src.display.BoardDisplay;
 import javax.swing.JTextPane;
-import src.display.VariableMenuDisplay;
+import src.display.menu.VariableMenuDisplay;
 
 
 /**Submenu that appears when clicking on an empty tile and contains pertaining options

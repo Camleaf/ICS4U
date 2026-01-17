@@ -5,6 +5,7 @@ import java.awt.Rectangle;
 import src.logic.Tile;
 import src.logic.towers.*;
 import src.logic.BoardLogic;
+import lib.graphics.BasePanel;
 /** The function which handles instructions given from the gameloop and delegates rendering to BoardRenderer and calculations to BoardLogic
  * @author Alexcdw
  */
@@ -38,13 +39,13 @@ public class BoardDisplay extends BoardRenderer {
         setBackgroundArray(testingBoardGraphics, testingPath);    
         drawBackground();
         
-        logic = new BoardLogic();
+        logic = new BoardLogic(testingPath);
         
     }
 
 
-    public void update(){
-        logic.update(testingPath);
+    public void update(BasePanel enemyPage){
+        logic.update(testingPath, enemyPage);
     }
 
     /** Handles click on board and delegates a variety of functions, but in general returns the coordinate of the point modified, or null 

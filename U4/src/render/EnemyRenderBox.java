@@ -44,7 +44,7 @@ public class EnemyRenderBox extends JComponent {
     }
 
     public void setLocationToRef(Enemy reference){
-        setLocation(reference.x*squareSize-32,reference.y*squareSize-32);
+        setLocation(reference.x*squareSize,reference.y*squareSize);
     }
 
 

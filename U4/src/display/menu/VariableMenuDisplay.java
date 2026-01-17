@@ -1,4 +1,4 @@
-package src.display;
+package src.display.menu;
 import lib.graphics.BasePanel;
 import java.awt.Color;
 import src.logic.Tile;
