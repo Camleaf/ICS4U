@@ -37,7 +37,7 @@ public class TowerShooter extends Tower{
         ArrayList<Integer> enemiesAttacked = new ArrayList<Integer>();
 
         for (int i = 0;i<enemies.length;i++){
-            Enemy enemy = enemies[enemies.length-1-i]; // iterate from back to front of enemies to get furthest along. Not perfect but should work well enough
+            Enemy enemy = enemies[i]; // iterate from back to front of enemies to get furthest along. Not perfect but should work well enough
             if (!enemy.active) continue;
             
             if (Math.abs(enemy.x - curPosition.x) <= range && Math.abs(enemy.y-curPosition.y)<=range){ // if in range

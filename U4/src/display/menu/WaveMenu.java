@@ -17,6 +17,7 @@ import src.display.BoardDisplay;
  */
 public class WaveMenu extends BasePanel {
     private BoardDisplay board;    
+    private JLabel hpText;
 
     public WaveMenu(int width, int height, BoardDisplay board){
         super(width,height, Color.DARK_GRAY);
@@ -30,6 +31,12 @@ public class WaveMenu extends BasePanel {
      */
     public void buildContent(){
         endWave();
+        
+        hpText = new JLabel("HP: 20");
+        hpText.setBounds(10, 10, 60, 30);
+        hpText.setFont(new Font("arial", Font.TRUETYPE_FONT, 18));
+        hpText.setForeground(Color.white);
+        add(hpText);
     };
    
 
@@ -54,7 +61,10 @@ public class WaveMenu extends BasePanel {
         add(startWave);
 
     }
-    
+   
+    public void updateHP(int newHP){
+        hpText.setText("HP: "+newHP);
+    }
 }
 
 

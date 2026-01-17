@@ -8,15 +8,14 @@ public abstract class Enemy {
     // Enemies will hop single file.
     
     public static enum Type {
-        TEST;
+        DEFAULT;
     }
 
-    public static Type[] types = new Type[]{Type.TEST};
+    public static Type[] types = new Type[]{Type.DEFAULT};
     
     public Type type;
     public int jumpDelay = 2000;
     public boolean active = false;
-    public int damage; 
     public int health;
     public int pathIndex = 0;
     public int x;
@@ -28,11 +27,11 @@ public abstract class Enemy {
         y = path[0].y;
     }
     
-    public static Enemy getEnemyFromType(Type type, Point[] path) {
+    public static Enemy getEnemyFromType(Type type, Point[] path, int startHealth) {
         
         switch (type) {
             default:
-                return new EnemyTest(path);
+                return new EnemyDefault(path, startHealth);
         }
         
     }
@@ -51,20 +50,15 @@ public abstract class Enemy {
         return false;
     };
 
+
+    public abstract int getDamage();
+
     // we could just set their damage to their current health 
-    
-    public boolean takeDamage(int d) {
-        this.health -= d;
-        return this.health <= 0;
-    };
 
     public int getJumpDelay() {
         return this.jumpDelay;
     };
     
-    public int getDamage() {
-        return this.damage;
-    };
     
     public int getHealth() {
         return this.health;

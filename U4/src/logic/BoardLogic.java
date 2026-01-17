@@ -23,20 +23,14 @@ public class BoardLogic {
     private int launchDelay = 1000; // in ms
     private Interval launchInterval = new Interval(launchDelay);
     private boolean waveRunning = false;
-    public int health;
+    public int playerHealth;
     private int attackCheckDelay = 250; // in ms. THis is so that we aren't doing the expensive attack calculations every frame
     private Interval attackCheckInterval = new Interval(attackCheckDelay);
-
-    private Enemy.Type[][] wavePresets = new Enemy.Type[][]{ // To add a bit of progression to the start of the game. To implement later
-        {TEST, TEST}, 
-        {TEST, TEST, TEST},
-        {TEST, TEST, TEST},
-    };
 
 
     public BoardLogic(Point[] path){
         waveCount = 0;
-        health = 100;
+        playerHealth = 20;
     }
 
     public void startWave(Point[] path){
@@ -54,7 +48,7 @@ public class BoardLogic {
 
 
         // Check for moving enemies before adding a new one to remove # of checks
-        moveEnemies(board, path);
+        moveEnemies(board, path, menu);
 
         // launch enemies into board
         if (launchInterval.intervalPassed()){
@@ -66,6 +60,7 @@ public class BoardLogic {
             waveRunning = false;
             cleanUpRemnants(board);
             menu.endWave();
+            return;
         }
         
         // attack enemies
@@ -84,7 +79,7 @@ public class BoardLogic {
         waveRender = new EnemyRenderBox[enemyCount];
         
         for (int i = 0;i<enemyCount;i++){
-            wave[i] = Enemy.getEnemyFromType(Enemy.types[(int)Math.floor(Math.random()*Enemy.types.length)], path);  
+            wave[i] = Enemy.getEnemyFromType(Enemy.types[(int)Math.floor(Math.random()*Enemy.types.length)], path, (int)Math.ceil(Math.random()*4));  
             waveRender[i] = new EnemyRenderBox(wave[i]);
         }
     }
@@ -103,7 +98,7 @@ public class BoardLogic {
 
     /** Handles moving enemies.
      */
-    private void moveEnemies(BasePanel board, Point[] path){
+    private void moveEnemies(BasePanel board, Point[] path, WaveMenu waveMenu){
         
 
         for (int i = 0;i<enemiesLaunched;i++){ // we only want to move enemies which are currently on the board
@@ -114,14 +109,16 @@ public class BoardLogic {
             
             if (atEnd){ // there is also the case that it dies but we can handle that when we add tower shooting
                // add player health modificaiton here
+                playerHealth -= wave[i].health;
+                
                 wave[i].active = false;
+                waveMenu.updateHP(playerHealth);
                 enemiesEnded++;
                 board.remove(waveRender[i]);
                 continue;
             }
 
-            waveRender[i].setLocationToRef(wave[i]);
-            
+            waveRender[i].setLocationToRef(wave[i]); 
         }
     }
 
@@ -143,7 +140,7 @@ public class BoardLogic {
                     waveRender[enemyIndex].updateGraphicsToRef(enemy);
 
                     if (enemy.health<=0){
-                        enemiesEnded+=1;
+                        enemiesEnded++;
                         enemy.active = false;
                         board.remove(waveRender[enemyIndex]);
                     }
