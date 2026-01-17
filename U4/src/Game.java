@@ -29,7 +29,8 @@ public class Game {
         window.add(boardDisplay, Integer.valueOf(0));
         
         variableMenuDisplay = new VariableMenuDisplay(200,512);
-        window.add(variableMenuDisplay);
+        window.add(variableMenuDisplay, Integer.valueOf(1));
+
     }
     public void show(){
         window.setVisible(true);

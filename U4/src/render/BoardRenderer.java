@@ -17,8 +17,8 @@ import src.logic.Tower;
 public class BoardRenderer extends GraphicsComponent {
     
     protected Texture texture = new Texture("public/Tile_Spritesheet.png",256,256);
-    protected int squareSize = 64;
-    protected int spriteSheetSquareSize = 64;
+    public static int squareSize = 64;
+    public static int spriteSheetSquareSize = 64;
     protected Tile[][] tileArray;
     
     public BoardRenderer(int width, int height){
