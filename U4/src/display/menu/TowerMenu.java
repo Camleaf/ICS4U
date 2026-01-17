@@ -70,7 +70,7 @@ public class TowerMenu extends BasePanel {
         );
         
         JButton upgrade = new JButton("Upgrade");
-        upgrade.setBounds(10, 360, 160, 30);
+        upgrade.setBounds(10, 330, 160, 30);
         upgrade.setFont(new Font("arial", Font.TRUETYPE_FONT, 18));
         upgrade.setBackground(Color.gray);
         upgrade.setForeground(Color.white);
@@ -86,7 +86,7 @@ public class TowerMenu extends BasePanel {
             
         });
         JButton destroy = new JButton("Destroy");
-        destroy.setBounds(10, 400, 160, 30);
+        destroy.setBounds(10, 370, 160, 30);
         destroy.setFont(new Font("arial", Font.TRUETYPE_FONT, 18));
         destroy.setBackground(Color.gray);
         destroy.setForeground(Color.red);

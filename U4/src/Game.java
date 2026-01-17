@@ -40,7 +40,7 @@ public class Game {
         enemyPage.setOpaque(false);
         window.add(enemyPage,Integer.valueOf(1));
 
-        waveMenu = new WaveMenu(180,50);
+        waveMenu = new WaveMenu(180,80, boardDisplay);
         window.add(waveMenu, Integer.valueOf(2));
 
     }
@@ -68,7 +68,7 @@ public class Game {
             variableMenuDisplay.handleClick(event,boardDisplay.getTileArray());
             
         }
-        boardDisplay.update(enemyPage);
+        boardDisplay.update(enemyPage, waveMenu);
         // Run some code idk
         refresh();
     }

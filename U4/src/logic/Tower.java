@@ -2,6 +2,8 @@ package src.logic;
 import src.logic.Enemy;
 import java.util.ArrayList;
 import src.logic.towers.*;
+import java.awt.Point;
+import lib.Interval;
 
 /**Abstract class detailing implementation for the Towers
  * @author SpencerM
@@ -16,7 +18,7 @@ public abstract class Tower {
     public static final Type[] types = new Type[]{Type.SHOOTER,Type.SLAM};
     
     public Type type;
-    public int attackDelay; // In milliseconds. Time between each attack
+    public int attackDelay = 1000; // In milliseconds. Time between each attack
     public int baseCost; //the price of the tower
     public int damage;
     public int textureIndex;
@@ -24,14 +26,11 @@ public abstract class Tower {
     public int range;
     public static String name;
     public int upgradeLevel;
+    public Interval attackInterval = new Interval(attackDelay);
      
     //default public Tower(Type t, int a, int b, int d, int i);
     public abstract void upgrade();
-    public abstract ArrayList<Enemy> getTargeted(ArrayList<Enemy> enemies);
-    /**
-     *Finds the closest enemy/enemies to target
-     * @param ArrayList of all the enemies on the board
-     */
+    public abstract ArrayList<Integer> doAttack(Enemy[] enemies, Point curPosition);
     
     /**
      * returns the tower from this tower's type

@@ -15,7 +15,7 @@ public abstract class Enemy {
     
     public Type type;
     public int jumpDelay = 2000;
-    public boolean active = true;
+    public boolean active = false;
     public int damage; 
     public int health;
     public int pathIndex = 0;

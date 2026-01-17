@@ -31,10 +31,17 @@ public class Interval {
         return System.currentTimeMillis();
     }
 
-
+    /** Checks if the interval has passed and if true resets it.
+     */
     public boolean intervalPassed(){
-        boolean passed = (getTime() - savedTime > delayMs);
+        boolean passed = peekIntervalPassed();
         if (passed) resetTime();
         return passed;
+    }
+
+    /** Checks if the interval has passed without resetting
+     */
+    public boolean peekIntervalPassed(){
+        return (getTime()-savedTime>delayMs);
     }
 }

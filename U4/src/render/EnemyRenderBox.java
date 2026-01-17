@@ -40,7 +40,8 @@ public class EnemyRenderBox extends JComponent {
 
 
     public void updateGraphicsToRef(Enemy reference){
-        image = indexTexture(reference.health); 
+        if (reference.health<=0){return;} // don't bother handling below 0 cases because object is abt to get deleted anyway
+        image = indexTexture(reference.health-1); 
     }
 
     public void setLocationToRef(Enemy reference){

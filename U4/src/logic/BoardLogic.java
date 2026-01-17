@@ -4,9 +4,11 @@ import src.logic.Enemy;
 import static src.logic.Enemy.Type.*;
 import src.render.EnemyRenderBox;
 import java.util.Map;
-import src.display.BoardDisplay;
 import lib.Interval;
 import lib.graphics.BasePanel;
+import src.display.menu.WaveMenu;
+import src.logic.Tile;
+import java.util.ArrayList;
 
 /**
  * Handles gameloop for towers shooting and enemies moving.
@@ -21,6 +23,9 @@ public class BoardLogic {
     private int launchDelay = 1000; // in ms
     private Interval launchInterval = new Interval(launchDelay);
     private boolean waveRunning = false;
+    public int health;
+    private int attackCheckDelay = 250; // in ms. THis is so that we aren't doing the expensive attack calculations every frame
+    private Interval attackCheckInterval = new Interval(attackCheckDelay);
 
     private Enemy.Type[][] wavePresets = new Enemy.Type[][]{ // To add a bit of progression to the start of the game. To implement later
         {TEST, TEST}, 
@@ -31,10 +36,11 @@ public class BoardLogic {
 
     public BoardLogic(Point[] path){
         waveCount = 0;
-        startWave(path);
+        health = 100;
     }
 
     public void startWave(Point[] path){
+        if (waveRunning) {System.out.println("Attempted to start a wave during a wave.");return;}
         waveCount++;
         generateWave(path);
         waveRunning = true;
@@ -43,17 +49,30 @@ public class BoardLogic {
  
     /** MainLoop function of boardlogic. Handles execution timing
      */
-    public void update(Point[] path, BasePanel board){
+    public void update(Point[] path, BasePanel board, WaveMenu menu, Tile[][] tileArray){
         if (!waveRunning) return; // we don't really want this to be active if there is not wave running for performance reasons
-
 
 
         // Check for moving enemies before adding a new one to remove # of checks
         moveEnemies(board, path);
 
+        // launch enemies into board
         if (launchInterval.intervalPassed()){
             launchEnemy(board);
         }
+
+        // check for end condition
+        if (enemiesEnded >= wave.length){
+            waveRunning = false;
+            cleanUpRemnants(board);
+            menu.endWave();
+        }
+        
+        // attack enemies
+        if (attackCheckInterval.intervalPassed()){
+            launchAttacks(board, tileArray);
+        }
+        
     }
 
 
@@ -77,6 +96,7 @@ public class BoardLogic {
         // Add enemy display to board and reset its move timer
         board.add(waveRender[enemiesLaunched]);
         wave[enemiesLaunched].jumpInterval.resetTime();
+        wave[enemiesLaunched].active = true;
         enemiesLaunched++;
     }
 
@@ -95,6 +115,7 @@ public class BoardLogic {
             if (atEnd){ // there is also the case that it dies but we can handle that when we add tower shooting
                // add player health modificaiton here
                 wave[i].active = false;
+                enemiesEnded++;
                 board.remove(waveRender[i]);
                 continue;
             }
@@ -102,5 +123,51 @@ public class BoardLogic {
             waveRender[i].setLocationToRef(wave[i]);
             
         }
+    }
+
+
+    private void launchAttacks(BasePanel board, Tile[][] tileArray){
+        for (Tile[] row : tileArray){
+            for (Tile tile : row){
+                Tower tower = tile.getOccupier();
+                if (tower == null) continue;
+           
+                if (!tower.attackInterval.peekIntervalPassed()) continue;
+            
+
+                ArrayList<Integer> indexesToAttack = tower.doAttack(wave, tile.getPosition());
+                
+                for (int enemyIndex : indexesToAttack){
+                    Enemy enemy = wave[enemyIndex];
+                    enemy.health -= tower.damage;
+                    waveRender[enemyIndex].updateGraphicsToRef(enemy);
+
+                    if (enemy.health<=0){
+                        enemiesEnded+=1;
+                        enemy.active = false;
+                        board.remove(waveRender[enemyIndex]);
+                    }
+                }
+                tower.attackInterval.resetTime();
+            }
+        } 
+    }
+
+
+
+    /** A function to reset variables pertaining to a given wave and clean up graphics objects
+     */
+    private void cleanUpRemnants(BasePanel board){
+        for (EnemyRenderBox renderBox : waveRender){
+            board.remove(renderBox);
+        }
+
+        // Free up all the objects
+        wave = new Enemy[0];
+        waveRender = new EnemyRenderBox[0];
+
+        // reset vars
+        enemiesLaunched = 0;
+        enemiesEnded = 0;
     }
 }

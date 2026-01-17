@@ -6,6 +6,7 @@ import src.logic.Tile;
 import src.logic.towers.*;
 import src.logic.BoardLogic;
 import lib.graphics.BasePanel;
+import src.display.menu.WaveMenu;
 /** The function which handles instructions given from the gameloop and delegates rendering to BoardRenderer and calculations to BoardLogic
  * @author Alexcdw
  */
@@ -44,8 +45,12 @@ public class BoardDisplay extends BoardRenderer {
     }
 
 
-    public void update(BasePanel enemyPage){
-        logic.update(testingPath, enemyPage);
+    public Point[] getPath(){
+        return testingPath;
+    }
+
+    public void update(BasePanel enemyPage, WaveMenu waveMenu){
+        logic.update(testingPath, enemyPage, waveMenu, tileArray);
     }
 
     /** Handles click on board and delegates a variety of functions, but in general returns the coordinate of the point modified, or null 

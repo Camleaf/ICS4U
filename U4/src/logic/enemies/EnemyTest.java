@@ -11,7 +11,7 @@ public class EnemyTest extends Enemy{
         super(path);
         jumpDelay = 900;
         damage = 1;
-        health = 3;
+        health = 1;
         jumpInterval.setInterval(jumpDelay);
         
     } 

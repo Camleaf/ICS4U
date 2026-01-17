@@ -8,25 +8,52 @@ import java.awt.Color;
 import java.awt.Font;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
+import java.awt.Insets;
+import src.display.BoardDisplay;
 
-/**Menu that shows health and wave start
+
+/**Menu that shows live health and wave start
  * @author Alexcedw
  */
 public class WaveMenu extends BasePanel {
-    
+    private BoardDisplay board;    
 
-    public WaveMenu(int width, int height){
+    public WaveMenu(int width, int height, BoardDisplay board){
         super(width,height, Color.DARK_GRAY);
         setLocation(10,0);
+        this.board = board;
+        buildContent();
     }
 
     /** 
      * Builds the text and buttons for the menu
      */
-     public void buildContent(){
-      // todo add start wave button and functionality and add health  
+    public void buildContent(){
+        endWave();
     };
-    
+   
+
+    public void endWave(){
+        JButton startWave = new JButton("<html>Start Wave</html>");
+        startWave.setBounds(90, 10, 80, 60);
+        startWave.setFont(new Font("arial", Font.TRUETYPE_FONT, 14));
+        startWave.setBackground(Color.gray);
+        startWave.setForeground(Color.white);
+        startWave.setMargin(new Insets(5,5,5,5));
+        
+        
+        startWave.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                board.logic.startWave(board.getPath()); 
+                remove(startWave);
+            };  
+        });
+
+
+
+        add(startWave);
+
+    }
     
 }
 

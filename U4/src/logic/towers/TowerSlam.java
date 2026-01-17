@@ -1,9 +1,9 @@
-
 package src.logic.towers;
 import src.logic.Tower;
 import src.logic.Enemy;
+import src.render.EnemyRenderBox;
 import java.util.ArrayList;
-
+import java.awt.Point;
 
 /** A lot of implementation still needed
  * 
@@ -18,19 +18,34 @@ public class TowerSlam extends Tower{
         type = Type.SLAM;
         attackDelay = 1500; // In milliseconds. Time between each attack
         baseCost = 100; //the price of the tower
-        damage = 2;
+        damage = 1;
         range = 1;
         maxTargets = 1000;
         textureIndex = 7;
         upgradeLevel = 0;
+        attackInterval.setInterval(attackDelay);
     }
     
     //default public Tower(Type t, int a, int b, int d, int i);
-    /**
-     *Finds the closest enemy/enemies to target
+    /** 
+     *uses the SLAM attack alg. Also handles enemy deletion in-place because 
      * @param ArrayList of all the enemies on the board
      */
-    public  ArrayList<Enemy> getTargeted(ArrayList<Enemy> enemies){return null;};
+    public ArrayList<Integer> doAttack(Enemy[] enemies, Point curPosition){
+        ArrayList<Integer> enemiesAttacked = new ArrayList<Integer>();
+
+        for (int i = 0;i<enemies.length;i++){
+            Enemy enemy = enemies[i];
+            if (!enemy.active) continue;
+            
+            if (Math.abs(enemy.x - curPosition.x) <= range && Math.abs(enemy.y-curPosition.y)<=range){ // if in range
+                enemiesAttacked.add(i);
+            }
+        }
+
+        return enemiesAttacked;
+    }
+
     
     /**
      * upgrades the towers stats

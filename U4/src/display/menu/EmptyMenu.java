@@ -35,6 +35,7 @@ public class EmptyMenu extends BasePanel {
             (clickPos.x-bounds.x),
             (clickPos.y-bounds.y)
         );
+        
         if (bounds.contains(clickPos)){
             towerSelector.handleClick(normalizedPosition, tileArray);
             buildTowerData();
@@ -46,6 +47,7 @@ public class EmptyMenu extends BasePanel {
     /** To implement
      */
     public void buildContent(Point click, Tile[][] tileArray, BoardDisplay board, VariableMenuDisplay menu){
+ 
         JLabel textLabel = new JLabel();
         textLabel.setText("Buy Menu");
         textLabel.setBounds(0,0,160,30);
@@ -56,7 +58,7 @@ public class EmptyMenu extends BasePanel {
         
         JButton confirmButton = new JButton();
         confirmButton.setText("Buy");
-        confirmButton.setBounds(20,400,120,40);
+        confirmButton.setBounds(20,370,120,40);
         confirmButton.setFont(new Font("arial", Font.TRUETYPE_FONT, 20));
         confirmButton.setBackground(Color.black);
         confirmButton.setForeground(Color.white);
@@ -82,7 +84,7 @@ public class EmptyMenu extends BasePanel {
         });
         
         infoText = new JTextPane();
-        infoText.setSize(140,180);
+        infoText.setSize(140,150);
         infoText.setLocation(20,180);
         infoText.setFont(new Font("Monospaced", Font.TRUETYPE_FONT, 12));
         infoText.setEditable(false);
