@@ -17,7 +17,7 @@ public class TowerShooter extends Tower{
     public TowerShooter(){
         super();              
         type = Type.SHOOTER;
-        attackDelay = 350; // In milliseconds. Time between each attack
+        attackDelay = 900; // In milliseconds. Time between each attack
         baseCost = 100; //the price of the tower
         damage = 1;
         range = 2;
@@ -57,12 +57,12 @@ public class TowerShooter extends Tower{
     
         if (upgradeLevel > 1)  return;
         this.damage += 1;
-        this.range += 1;
+        if (upgradeLevel == 0) this.range += 1;
         this.upgradeLevel += 1;
     };
 
 
     public String getName(){
-        return this.name;
+        return name;
     }
 }

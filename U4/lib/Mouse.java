@@ -12,8 +12,8 @@ import java.awt.Point;
  */
 public class Mouse extends MouseAdapter {
     private Deque<Point> eventStack = new ArrayDeque<Point>();
-    private int yOffset = -32; // Change per machine. Not applicable on codehs
-    private int xOffset = 0;
+    private int yOffset = -64;  // 0 on codehs, -64 on wsl, -32 on linux
+    private int xOffset = -32;  // 0 on codehs and linux, -32 on wsl
     
     @Override
     public void mousePressed(MouseEvent event) {

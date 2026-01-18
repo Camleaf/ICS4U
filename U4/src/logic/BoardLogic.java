@@ -77,7 +77,10 @@ public class BoardLogic {
     }
 
 
-    // Generates enemies and their renderboxes. Not displayed on screen yet
+    /**
+     * Generates waves of enemies
+     * @param Point[] path: the points on the board that make up the path
+     */
     private void generateWave(Point[] path){
         enemiesLaunched = 0;
         int enemyCount = waveCount * 2;
@@ -90,7 +93,10 @@ public class BoardLogic {
         }
     }
 
-
+    /**
+     * loads the enemies and sets up the wave
+     * @param BasePanel board: the board the enemies are loaded onto
+     */
     private void launchEnemy(BasePanel board){
         if (enemiesLaunched == wave.length) return; // If out of enemies to run then just stop
         
@@ -103,6 +109,9 @@ public class BoardLogic {
 
 
     /** Handles moving enemies.
+     * @param BasePanel board: the board the enemies are loaded onto
+     * @param Point[] path: the points on the board that make up the path
+     * @param WaveMenu waveMenu: the menu that controls the wave start
      */
     private void moveEnemies(BasePanel board, Point[] path, WaveMenu waveMenu){
         
@@ -128,7 +137,12 @@ public class BoardLogic {
         }
     }
 
-
+    /**
+     * Controls the tower attacking enemies
+     * @param BasePanel Board: the board the game is held on
+     * @param Tile[][] tileArray: an array of all the tiles in the game
+     * @param WaveMenu waveMenu: the menu that controls waves
+     */
     private void launchAttacks(BasePanel board, Tile[][] tileArray, WaveMenu waveMenu){
         for (Tile[] row : tileArray){
             for (Tile tile : row){
@@ -161,6 +175,7 @@ public class BoardLogic {
 
 
     /** A function to reset variables pertaining to a given wave and clean up graphics objects
+     * @param BasePanel board: the board the game is held on
      */
     private void cleanUpRemnants(BasePanel board){
         for (EnemyRenderBox renderBox : waveRender){

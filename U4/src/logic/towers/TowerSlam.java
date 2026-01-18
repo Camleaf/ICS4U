@@ -16,7 +16,7 @@ public class TowerSlam extends Tower{
     public TowerSlam(){
         super();             
         type = Type.SLAM;
-        attackDelay = 1500; // In milliseconds. Time between each attack
+        attackDelay = 1700; // In milliseconds. Time between each attack
         baseCost = 100; //the price of the tower
         damage = 1;
         range = 1;
@@ -53,8 +53,9 @@ public class TowerSlam extends Tower{
     public void upgrade() {
     
     if (upgradeLevel > 1)  return;
+    if (upgradeLevel == 1) this.range += 1;
     this.damage += 1;
-    this.range += 1;
+    //this.range += 1;
     this.upgradeLevel += 1;
     };
     
