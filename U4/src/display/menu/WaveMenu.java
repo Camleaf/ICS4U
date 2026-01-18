@@ -18,6 +18,7 @@ import src.display.BoardDisplay;
 public class WaveMenu extends BasePanel {
     private BoardDisplay board;    
     private JLabel hpText;
+    private JLabel coinsText;
 
     public WaveMenu(int width, int height, BoardDisplay board){
         super(width,height, Color.DARK_GRAY);
@@ -37,6 +38,12 @@ public class WaveMenu extends BasePanel {
         hpText.setFont(new Font("arial", Font.TRUETYPE_FONT, 18));
         hpText.setForeground(Color.white);
         add(hpText);
+        
+        coinsText = new JLabel("Coins: 100");
+        coinsText.setBounds(10, 40, 80, 30);
+        coinsText.setFont(new Font("arial", Font.TRUETYPE_FONT, 12));
+        coinsText.setForeground(Color.white);
+        add(coinsText);
     };
    
 
@@ -64,6 +71,11 @@ public class WaveMenu extends BasePanel {
    
     public void updateHP(int newHP){
         hpText.setText("HP: "+newHP);
+    }
+
+
+    public void updateCoins(int newCoins){
+        coinsText.setText("Coins: "+newCoins);
     }
 }
 

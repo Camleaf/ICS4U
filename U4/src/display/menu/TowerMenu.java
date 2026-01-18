@@ -12,6 +12,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import src.display.BoardDisplay;
 import src.display.menu.VariableMenuDisplay;
+import src.display.menu.WaveMenu;
 
 // Could move these to new file if gets too long but should be fine for now
 /**Submenu that appears when clicking on a tower and contains pertaining options
@@ -26,12 +27,6 @@ public class TowerMenu extends BasePanel {
 
     }
 
-    /**To Implement
-     */
-    public void handleClick(Point pos, Tile[][] tileArray){
-        
-    };
-
     
     /** 
      * Builds the text and buttons for the tower menu
@@ -39,7 +34,7 @@ public class TowerMenu extends BasePanel {
      * @param Point click: the coordinates of the tile clicked
      * @param Tile[][] tileArray: the list of all tiles
      */
-    public void buildContent(Point click, Tile[][] tileArray, BoardDisplay board, VariableMenuDisplay menu){
+    public void buildContent(Point click, Tile[][] tileArray, BoardDisplay board, VariableMenuDisplay menu, WaveMenu waveMenu){
         
         Tile towerTile = tileArray[click.y][click.x];
         Tower tower = towerTile.getOccupier();
@@ -77,11 +72,16 @@ public class TowerMenu extends BasePanel {
         
         upgrade.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
+                if (tower.getUpgradeCost() == null) return;
+                if (tower.getUpgradeCost() > board.logic.coins) return;
+                board.logic.coins -= tower.getUpgradeCost();
+
                 tower.upgrade();
                 board.selectedPoint = null;
                 board.refreshTile(tileArray[click.y][click.x]);
                 removeAll();
-                buildContent(click, tileArray, board, menu);
+                buildContent(click, tileArray, board, menu, waveMenu);
+                waveMenu.updateCoins(board.logic.coins);
             }
             
         });
@@ -101,9 +101,16 @@ public class TowerMenu extends BasePanel {
             }
         });
         
+        JLabel costLabel = new JLabel("Cost: "+tower.getUpgradeCost()); // have no text to start
+        costLabel.setBounds(20,290,160,30);
+        costLabel.setFont(new Font("arial", Font.TRUETYPE_FONT, 20));
+        costLabel.setForeground(Color.white);
+        add(costLabel);
+
         add(name);
         add(menuName);
         if (tower.getUpgradeLevel()<2){
+            add(costLabel);
             add(upgrade);
         }
         add(destroy);

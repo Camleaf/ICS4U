@@ -18,19 +18,25 @@ public class BoardLogic {
     private int waveCount = 0;
     private Enemy[] wave;
     private EnemyRenderBox[] waveRender;
-    private int enemiesLaunched = 0;
-    private int enemiesEnded = 0; // to keep track if wave is over or not
+    private int enemiesLaunched;
+    private int enemiesEnded; // to keep track if wave is over or not
     private int launchDelay = 1000; // in ms
     private Interval launchInterval = new Interval(launchDelay);
     private boolean waveRunning = false;
     public int playerHealth;
     private int attackCheckDelay = 250; // in ms. THis is so that we aren't doing the expensive attack calculations every frame
     private Interval attackCheckInterval = new Interval(attackCheckDelay);
-
+    public int coins;
 
     public BoardLogic(Point[] path){
+        // init starting vars
+        
         waveCount = 0;
         playerHealth = 20;
+        coins = 100;
+        
+        enemiesLaunched = 0;
+        enemiesEnded = 0;
     }
 
     public void startWave(Point[] path){
@@ -65,7 +71,7 @@ public class BoardLogic {
         
         // attack enemies
         if (attackCheckInterval.intervalPassed()){
-            launchAttacks(board, tileArray);
+            launchAttacks(board, tileArray, menu);
         }
         
     }
@@ -123,7 +129,7 @@ public class BoardLogic {
     }
 
 
-    private void launchAttacks(BasePanel board, Tile[][] tileArray){
+    private void launchAttacks(BasePanel board, Tile[][] tileArray, WaveMenu waveMenu){
         for (Tile[] row : tileArray){
             for (Tile tile : row){
                 Tower tower = tile.getOccupier();
@@ -143,6 +149,8 @@ public class BoardLogic {
                         enemiesEnded++;
                         enemy.active = false;
                         board.remove(waveRender[enemyIndex]);
+                        coins += enemy.getReward();
+                        waveMenu.updateCoins(coins);
                     }
                 }
                 tower.attackInterval.resetTime();

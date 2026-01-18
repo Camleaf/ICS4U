@@ -67,6 +67,17 @@ public abstract class Tower {
     }
     public abstract String getName(); 
     
+    public Integer getUpgradeCost(){
+        switch (upgradeLevel){
+            case 0:
+                return 300;
+            case 1:
+                return 500;
+            default:
+                return null;
+        }
+    }
+
     public int getBaseCost(){
         return this.baseCost;
     };

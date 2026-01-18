@@ -14,7 +14,7 @@ import java.awt.event.ActionEvent;
 import src.display.BoardDisplay;
 import javax.swing.JTextPane;
 import src.display.menu.VariableMenuDisplay;
-
+import src.display.menu.WaveMenu;
 
 /**Submenu that appears when clicking on an empty tile and contains pertaining options
  * @author Alexcedw
@@ -22,6 +22,7 @@ import src.display.menu.VariableMenuDisplay;
 public class EmptyMenu extends BasePanel {
     private TowerSelector towerSelector;
     private JTextPane infoText;
+    private JLabel costLabel;
     public EmptyMenu(int width, int height){
         super(width,height, Color.darkGray); // will be another color just placeholder for
 
@@ -46,7 +47,7 @@ public class EmptyMenu extends BasePanel {
     
     /** To implement
      */
-    public void buildContent(Point click, Tile[][] tileArray, BoardDisplay board, VariableMenuDisplay menu){
+    public void buildContent(Point click, Tile[][] tileArray, BoardDisplay board, VariableMenuDisplay menu, WaveMenu waveMenu){
  
         JLabel textLabel = new JLabel();
         textLabel.setText("Buy Menu");
@@ -74,12 +75,21 @@ public class EmptyMenu extends BasePanel {
             public void actionPerformed(ActionEvent e) {
                 // Run action on buy. If successful revert to default menu state and execute rerender
                 if (towerSelector.selectedPoint == null) return;
+
                 int towerIndex = towerSelector.selectedPoint.y*2 + towerSelector.selectedPoint.x;
+                int cost = Tower.getTowerFromType(Tower.types[towerIndex]).getBaseCost(); 
+
+                if (board.logic.coins < cost) return; // if not enough coins to buy
+
+                board.logic.coins -= cost;
                 Tile temp = tileArray[click.y][click.x];
                 temp.setOccupier(Tower.getTowerFromType(Tower.types[towerIndex]));
                 board.selectedPoint = null;
                 board.refreshTile(temp);
                 menu.removeAll();
+
+                waveMenu.updateCoins(board.logic.coins);
+                
             }
         });
         
@@ -93,6 +103,15 @@ public class EmptyMenu extends BasePanel {
         infoText.setText(new StringBuilder("Click on a tower to see stats and cost")
             .toString()
         );
+
+        costLabel = new JLabel(); // have no text to start
+        costLabel.setBounds(20,330,160,30);
+        costLabel.setFont(new Font("arial", Font.TRUETYPE_FONT, 20));
+        costLabel.setForeground(Color.white);
+        add(costLabel);
+
+
+
     };
     
 
@@ -101,6 +120,7 @@ public class EmptyMenu extends BasePanel {
             infoText.setText(new StringBuilder("Click on a tower to see stats and cost")
                 .toString()
             );
+            costLabel.setText("");
             return;
         }
         // If not null get the tower and data for it
@@ -114,6 +134,8 @@ public class EmptyMenu extends BasePanel {
             .append(String.format("Range: %d\n", tower.getRange()))
             .toString()
         );
+
+        costLabel.setText(String.format("Cost: %d",tower.getBaseCost()));
     
     }
 }

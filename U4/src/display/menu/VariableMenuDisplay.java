@@ -8,6 +8,7 @@ import src.display.menu.*;
 import src.display.BoardDisplay;
 import javax.swing.JTextPane;
 import java.awt.Font;
+import src.display.menu.WaveMenu;
 /** Handles (or will handle) the menus that appear from clicking on a tile
  * @author Alexcedw
  */
@@ -51,17 +52,12 @@ public class VariableMenuDisplay extends BaseLayeredPanel {
     
     public void handleClick(Point pos, Tile[][] tileArray){
         if (currentStored == null) return;
-        if (tileArray[currentStored.y][currentStored.x].hasOccupier()){
-            towerMenu.handleClick(currentStored, tileArray);
-        } else {
+        if (!tileArray[currentStored.y][currentStored.x].hasOccupier()){
             emptyMenu.handleClick(pos,tileArray);
         }
-        // Find a way to pass the tile data to here
-        // pass to the submenus
-        // //this got lost in the codehs purge
     }
     
-    public void handleUpdate(Point stateUpdate, Tile[][] tileArray, BoardDisplay board){
+    public void handleUpdate(Point stateUpdate, Tile[][] tileArray, BoardDisplay board, WaveMenu waveMenu){
         if (stateUpdate == null){ // If no update then no bother updating this
             removeAll();
             currentStored = null;
@@ -74,11 +70,11 @@ public class VariableMenuDisplay extends BaseLayeredPanel {
         emptyMenu.removeAll();
         
         if (tileArray[stateUpdate.y][stateUpdate.x].hasOccupier()){
-            towerMenu.buildContent(stateUpdate,tileArray, board, this);
+            towerMenu.buildContent(stateUpdate,tileArray, board, this, waveMenu);
             add(towerMenu,Integer.valueOf(1));
             //setComponentZOrder(towerMenu,0);
         } else {
-            emptyMenu.buildContent(currentStored,tileArray,board,this);
+            emptyMenu.buildContent(currentStored,tileArray,board,this, waveMenu);
             add(emptyMenu,Integer.valueOf(1));
             //setComponentZOrder(emptyMenu,0);
         } 

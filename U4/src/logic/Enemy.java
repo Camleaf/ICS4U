@@ -17,6 +17,7 @@ public abstract class Enemy {
     public int jumpDelay = 2000;
     public boolean active = false;
     public int health;
+    public int startingHealth;
     public int pathIndex = 0;
     public int x;
     public int y;
@@ -52,6 +53,8 @@ public abstract class Enemy {
 
 
     public abstract int getDamage();
+
+    public abstract int getReward();
 
     // we could just set their damage to their current health 
 
