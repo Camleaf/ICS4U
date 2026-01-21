@@ -1,5 +1,4 @@
 package src.display;
-import java.util.Random;
 import src.render.BoardRenderer;
 import java.awt.Point;
 import java.awt.Rectangle;
@@ -33,24 +32,11 @@ public class BoardDisplay extends BoardRenderer {
     public static Point[] testingPath = {
         new Point(0,0), new Point(1,0), new Point(2,0), new Point(3,0), new Point(3,1), new Point(3,2), new Point(3,3), new Point(3,4), new Point(4,4), new Point(5,4),new Point(6,4),new Point(7,4)
     };
-    
-    
-    
-   
-    
-    private void decidePath() {
-        Point[] secondPath = {
-        new Point(0, 0), new Point(1, 0), new Point(2, 0), new Point(3, 0), new Point(3, 1), new Point(3, 2), new Point (3, 3), new Point(3, 4), new Point(2, 4), new Point(1, 4), new Point(1, 5), new Point(1, 6), new Point(1, 7), new Point(2, 7), new Point(3, 7), new Point(4, 7), new Point(5, 7), new Point(6, 7), new Point(6, 6), new Point(6, 5), new Point(6, 4), new Point(6, 3), new Point(6, 2), new Point(6, 1), new Point(7, 1)
-        };
-        Random random = new Random();
-        int randomNum = random.nextInt(2);
-        if (randomNum == 1) testingPath = secondPath;
-    }
-    
+
     public BoardDisplay(){
         // Width is 640 x 640 to start
         super(512,512);
-        decidePath();
+        
         setBackgroundArray(testingBoardGraphics, testingPath);    
         drawBackground();
         
