@@ -68,18 +68,10 @@ public class Context{
         g.dispose();
     }
     
-    
-    public void fill(Color colour){
-        drawRect(0, 0, this.width, this.height, colour);
+    /** Draws a rectangle at 0,0, and width the width and height of the screen, with the passed colour.
+     * @param c the colour to fill the screen with
+     */
+    public void fill(Color c){
+        drawRect(0, 0, this.width, this.height, c);
     }
 }
-
-
-
-
-
-
-
-
-
-

@@ -38,7 +38,8 @@ public class TowerShooter extends Tower{
 
         for (int i = 0;i<enemies.length;i++){
             Enemy enemy = enemies[i]; // iterate from back to front of enemies to get furthest along. Not perfect but should work well enough
-            if (!enemy.active) continue;
+            if (enemy == null) continue;
+            if (!enemy.isLaunched) continue;
             
             if (Math.abs(enemy.x - curPosition.x) <= range && Math.abs(enemy.y-curPosition.y)<=range){ // if in range
                 enemiesAttacked.add(i);
@@ -63,6 +64,6 @@ public class TowerShooter extends Tower{
 
 
     public String getName(){
-        return name;
+        return this.name;
     }
 }

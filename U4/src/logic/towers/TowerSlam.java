@@ -36,7 +36,8 @@ public class TowerSlam extends Tower{
 
         for (int i = 0;i<enemies.length;i++){
             Enemy enemy = enemies[i];
-            if (!enemy.active) continue;
+            if (enemy == null) continue;
+            if (!enemy.isLaunched) continue;
             
             if (Math.abs(enemy.x - curPosition.x) <= range && Math.abs(enemy.y-curPosition.y)<=range){ // if in range
                 enemiesAttacked.add(i);

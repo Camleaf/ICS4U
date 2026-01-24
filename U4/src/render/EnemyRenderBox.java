@@ -7,7 +7,7 @@ import java.awt.Point;
 import java.awt.Graphics;
 import lib.graphics.Texture;
 import java.awt.image.BufferedImage;
-
+import lib.Interval;
 
 // Acts as a box for an individual enemy to be displayed. Does not contain any individual enemy
 public class EnemyRenderBox extends JComponent {
@@ -16,7 +16,11 @@ public class EnemyRenderBox extends JComponent {
     private BufferedImage image;
     private static int squareSize = BoardRenderer.squareSize;
     private static int spriteSheetSquareSize = BoardRenderer.spriteSheetSquareSize;
-
+    private int steps = 8;
+    private int movDelay;
+    private int stepDist = squareSize/steps;
+    public Interval stepInterval = null;
+    private Point stepVector= new Point(0,0);
 
     public EnemyRenderBox(Enemy reference){
         setSize(64,64);
@@ -47,6 +51,25 @@ public class EnemyRenderBox extends JComponent {
     public void setLocationToRef(Enemy reference){
         setLocation(reference.x*squareSize,reference.y*squareSize);
     }
+    
+    public void setMovDelay(int ms){
+        movDelay = ms/steps;
+        stepInterval = new Interval(movDelay);
+    }
+
+    public void setStepVector(int x, int y){
+        stepVector= new Point(x,y);
+        stepInterval.resetTime();
+    }
+
+
+    public void step(){
+        if (stepInterval == null) return;
+        if (!stepInterval.intervalPassed()) return;
+        setLocation(getX()+stepDist*stepVector.x,getY()+stepDist*stepVector.y); 
+        
+    }
+
 
 
 
@@ -56,4 +79,3 @@ public class EnemyRenderBox extends JComponent {
 
     
 }
-

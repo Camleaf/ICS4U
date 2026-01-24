@@ -8,6 +8,7 @@ import lib.graphics.BasePanel;
 import src.display.BoardDisplay;
 import src.display.menu.VariableMenuDisplay;
 import src.display.menu.WaveMenu;
+import src.display.menu.EndScreen;
 
 // Alex note here: I feel that the shop should be handled in that if a player clicks an empty tile, it brings up a "would you like to buy a tower menu". It would be much easier to implement
 
@@ -23,6 +24,7 @@ public class Game {
     private VariableMenuDisplay variableMenuDisplay;
     private BasePanel enemyPage;
     private WaveMenu waveMenu;
+    private EndScreen endScreen;
 
     public Game() {
         window = new Window("Tower Defense", 832, 600);
@@ -40,7 +42,7 @@ public class Game {
         enemyPage.setOpaque(false);
         window.add(enemyPage,Integer.valueOf(1));
 
-        waveMenu = new WaveMenu(180,80, boardDisplay);
+        waveMenu = new WaveMenu(180,80, boardDisplay,window);
         window.add(waveMenu, Integer.valueOf(2));
 
     }

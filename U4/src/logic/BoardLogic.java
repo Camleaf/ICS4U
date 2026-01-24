@@ -27,6 +27,8 @@ public class BoardLogic {
     private int attackCheckDelay = 250; // in ms. THis is so that we aren't doing the expensive attack calculations every frame
     private Interval attackCheckInterval = new Interval(attackCheckDelay);
     public int coins;
+    private int moveEnemyCheckDelay = 50;
+    private Interval moveEnemyCheckInterval = new Interval(moveEnemyCheckDelay);
 
     public BoardLogic(Point[] path){
         // init starting vars
@@ -90,6 +92,8 @@ public class BoardLogic {
         for (int i = 0;i<enemyCount;i++){
             wave[i] = Enemy.getEnemyFromType(Enemy.types[(int)Math.floor(Math.random()*Enemy.types.length)], path, (int)Math.ceil(Math.random()*4));  
             waveRender[i] = new EnemyRenderBox(wave[i]);
+            waveRender[i].setMovDelay(wave[i].jumpDelay);
+            waveRender[i].setStepVector(wave[i].peekNextPath(path).x, wave[i].peekNextPath(path).y);
         }
     }
 
@@ -98,12 +102,11 @@ public class BoardLogic {
      * @param BasePanel board: the board the enemies are loaded onto
      */
     private void launchEnemy(BasePanel board){
-        if (enemiesLaunched == wave.length) return; // If out of enemies to run then just stop
-        
+        if (enemiesLaunched >= wave.length) return; // If out of enemies to run then just stop
+        wave[enemiesLaunched].isLaunched = true;
         // Add enemy display to board and reset its move timer
         board.add(waveRender[enemiesLaunched]);
         wave[enemiesLaunched].jumpInterval.resetTime();
-        wave[enemiesLaunched].active = true;
         enemiesLaunched++;
     }
 
@@ -114,10 +117,13 @@ public class BoardLogic {
      * @param WaveMenu waveMenu: the menu that controls the wave start
      */
     private void moveEnemies(BasePanel board, Point[] path, WaveMenu waveMenu){
-        
+        if (!moveEnemyCheckInterval.intervalPassed())return;
 
         for (int i = 0;i<enemiesLaunched;i++){ // we only want to move enemies which are currently on the board
-            if (!wave[i].active) continue; // If not active then skip it
+            if (wave[i] == null) continue; // If not active then skip it
+            
+            waveRender[i].step();
+
             if (!wave[i].jumpInterval.intervalPassed()) continue; // If the jump interval for the object has't passed skip it
             
             boolean atEnd = wave[i].jumpTile(path);
@@ -126,13 +132,20 @@ public class BoardLogic {
                // add player health modificaiton here
                 playerHealth -= wave[i].health;
                 
-                wave[i].active = false;
+                wave[i] = null;
                 waveMenu.updateHP(playerHealth);
                 enemiesEnded++;
                 board.remove(waveRender[i]);
                 continue;
             }
-
+            Point nextPath = wave[i].peekNextPath(path);
+            if (nextPath == null) nextPath = new Point(1,0);
+            else {
+                nextPath = new Point(nextPath.x, nextPath.y);
+                nextPath.x -= wave[i].x;
+                nextPath.y -= wave[i].y;
+            }
+            waveRender[i].setStepVector(nextPath.x, nextPath.y);
             waveRender[i].setLocationToRef(wave[i]); 
         }
     }
@@ -148,7 +161,6 @@ public class BoardLogic {
             for (Tile tile : row){
                 Tower tower = tile.getOccupier();
                 if (tower == null) continue;
-           
                 if (!tower.attackInterval.peekIntervalPassed()) continue;
             
 
@@ -161,10 +173,10 @@ public class BoardLogic {
 
                     if (enemy.health<=0){
                         enemiesEnded++;
-                        enemy.active = false;
                         board.remove(waveRender[enemyIndex]);
                         coins += enemy.getReward();
                         waveMenu.updateCoins(coins);
+                        wave[enemyIndex] = null;
                     }
                 }
                 tower.attackInterval.resetTime();

@@ -15,7 +15,6 @@ import javax.imageio.ImageIO;
  */
 public class Texture {
     
-    private JLabel swingImg;
     private BufferedImage image;
     private int w;
     private int h;
@@ -52,21 +51,6 @@ public class Texture {
         return scaledBuffer;
     }
     
-    /**
-     * Takes an image file and returns a JLabel of the image
-     * @Params String path: the path of the file
-     * @Returns JLabel: the label of the image
-     */
-    private JLabel loadImage(String path) {
-        JLabel swingImage = new JLabel();
-        swingImage.setBounds(0, 0, this.w, this.h);
-        swingImage.setIcon(getImageIcon());
-        return swingImage;
-    }
-    
-    public ImageIcon getImageIcon(){
-        return new ImageIcon(image);
-    }
     
     /**
      * @returns the texture in BufferedImage format
@@ -74,20 +58,7 @@ public class Texture {
     public BufferedImage getBufferedImage(){
         return image;
     }
-    
-    /**
-     * @returns the teture in JLabel format
-     */
-    public JLabel getJLabel(){
-        return swingImg;
-    }
-    
-    /** Sets the bounds of the JSwing container which the image can reside in.
-     */
-    public void setSwingBounds(int x, int y, int w, int h){
-        swingImg.setBounds(x,y,w,h);
-    }
-    
+     
     /**
      * Gets a slice of the texture with top left coordinate x,y and dimensions w,h as a BufferedImage. Typically would be used for a sprite sheet
      * @param x the x coordinate of the upper-left corner of the subregion
@@ -100,17 +71,3 @@ public class Texture {
         return image.getSubimage(x,y,w,h);
     }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-

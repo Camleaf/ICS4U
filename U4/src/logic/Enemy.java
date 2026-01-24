@@ -15,11 +15,11 @@ public abstract class Enemy {
     
     public Type type;
     public int jumpDelay = 2000;
-    public boolean active = false;
     public int health;
     public int startingHealth;
     public int pathIndex = 0;
     public int x;
+    public boolean isLaunched = false;
     public int y;
     public Interval jumpInterval = new Interval(jumpDelay);
 
@@ -50,6 +50,11 @@ public abstract class Enemy {
 
         return false;
     };
+
+    public Point peekNextPath(Point[] path){
+        if (pathIndex+1 >= path.length) return null;
+        return path[pathIndex+1];
+    }
 
 
     public abstract int getDamage();

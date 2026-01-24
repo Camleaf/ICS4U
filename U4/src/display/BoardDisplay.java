@@ -10,6 +10,7 @@ import lib.graphics.BasePanel;
 import src.display.menu.WaveMenu;
 /** The function which handles instructions given from the gameloop and delegates rendering to BoardRenderer and calculations to BoardLogic
  * @author Alexcdw
+ * @author Spencer M
  */
 public class BoardDisplay extends BoardRenderer {
         
@@ -123,23 +124,3 @@ public class BoardDisplay extends BoardRenderer {
         drawTile(t);
     }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

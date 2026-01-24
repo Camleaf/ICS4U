@@ -106,6 +106,3 @@ public abstract class Tower {
     
     
 }
-
-
-

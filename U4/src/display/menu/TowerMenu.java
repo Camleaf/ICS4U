@@ -105,7 +105,6 @@ public class TowerMenu extends BasePanel {
         costLabel.setBounds(20,290,160,30);
         costLabel.setFont(new Font("arial", Font.TRUETYPE_FONT, 20));
         costLabel.setForeground(Color.white);
-        add(costLabel);
 
         add(name);
         add(menuName);
@@ -121,10 +120,3 @@ public class TowerMenu extends BasePanel {
     
     
 }
-
-
-
-
-
-
-
